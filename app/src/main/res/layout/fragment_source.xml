@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".View.Fragment.Sources.SourceFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme"
+
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:titleTextColor="@color/colorTitle"
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <!--tabIndicatorColor：指示器的颜色-->
+        <!--tabIndicatorHeight：指示器的高度，可设置为0，相当于没有指示器-->
+        <!--tabTextColor：Tab未选中时字体的颜色-->
+        <!--tabSelectedTextColor：Tab选中时字体的颜色-->
+        <!--tabTextAppearance：Tab内文字的样式，TabLayout没有提供直接属性设置文字大小，需通过该属性指定style样式从而改变文字大小-->
+        <!--tabMode：Tab的显示模式，默认为fixed（固定不能滑动，标签很多时会被挤压），可设置为scrollable（标签很多时可向左滑动）-->
+        <!--tabGravity：内容的显示模式，可选center（居中）和fill（填充）-->
+        <skin.support.flycotablayout.widget.SkinSlidingTabLayout
+            app:tl_tab_space_equal="true"
+
+            android:id="@+id/tl_search"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tabheight"
+            android:background="@color/colorPrimary"
+            app:tl_textUnselectColor="@color/colorUnSelected"
+            app:tl_indicator_color="@color/colorIndicator"
+            app:tl_textSelectColor="@color/colorSelected"></skin.support.flycotablayout.widget.SkinSlidingTabLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.viewpager.widget.ViewPager
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

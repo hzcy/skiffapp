@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_netImport"
+        android:orderInCategory="100"
+        android:title="@string/httpimport"
+
+
+        />
+
+    <item
+        android:id="@+id/action_clipboardimport"
+        android:orderInCategory="100"
+        android:title="@string/clipboardimport"
+
+
+        />
+
+
+    <item
+        android:id="@+id/action_rssimport"
+        android:orderInCategory="100"
+        android:title="@string/rssimport"
+
+
+        />
+
+</menu>

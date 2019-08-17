@@ -1,0 +1,115 @@
+<resources>
+    <string name="app_name">轻舟</string>
+
+    <string name="nav_header_title">轻舟</string>
+
+
+    <string name="menu_home">首页</string>
+    <string name="menu_favorite">收藏</string>
+    <string name="menu_yuansetting">源管理</string>
+    <string name="menu_about">关于</string>
+
+
+    <string name="search_hint">搜索…</string>
+
+
+    <string name="httpimport">网络导入</string>
+    <string name="clipboardimport">剪贴板导入</string>
+    <string name="nomoredata">没有更多数据</string>
+    <string name="nulldata">暂无数据</string>
+    <string name="loading">加载中...</string>
+    <string name="listsort">列表顺序反转</string>
+    <string name="datatitle">我是标题</string>
+    <string name="datasummary">我是简介</string>
+    <string name="datadate">我是日期</string>
+    <string name="sourcetest">01</string>
+    <string name="fontsize">字体大小:</string>
+    <string name="fontcolor">字体颜色</string>
+    <string name="bgcolor">背景颜色</string>
+
+    <string name="refreshen">刷新网页</string>
+    <string name="copylink">复制链接</string>
+    <string name="openurl">在浏览器打开</string>
+    <string name="favorite">收藏</string>
+    <string name="sourcesSet">源管理</string>
+    <string name="rssimport">导入RSS源</string>
+    <string name="setting">设置</string>
+    <string name="voiddata">暂无数据</string>
+    <string name="ok">确定</string>
+
+
+
+    <string name="version">版本</string>
+    <string name="checkupdate">检查更新</string>
+    <string name="changelog">更新日志</string>
+    <string name="viewwebsite">软件主页</string>
+    <string name="http_skiff_desigin">http://skiff.desigin</string>
+    <string name="shareapp">分享软件</string>
+    <string name="opensources">开源许可</string>
+    <string name="contact">联系方式</string>
+    <string name="qqgroup">QQ群</string>
+    <string name="weixingroup">微信群</string>
+    <string name="weixingzh">微信公众号</string>
+    <string name="feedback">反馈</string>
+    <string name="skiff_163_com">skiff@163.com</string>
+    <string name="donate">捐赠</string>
+    <string name="alipayhb">领取支付宝红包</string>
+    <string name="alipay">支付宝捐赠</string>
+    <string name="qq">QQ捐赠</string>
+    <string name="weixin">微信捐赠</string>
+    <string name="other">其他</string>
+    <string name="disclaimer">免责声明</string>
+
+
+    <string name="greendao">greenDAO</string>
+    <string name="greendaojs"><![CDATA[greenDAO is a light & fast ORM for Android that maps objects to SQLite databases. Being highly optimized for Android, greenDAO offers great performance and consumes minimal memory.]]></string>
+    <string name="glide">Glide</string>
+    <string name="glidejs">Glide is a fast and efficient open source media management and image loading framework for Android that wraps media decoding, memory and disk caching, and resource pooling into a simple and easy to use interface.</string>
+    <string name="bsdandmit">BSD, part MIT and Apache 2.0.</string>
+    <string name="okhttp">okhttp</string>
+    <string name="okhttpjs">An HTTP client for Android, Kotlin, and Java</string>
+    <string name="apache_2_0">Apache 2.0</string>
+    <string name="agentweb">AgentWeb</string>
+    <string name="agentwebjs">AgentWeb is an Android WebView based, extremely easy to use and powerful library.</string>
+    <string name="android_skin_support">Android-skin-support</string>
+    <string name="android_skin_supportjs">Android-skin-support is an easy to use dynamic skin framework for Android, Only one line of code to integrate it.</string>
+    <string name="mit">MIT</string>
+    <string name="gson">gson</string>
+    <string name="gsonjs">Gson is a Java library that can be used to convert Java Objects into their JSON representation. It can also be used to convert a JSON string to an equivalent Java object. Gson can work with arbitrary Java objects including pre-existing objects that you do not have source-code of.</string>
+    <string name="fastjson">fastjson</string>
+    <string name="fastjsonjs">Fastjson is a Java library that can be used to convert Java Objects into their JSON representation. It can also be used to convert a JSON string to an equivalent Java object. Fastjson can work with arbitrary Java objects including pre-existing objects that you do not have source-code of.</string>
+    <string name="eventbus">EventBus</string>
+    <string name="eventbusjs">Event bus for Android and Java that simplifies communication between Activities, Fragments, Threads, Services, etc. Less code, better quality.</string>
+    <string name="jsoup">jsoup</string>
+    <string name="jsoupjs">jsoup is a Java library for working with real-world HTML. It provides a very convenient API for extracting and manipulating data, using the best of DOM, CSS, and jquery-like methods.</string>
+    <string name="jsoupxpath">JsoupXpath</string>
+    <string name="jsoupxpathjs">A html parser with xpath base on Jsoup and Antlr4.Maybe it is the best in java,Just try it.</string>
+    <string name="htmlunit_android">HtmlUnit-Android</string>
+    <string name="htmlunit_androidjs">A port of HtmlUnit to Android (currently based on HtmlUnit 2.30)</string>
+    <string name="nice_spinner">nice-spinner</string>
+    <string name="nice_spinnerjs">NiceSpinner is a re-implementation of the default Android\'s spinner, with a nice arrow animation and a different way to display its content.</string>
+    <string name="materialsearchview">MaterialSearchView</string>
+    <string name="butterknife">butterknife</string>
+    <string name="butterknifejs">Field and method binding for Android views which uses annotation processing to generate boilerplate code for you.</string>
+    <string name="alerter">Alerter</string>
+    <string name="alerterjs">This library aims to overcome the limitations of Toasts and Snackbars, while reducing the complexity of your layouts.</string>
+    <string name="baserecyclerviewadapterhelper">BaseRecyclerViewAdapterHelper</string>
+    <string name="baserecyclerviewadapterhelperjs">Powerful and flexible RecyclerAdapter</string>
+    <string name="colorpicker">ColorPicker</string>
+    <string name="colorpickerjs">Yet another open source color picker for Android. So, why should you use this color picker? It is highly customizable and easy to use. You can simply add the ColorPreference to your preferences and a beautiful color picker dialog will be displayed without additional code. The color picker supports alpha and allows you to set your own presets.</string>
+    <string name="android_iconics">Android-Iconics</string>
+    <string name="android_iconicsjs">This library allows you to include vector icons everywhere in your project. No limits are given. Scale with no limit, use any color at any time, provide a contour, and many additional customizations...</string>
+    <string name="android_rss">android-rss</string>
+    <string name="android_rssjs">Lightweight Android library to parse RSS 2.0 feeds.</string>
+    <string name="viewabout">界面相关</string>
+    <string name="themesetting">主题设置</string>
+    <string name="loadsetting">数据加载动画</string>
+    <string name="dataabout">数据相关</string>
+    <string name="dbbackup">数据备份</string>
+    <string name="dbresume">数据恢复</string>
+    <string name="loadfail">加载失败</string>
+    <string name="menu">目录</string>
+    <string name="viewfromsite">访问原网页</string>
+
+
+</resources>

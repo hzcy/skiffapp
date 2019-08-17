@@ -1,0 +1,57 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+
+
+    </style>
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/BaseAppTheme">
+        <item name="alertDialogStyle">@style/AlertDialog.SkinCompat</item>
+
+
+        <item name="skinAlertDialogNegativeButtonTextColor">@color/colorPrimaryDark</item>
+        <item name="skinAlertDialogPositiveButtonTextColor">@color/colorPrimaryDark</item>
+
+    </style>
+
+
+    <style name="AlertDialogTheme" parent="BaseAppTheme">
+        <item name="alertDialogStyle">@style/AlertDialog.SkinCompat</item>
+        <item name="skinAlertDialogBackground">@color/textColorPrimary</item>
+        <item name="skinAlertDialogTitleTextColor">@color/textColorPrimary</item>
+        <item name="skinAlertDialogMessageTextColor">@color/textColorPrimary</item>
+        <item name="skinAlertDialogNeutralButtonTextColor">@color/textColorPrimary</item>
+        <item name="skinAlertDialogNegativeButtonTextColor">@color/textColorPrimary</item>
+        <item name="skinAlertDialogPositiveButtonTextColor">@color/textColorPrimary</item>
+        <item name="skinAlertDialogControlHighlightColor">@color/colorAccent</item>
+        <item name="skinAlertDialogListDivider">@null</item>
+        <item name="skinAlertDialogListItemTextColor">@color/textColorPrimary</item>
+        <item name="skinListChoiceIndicatorMultiple">@drawable/skin_btn_check</item>
+        <item name="skinListChoiceIndicatorSingle">@drawable/skin_btn_radio</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="otherPageStyle" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+
+</resources>
