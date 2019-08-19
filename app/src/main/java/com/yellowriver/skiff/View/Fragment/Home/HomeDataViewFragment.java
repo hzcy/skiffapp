@@ -396,15 +396,19 @@ public class HomeDataViewFragment extends Fragment {
                 //如果获取的数据不为空
                 if (mDataEntity != null) {
                     //反转数据
-                    Collections.reverse(mHomeAdapter.getData());
-                    mHomeAdapter.notifyDataSetChanged();
-                    mRecyclerView.scrollToPosition(0);
+//                    Collections.reverse(mHomeAdapter.getData());
+//                    mHomeAdapter.notifyDataSetChanged();
+//                    mRecyclerView.scrollToPosition(0);
                     //保存数据的状态
                     if (POSITIVE.equals(SharedPreferencesUtils.readDataSort(Objects.requireNonNull(getContext())))) {
                         SharedPreferencesUtils.writeDataSort("反", getContext());
+                        mRecyclerView.scrollToPosition(mHomeAdapter.getData().size());
+                        item.setTitle("回到顶部");
 
                     } else if (NEGATIVE.equals(SharedPreferencesUtils.readDataSort(getContext()))) {
                         SharedPreferencesUtils.writeDataSort("正", getContext());
+                        mRecyclerView.scrollToPosition(0);
+                        item.setTitle("滑动到底部");
                     }
                 }
                 return true;

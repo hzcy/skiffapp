@@ -18,7 +18,7 @@
     <string name="nomoredata">没有更多数据</string>
     <string name="nulldata">暂无数据</string>
     <string name="loading">加载中...</string>
-    <string name="listsort">列表顺序反转</string>
+    <string name="listsort">滑动到底部</string>
     <string name="datatitle">我是标题</string>
     <string name="datasummary">我是简介</string>
     <string name="datadate">我是日期</string>

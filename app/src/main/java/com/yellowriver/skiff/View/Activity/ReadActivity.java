@@ -2,17 +2,12 @@ package com.yellowriver.skiff.View.Activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +18,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
@@ -53,7 +47,7 @@ import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.codeboy.android.aligntextview.AlignTextView;
+
 
 import static com.yellowriver.skiff.R.drawable.ic_more_vert_black_24dp;
 
@@ -88,8 +82,9 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
     private static final String POSITIVE = "正";
     private static final String NEGATIVE = "反";
     private int selindex = 0;
-    private int po = 0;
+    private int fromindex = 0;
     private ReadAdapter mReadAdapter;
+    private boolean isLoading;
     /**
      * 目录列表适配器
      */
@@ -128,7 +123,7 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
             //赋值
             this.mMenuDataEntity = event.getContent();
             this.selindex = event.getSelIndex();
-            this.po = event.getSelIndex();
+            this.fromindex = event.getSelIndex();
         }
     }
 
@@ -214,9 +209,9 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    if (po!=-1&&mMenuDataEntity!=null)
+                    if (fromindex!=-1&&mMenuDataEntity!=null)
                     {
-                        url = mMenuDataEntity.get(po).getLink();
+                        url = mMenuDataEntity.get(fromindex).getLink();
                     }
                     data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
                     runOnUiThread(new Runnable() {
@@ -281,7 +276,7 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
             url = dataEntity.getLink();
             title = dataEntity.getTitle();
             selindex = position;
-            po = position;
+            fromindex = position;
             //开启线程加载数据
             new Thread(new Runnable() {
                 @Override
@@ -300,93 +295,74 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
             }).start();
 
         });
-        mReadAdapter.bindToRecyclerView(mReadRecyclerView);
-        mReadAdapter.disableLoadMoreIfNotFullPage();
-        mReadAdapter.setLoadMoreView(new CustomLoadMoreView());
         mReadRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 Log.i(TAG, "--------------------------------------");
-                String dataSort = SharedPreferencesUtils.readDataSort(getApplicationContext());
                 int mFirstVisibleItem = myLinearLayoutManagerRead.findFirstVisibleItemPosition();
-                //以下代码不需要，打印出来作为验证；
-                Log.d(TAG, "onScrolled: "+mFirstVisibleItem);
 
                 if (data!=null&&mFirstVisibleItem!=-1)
                 {
-                    String title;
-                    if (dataSort.equals("正")) {
-
-
-                        title = mMenuDataEntity.get(mFirstVisibleItem + po).getTitle();
-
-                    } else {
-                        po = mMenuDataEntity.size()-po;
-                        Log.d(TAG, "onScrolled: po"+po);
-                        Log.d(TAG, "onScrolled: mFirstVisibleItem"+mFirstVisibleItem);
-                        int s =po -mFirstVisibleItem;
-                        Log.d(TAG, "onScrolled: s"+s);
-                        title= "";
-                        title  = mMenuDataEntity.get(po-mFirstVisibleItem).getTitle();
-                    }
+                    title = mMenuDataEntity.get(mFirstVisibleItem + fromindex).getTitle();
 
                     mToolbar.setTitle(title);
 
                 }
-                if(mReadRecyclerView.canScrollVertically(1)){
-                    Log.i(TAG, "direction 1: true");
-                }else {
-                    Log.i(TAG, "direction 1: false");//滑动到底部
-                    //下拉加载更多
-                    mReadAdapter.setOnLoadMoreListener(() -> {
-
-                        if (mMenuDataEntity.size() <= 1) {
-
-                        } else {
-
-
-                            if (dataSort.equals("正")) {
-                                selindex++;
-                            } else {
-                                selindex--;
-                            }
-                            if (selindex < 0 || selindex >= mMenuDataEntity.size()) {
-                                mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
-                                mReadAdapter.loadMoreEnd(true);
-                            } else {
-                                url = mMenuDataEntity.get(selindex).getLink();
-                                title = mMenuDataEntity.get(selindex).getTitle();
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-
-                                                if (data != null) {
-                                                    mReadAdapter.addData(data);
-                                                    mReadAdapter.loadMoreComplete();
-                                                    // mToolbar.setTitle(title);
-
-                                                } else {
-                                                    mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
-                                                    mReadAdapter.loadMoreEnd(true);
-                                                }
-
-                                            }
-                                        });
-                                    }
-                                }).start();
-                            }
-                        }
-                    }, mReadRecyclerView);
-                }
             }
         });
 
+
+
+            //下拉加载更多
+
+            mReadAdapter.setOnLoadMoreListener(() -> {
+
+                //mReadAdapter.removeAllFooterView();
+
+
+                if (mMenuDataEntity.size() <= 1) {
+
+                } else {
+
+                    selindex++;
+                    if (selindex < 0 || selindex >= mMenuDataEntity.size()) {
+                        mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
+                        mReadAdapter.loadMoreEnd(true);
+                    } else {
+                        url = mMenuDataEntity.get(selindex).getLink();
+                        title = mMenuDataEntity.get(selindex).getTitle();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if (data != null) {
+                                            mReadAdapter.addData(data);
+                                            mReadAdapter.loadMoreComplete();
+
+
+                                        } else {
+                                            mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
+                                            mReadAdapter.loadMoreEnd(true);
+                                        }
+
+                                    }
+                                });
+                            }
+                        }).start();
+                    }
+                }
+
+
+            }, mReadRecyclerView);
+
+        mReadAdapter.setLoadMoreView(new CustomLoadMoreView());
+        mReadAdapter.disableLoadMoreIfNotFullPage();
 
 
     }
