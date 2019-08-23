@@ -136,6 +136,6 @@ dependencies {
 
 greendao {
     //数据库版本
-    schemaVersion 28
+    schemaVersion 29
 
 }

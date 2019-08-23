@@ -216,11 +216,7 @@ public class SQLiteUtils {
 
     public  void delFavorite(FavoriteEntity favoriteEntity)
     {
-
-
             daoSession.delete(favoriteEntity);
-
-
     }
 
 
@@ -238,5 +234,22 @@ public class SQLiteUtils {
         List<FavoriteEntity> list =  daoSession.getFavoriteEntityDao().queryBuilder().list();
         Gson gson = new Gson();
         return gson.toJson(list);
+    }
+    //阅读模式 阅读记录
+    public boolean updateFavoriteByTitle(String title,String sourcesName,int readIndex)
+    {
+        boolean ups = false;
+        List<FavoriteEntity> favoriteEntities = getFavoritebyTitle(title,sourcesName);
+        if (favoriteEntities!=null)
+        {
+            if (favoriteEntities.size()>0)
+            {
+                FavoriteEntity favoriteEntity = favoriteEntities.get(0);
+                favoriteEntity.setReadIndex(readIndex);
+                daoSession.update(favoriteEntity);
+                ups = true;
+            }
+        }
+        return ups;
     }
 }

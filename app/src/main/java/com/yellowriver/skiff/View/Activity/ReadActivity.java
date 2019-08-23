@@ -28,16 +28,19 @@ import com.yellowriver.skiff.Adapter.RecyclerViewAdapter.ReadAdapter;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Bean.HomeBean.MsgEvent;
 import com.yellowriver.skiff.Bean.SimpleBean;
+import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.ReadModeUtils;
 import com.yellowriver.skiff.Help.CustomLoadMoreView;
 import com.yellowriver.skiff.Help.MyLinearLayoutManager;
 import com.yellowriver.skiff.Help.SmallUtils;
+import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.greenrobot.greendao.internal.SqlUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -107,6 +110,8 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
     private String readCharset;
     private String content;
     private String upTitle;
+    private int readIndex;
+    private String qzSourcesName;
 
     String title;
     /**
@@ -154,6 +159,8 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
         url = getIntent().getStringExtra("qzLink");
         upTitle = getIntent().getStringExtra("qzUpTitle");
         content = getIntent().getStringExtra("qzContent");
+        readIndex = getIntent().getIntExtra("readIndex",0);
+        qzSourcesName = getIntent().getStringExtra("qzSourcesName");
         //取出数据
         BGColor = SharedPreferencesUtils.bgColorRead(getApplicationContext());
         fontSize = SharedPreferencesUtils.fontSizeRead(getApplicationContext());
@@ -161,6 +168,7 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
     }
 
     MyLinearLayoutManager myLinearLayoutManagerRead;
+
     @SuppressLint("ResourceAsColor")
     private void bindView() {
         ButterKnife.bind(this);
@@ -195,11 +203,13 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
         mMenuRecyclerView.setLayoutManager(myLinearLayoutManagerMenu);
         mMenuRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mMenuRecyclerView.setAdapter(mMenuAdapter = new MenuAdapter(R.layout.menu_item));
-
+        mMenuRecyclerView.scrollToPosition(readIndex);
     }
 
 
     private void bindEvent() {
+        mReadAdapter.bindToRecyclerView(mReadRecyclerView);
+        mReadAdapter.disableLoadMoreIfNotFullPage();
         //下拉刷新
         mSwipeRefreshLayout.setOnRefreshListener(() -> mSwipeRefreshLayout.postDelayed(() -> {
             //开启下拉刷新
@@ -209,8 +219,7 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    if (fromindex!=-1&&mMenuDataEntity!=null)
-                    {
+                    if (fromindex != -1 && mMenuDataEntity != null) {
                         url = mMenuDataEntity.get(fromindex).getLink();
                     }
                     data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
@@ -249,22 +258,25 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
         if (null != mMenuDataEntity) {
             mMenuAdapter.setNewData(mMenuDataEntity);
             mupTitle.setText(upTitle);
+            mMenuRecyclerView.scrollToPosition(selindex);
             sortImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Collections.reverse(mMenuAdapter.getData());
-                    mMenuAdapter.notifyDataSetChanged();
-                    mMenuRecyclerView.scrollToPosition(0);
-                    //保存数据的状态
                     if (POSITIVE.equals(SharedPreferencesUtils.readDataSort(Objects.requireNonNull(getApplicationContext())))) {
+                        Log.d(TAG, "onClick: 底部");
                         SharedPreferencesUtils.writeDataSort("反", getApplicationContext());
+                        mMenuRecyclerView.scrollToPosition(mMenuDataEntity.size()-1);
+                        Log.d(TAG, "onClick: "+mMenuAdapter.getData().size());
+
 
                     } else if (NEGATIVE.equals(SharedPreferencesUtils.readDataSort(getApplicationContext()))) {
                         SharedPreferencesUtils.writeDataSort("正", getApplicationContext());
+                        mMenuRecyclerView.scrollToPosition(0);
+                        Log.d(TAG, "onClick: 顶部");
                     }
                 }
             });
-            mMenuRecyclerView.scrollToPosition(selindex);
+
         }
 
 
@@ -302,72 +314,76 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
                 super.onScrolled(recyclerView, dx, dy);
                 Log.i(TAG, "--------------------------------------");
                 int mFirstVisibleItem = myLinearLayoutManagerRead.findFirstVisibleItemPosition();
+                int nowindex = mFirstVisibleItem + fromindex;
 
-                if (data!=null&&mFirstVisibleItem!=-1)
-                {
-                    title = mMenuDataEntity.get(mFirstVisibleItem + fromindex).getTitle();
+                if (data != null && mFirstVisibleItem != -1 ) {
+                    if(nowindex < mMenuDataEntity.size()) {
+                        title = mMenuDataEntity.get(nowindex).getTitle();
 
-                    mToolbar.setTitle(title);
+                        mToolbar.setTitle(title);
+                    }else{
+                        Log.d(TAG, "onScrolled: 到底了");
+                    }
 
+                }else{
+                    Log.d(TAG, "onScrolled: 没有数据");
                 }
             }
         });
 
 
+        //下拉加载更多
 
-            //下拉加载更多
+        mReadAdapter.setOnLoadMoreListener(() -> {
 
-            mReadAdapter.setOnLoadMoreListener(() -> {
-
-                //mReadAdapter.removeAllFooterView();
+            //mReadAdapter.removeAllFooterView();
 
 
-                if (mMenuDataEntity.size() <= 1) {
+            if (mMenuDataEntity.size() <= 1) {
 
+            } else {
+
+                selindex++;
+                if (selindex < 0 || selindex >= mMenuDataEntity.size()) {
+                    mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
+                    mReadAdapter.loadMoreEnd(true);
                 } else {
+                    mReadAdapter.removeAllFooterView();
+                    url = mMenuDataEntity.get(selindex).getLink();
+                    title = mMenuDataEntity.get(selindex).getTitle();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
 
-                    selindex++;
-                    if (selindex < 0 || selindex >= mMenuDataEntity.size()) {
-                        mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
-                        mReadAdapter.loadMoreEnd(true);
-                    } else {
-                        url = mMenuDataEntity.get(selindex).getLink();
-                        title = mMenuDataEntity.get(selindex).getTitle();
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        if (data != null) {
-                                            mReadAdapter.addData(data);
-                                            mReadAdapter.loadMoreComplete();
+                                    if (data != null) {
+                                        mReadAdapter.addData(data);
+                                        mReadAdapter.loadMoreComplete();
 
 
-                                        } else {
-                                            mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
-                                            mReadAdapter.loadMoreEnd(true);
-                                        }
-
+                                    } else {
+                                        mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
+                                        mReadAdapter.loadMoreEnd(true);
                                     }
-                                });
-                            }
-                        }).start();
-                    }
+
+                                }
+                            });
+                        }
+                    }).start();
                 }
+            }
 
 
-            }, mReadRecyclerView);
+        }, mReadRecyclerView);
 
         mReadAdapter.setLoadMoreView(new CustomLoadMoreView());
-        mReadAdapter.disableLoadMoreIfNotFullPage();
+
 
 
     }
-
-
 
 
     @Override
@@ -543,7 +559,7 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.readmenu, menu);
-        item = menu.add(Menu.NONE, MENU_CONFIRM, 0, "关闭");
+        item = menu.add(Menu.NONE, MENU_CONFIRM, 0, "字体设置");
         //主要是这句话 显示图标
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         item.setIcon(R.drawable.ic_font_download_black_24dp);
@@ -573,7 +589,14 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
         EventBus.getDefault().removeAllStickyEvents();
         //解绑事件
         EventBus.getDefault().unregister(this);
+
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: "+upTitle+qzSourcesName+selindex);
+        boolean s = SQLiteUtils.getInstance().updateFavoriteByTitle(upTitle,qzSourcesName,selindex);
+        Log.d(TAG, "onDestroy: "+s);
+    }
 }

@@ -80,6 +80,7 @@ public class NextActivity extends AppCompatActivity {
     private String qzCover;
     private String qzSummary;
     private String qzDate;
+    private int readIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +110,7 @@ public class NextActivity extends AppCompatActivity {
         qzCover = getIntent().getStringExtra("qzCover");
         qzSummary = getIntent().getStringExtra("qzSummary");
         qzDate = getIntent().getStringExtra("qzDate");
+        readIndex = getIntent().getIntExtra("readIndex",0);
     }
 
     private void bindView() {
@@ -121,10 +123,10 @@ public class NextActivity extends AppCompatActivity {
         switch (qzStep) {
 
             case "1":
-                showFragment(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "2", qzLink, qzSoucesType, qzQuery, qzindex, qzTitle));
+                showFragment(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "2", qzLink, qzSoucesType, qzQuery, qzindex, qzTitle,readIndex));
                 break;
             case "2":
-                showFragment(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "3", qzLink, qzSoucesType, qzQuery, qzindex, qzTitle));
+                showFragment(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "3", qzLink, qzSoucesType, qzQuery, qzindex, qzTitle,readIndex));
 
                 break;
             case "3":
@@ -188,6 +190,7 @@ public class NextActivity extends AppCompatActivity {
         favoriteEntity.setCover(qzCover);
         favoriteEntity.setDate(qzDate);
         favoriteEntity.setLink(qzLink);
+        favoriteEntity.setReadIndex(0);
         favoriteEntity.setSpinnerSel(qzindex);
         boolean isAdd = SQLModel.getInstance().addFavorite(favoriteEntity);
         if (isAdd) {

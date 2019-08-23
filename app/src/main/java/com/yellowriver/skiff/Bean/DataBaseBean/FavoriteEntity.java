@@ -24,6 +24,8 @@ public class FavoriteEntity {
     private String step;
 
     private int spinnerSel;
+    //阅读模式下保存章节index
+    private int readIndex;
 
     //数据显示
     //标题
@@ -36,16 +38,17 @@ public class FavoriteEntity {
     private String Link;
     //日期
     private String Date;
-    @Generated(hash = 1864024584)
+    @Generated(hash = 2009345405)
     public FavoriteEntity(Long id, String grouping, String type, String sourcesName,
-            String step, int spinnerSel, String title, String Summary, String Cover,
-            String Link, String Date) {
+            String step, int spinnerSel, int readIndex, String title,
+            String Summary, String Cover, String Link, String Date) {
         this.id = id;
         this.grouping = grouping;
         this.type = type;
         this.sourcesName = sourcesName;
         this.step = step;
         this.spinnerSel = spinnerSel;
+        this.readIndex = readIndex;
         this.title = title;
         this.Summary = Summary;
         this.Cover = Cover;
@@ -91,6 +94,12 @@ public class FavoriteEntity {
     public void setSpinnerSel(int spinnerSel) {
         this.spinnerSel = spinnerSel;
     }
+    public int getReadIndex() {
+        return this.readIndex;
+    }
+    public void setReadIndex(int readIndex) {
+        this.readIndex = readIndex;
+    }
     public String getTitle() {
         return this.title;
     }
@@ -121,7 +130,6 @@ public class FavoriteEntity {
     public void setDate(String Date) {
         this.Date = Date;
     }
-
 
 
 

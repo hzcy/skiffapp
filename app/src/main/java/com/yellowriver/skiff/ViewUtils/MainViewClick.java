@@ -32,7 +32,7 @@ public class MainViewClick {
      * @param mDataEntity 点击的数据
      * @param index       分组下标  打开搜索  搜索界面用该值对下拉框初始化
      */
-    public static boolean OnClick(Context mContext, NowRuleBean nowRuleBean, DataEntity mDataEntity, int index, String upTitle) {
+    public static boolean OnClick(Context mContext, NowRuleBean nowRuleBean, DataEntity mDataEntity, int index, String upTitle,int readIndex) {
         Boolean result = true;
         switch (nowRuleBean.getLinkType()) {
             //继续解析
@@ -41,7 +41,7 @@ public class MainViewClick {
                 if (null != mDataEntity.getLink()) {
                     if (mDataEntity.getLink().startsWith(HTTP)) {
                         result = true;
-                        goNext(mContext, mDataEntity, nowRuleBean, index);
+                        goNext(mContext, mDataEntity, nowRuleBean, index,readIndex);
                     } else {
                         result = false;
                     }
@@ -68,7 +68,7 @@ public class MainViewClick {
                 if (null != mDataEntity.getLink()) {
                     if (mDataEntity.getLink().startsWith(HTTP)) {
                         result = true;
-                        openReadMode(mContext, mDataEntity, nowRuleBean, upTitle);
+                        openReadMode(mContext, mDataEntity, nowRuleBean, upTitle,readIndex);
                     } else {
                         result = false;
                     }
@@ -126,7 +126,7 @@ public class MainViewClick {
     /**
      * 继续解析
      */
-    public static void goNext(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, int index) {
+    public static void goNext(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, int index,int readIndex) {
         Intent intent;
         intent = new Intent(mContext, NextActivity.class);
         //点击的分组名
@@ -136,6 +136,7 @@ public class MainViewClick {
         //源的标题 根据源标题查询数据库
         intent.putExtra("qzSourceName", nowRuleBean.getQzSourcesName());
         intent.putExtra("qzindex", index);
+        intent.putExtra("readIndex", readIndex);
         //需要继续解析的链接
         intent.putExtra("qzLink", mDataEntity.getLink());
         //链接类型
@@ -172,12 +173,14 @@ public class MainViewClick {
     }
 
     //打开阅读模式
-    public static void openReadMode(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, String upTitle) {
+    public static void openReadMode(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, String upTitle,int readIndex) {
         Intent intent;
         intent = new Intent(mContext, ReadActivity.class);
         //点击的标题
         intent.putExtra("qzLink", mDataEntity.getLink());
         intent.putExtra("qzReadHost", nowRuleBean.getReadImgSrc());
+        intent.putExtra("readIndex", readIndex);
+        intent.putExtra("qzSourcesName",nowRuleBean.getQzSourcesName());
         intent.putExtra("qzTitle", mDataEntity.getTitle());
         intent.putExtra("qzReadXpath", nowRuleBean.getReadXpath());
         intent.putExtra("qzCharset", nowRuleBean.getCharset());

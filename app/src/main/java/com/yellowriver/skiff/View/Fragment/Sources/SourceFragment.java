@@ -12,6 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,8 +25,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
@@ -34,6 +39,7 @@ import com.yellowriver.skiff.Help.SnackbarUtil;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.Model.SourceDataSource;
 import com.yellowriver.skiff.R;
+import com.yellowriver.skiff.View.Activity.ReadActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +50,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import skin.support.flycotablayout.widget.SkinSlidingTabLayout;
 
@@ -65,39 +72,42 @@ public class SourceFragment extends Fragment {
     ViewPager mViewPager;
     @BindView(R.id.main)
     CoordinatorLayout main;
+    @BindView(R.id.addsetting)
+    ImageView addsetting;
     /**
      * 绑定控件
      */
     private Unbinder bind;
+    private ImageView addSetting;
     /**
      * tablayout和viewpage相关
      */
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
 
-    @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.sourcessetting, menu);
-        //super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_netImport:
-                showDialogAddHttp();
-                return true;
-            case R.id.action_clipboardimport:
-                showDialogAddJSON();
-                return true;
-            case R.id.action_rssimport:
-                showDialogAddRss();
-                return true;
-            default:
-                return false;
-        }
-    }
+//    @Override
+//    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        inflater.inflate(R.menu.sourcessetting, menu);
+//        //super.onCreateOptionsMenu(menu, inflater);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_netImport:
+//                showDialogAddHttp();
+//                return true;
+//            case R.id.action_clipboardimport:
+//                showDialogAddJSON();
+//                return true;
+//            case R.id.action_rssimport:
+//                showDialogAddRss();
+//                return true;
+//            default:
+//                return false;
+//        }
+//    }
 
     public SourceFragment() {
         // Required empty public constructor
@@ -144,6 +154,7 @@ public class SourceFragment extends Fragment {
         sourceDataViewFragment.setPageAdapter(contentAdapter);
         sourceDataViewFragment2.setPageAdapter(contentAdapter);
         mTabLayout.setViewPager(mViewPager);
+
     }
 
     /**
@@ -161,21 +172,21 @@ public class SourceFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: "+homeEntityList.isEmpty());
+                        Log.d(TAG, "run: " + homeEntityList.isEmpty());
                         if (!homeEntityList.isEmpty()) {
-                            SnackbarUtil.ShortSnackbar(getView(),"源已经存在了！",SnackbarUtil.Warning).show();
+                            SnackbarUtil.ShortSnackbar(getView(), "源已经存在了！", SnackbarUtil.Warning).show();
 
-                        }else{
+                        } else {
 
                             long addresult = SQLModel.getInstance().addSouce(homeEntity);
                             if (addresult >= 0) {
-                                SnackbarUtil.ShortSnackbar(getView(),"源添加成功！",SnackbarUtil.Confirm).show();
+                                SnackbarUtil.ShortSnackbar(getView(), "源添加成功！", SnackbarUtil.Confirm).show();
 
                                 //保存修改了数据的状态 当这里修改成功 首页要重新加载
                                 SharedPreferencesUtils.dataChange(true, getContext());
                                 updateLocalSource();
                             } else {
-                                SnackbarUtil.ShortSnackbar(getView(),"源添加失败！",SnackbarUtil.Warning).show();
+                                SnackbarUtil.ShortSnackbar(getView(), "源添加失败！", SnackbarUtil.Warning).show();
 
                             }
 
@@ -203,7 +214,7 @@ public class SourceFragment extends Fragment {
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
                     if (TextUtils.isEmpty(sourceadder.getText())) {
-                        SnackbarUtil.ShortSnackbar(getView(),"请粘贴JSon格式的源！！",SnackbarUtil.Warning).show();
+                        SnackbarUtil.ShortSnackbar(getView(), "请粘贴JSon格式的源！！", SnackbarUtil.Warning).show();
 
                     } else {
                         String json = sourceadder.getText().toString();
@@ -221,11 +232,11 @@ public class SourceFragment extends Fragment {
                                     String newtype = homeEntity.getType();
                                     loadSql(newtitle, newtype, homeEntity);
                                 } else {
-                                    SnackbarUtil.ShortSnackbar(getView(),"源格式无效，无法导入！",SnackbarUtil.Warning).show();
+                                    SnackbarUtil.ShortSnackbar(getView(), "源格式无效，无法导入！", SnackbarUtil.Warning).show();
 
                                 }
                             } else {
-                                SnackbarUtil.ShortSnackbar(getView(),"不是有效JSon格式！",SnackbarUtil.Warning).show();
+                                SnackbarUtil.ShortSnackbar(getView(), "不是有效JSon格式！", SnackbarUtil.Warning).show();
 
 
                             }
@@ -250,7 +261,7 @@ public class SourceFragment extends Fragment {
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
                     if (TextUtils.isEmpty(sourceadder.getText()) || TextUtils.isEmpty(sourcegroup.getText())) {
-                        SnackbarUtil.ShortSnackbar(getView(),"请输入RSS源地址或给分组取个名！",SnackbarUtil.Warning).show();
+                        SnackbarUtil.ShortSnackbar(getView(), "请输入RSS源地址或给分组取个名！", SnackbarUtil.Warning).show();
 
                     } else {
                         new Thread(() -> {
@@ -260,12 +271,12 @@ public class SourceFragment extends Fragment {
                             //RSS
                             boolean add = RSSUtils.insertRSS(json, group);
                             if (add) {
-                                SnackbarUtil.ShortSnackbar(getView(),"RSS源添加成功！",SnackbarUtil.Confirm).show();
+                                SnackbarUtil.ShortSnackbar(getView(), "RSS源添加成功！", SnackbarUtil.Confirm).show();
 
 
                                 SharedPreferencesUtils.dataChange(true, getContext());
                             } else {
-                                SnackbarUtil.ShortSnackbar(getView(),"RSS源添加失败！",SnackbarUtil.Warning).show();
+                                SnackbarUtil.ShortSnackbar(getView(), "RSS源添加失败！", SnackbarUtil.Warning).show();
 
 
                             }
@@ -290,11 +301,11 @@ public class SourceFragment extends Fragment {
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
                     if (TextUtils.isEmpty(sourceadder.getText())) {
-                        SnackbarUtil.ShortSnackbar(getView(),"请输入源网络地址！",SnackbarUtil.Warning).show();
+                        SnackbarUtil.ShortSnackbar(getView(), "请输入源网络地址！", SnackbarUtil.Warning).show();
 
 
                     } else if (!sourceadder.getText().toString().startsWith(HTTP)) {
-                        SnackbarUtil.ShortSnackbar(getView(),"请输入网络URL！",SnackbarUtil.Warning).show();
+                        SnackbarUtil.ShortSnackbar(getView(), "请输入网络URL！", SnackbarUtil.Warning).show();
 
 
                     } else {
@@ -307,7 +318,7 @@ public class SourceFragment extends Fragment {
                                     if (isAdd) {
                                         updateLocalSource();
                                     } else {
-                                        SnackbarUtil.ShortSnackbar(getView(),"源添加失败！",SnackbarUtil.Warning).show();
+                                        SnackbarUtil.ShortSnackbar(getView(), "源添加失败！", SnackbarUtil.Warning).show();
 
                                     }
                                 }
@@ -374,4 +385,32 @@ public class SourceFragment extends Fragment {
     }
 
 
+    @OnClick(R.id.addsetting)
+    public void onViewClicked() {
+        showBottomSheetDialog();
+    }
+
+    private void showBottomSheetDialog() {
+        final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+        View view = View.inflate(getContext(), R.layout.addsources_dialog, null);
+        LinearLayout netImport = view.findViewById(R.id.netImport);
+        LinearLayout clipboardimport = view.findViewById(R.id.clipboardimport);
+        LinearLayout rssimport = view.findViewById(R.id.rssimport);
+        netImport.setOnClickListener(view1 -> {
+            showDialogAddHttp();
+            dialog.cancel();
+        });
+        clipboardimport.setOnClickListener(view12 -> {
+            showDialogAddJSON();
+            dialog.cancel();
+        });
+        rssimport.setOnClickListener(view13 -> {
+            showDialogAddRss();
+            dialog.cancel();
+        });
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setContentView(view);
+        dialog.show();
+    }
 }

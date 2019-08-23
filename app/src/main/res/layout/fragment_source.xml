@@ -23,6 +23,15 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
+            <ImageView
+                android:foreground="?attr/selectableItemBackground"
+                android:id="@+id/addsetting"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_add_black_24dp"/>
+
 
         </androidx.appcompat.widget.Toolbar>
 

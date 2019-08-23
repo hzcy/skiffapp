@@ -142,7 +142,7 @@ public class HomeTabFragment extends Fragment {
         tabFragments = new ArrayList<>();
         for (String qzSourceName : tabIndicators) {
             //第一步
-            tabFragments.add(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, ""));
+            tabFragments.add(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "",0));
         }
         ContentPagerAdapter fragmentAdapter = new ContentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(fragmentAdapter);

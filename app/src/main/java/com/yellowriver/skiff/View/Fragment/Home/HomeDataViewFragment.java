@@ -128,6 +128,7 @@ public class HomeDataViewFragment extends Fragment {
      * 搜索分组下标
      */
     private int qzSpinnerSel;
+    private int readIndex;
     /**
      * 分组名称
      */
@@ -167,6 +168,7 @@ public class HomeDataViewFragment extends Fragment {
                     Log.d(TAG, "updateView: "+mDataEntity.size());
                     if (page == 1) {
                         mHomeAdapter.setNewData(mDataEntity);
+                        mRecyclerView.scrollToPosition(readIndex);
                         if ("".equals(nextPage)) {
                             mHomeAdapter.setFooterView(LayoutInflater.from(getActivity()).inflate(R.layout.footer_loadover, mRecyclerView, false));
                         }
@@ -203,7 +205,7 @@ public class HomeDataViewFragment extends Fragment {
      * @param qzQuery       搜索关键字
      * @return
      */
-    public static HomeDataViewFragment getInstance(String qzGroupName, String qzSourceName, String qzStep, String qzUrl, String qzSourcesType, String qzQuery, int qzSpinnerSel, String qzTitle) {
+    public static HomeDataViewFragment getInstance(String qzGroupName, String qzSourceName, String qzStep, String qzUrl, String qzSourcesType, String qzQuery, int qzSpinnerSel, String qzTitle,int readIndex) {
         Bundle args = new Bundle();
         HomeDataViewFragment homeDataViewFragment = new HomeDataViewFragment();
         args.putString("qzGroupName", qzGroupName);
@@ -214,6 +216,7 @@ public class HomeDataViewFragment extends Fragment {
         args.putString("qzQuery", qzQuery);
         args.putString("qzTitle", qzTitle);
         args.putInt("qzSpinnerSel", qzSpinnerSel);
+        args.putInt("readIndex", readIndex);
         homeDataViewFragment.setArguments(args);
         return homeDataViewFragment;
     }
@@ -250,6 +253,7 @@ public class HomeDataViewFragment extends Fragment {
         qzQuery = getArguments().getString("qzQuery");
         qzSpinnerSel = getArguments().getInt("qzSpinnerSel");
         qzTitle = getArguments().getString("qzTitle");
+        readIndex = getArguments().getInt("readIndex");
         //默认正常顺序
         SharedPreferencesUtils.writeDataSort("正", Objects.requireNonNull(getContext()));
         SQLiteUtils.getInstance().getDaoSession().startAsyncSession().runInTx(() -> {
@@ -299,6 +303,7 @@ public class HomeDataViewFragment extends Fragment {
         }
         //RecyclerView的基本设置
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
         loadAnimation();
         //是否用htmlunit加载网页 是的话提示用户加载比较耗时
         if (AJAX.equals(Objects.requireNonNull(nowRuleBean.getIsAjax()))) {
@@ -356,7 +361,7 @@ public class HomeDataViewFragment extends Fragment {
             Log.d(TAG, "onItemClick: ");
             final DataEntity dataEntity = (DataEntity) adapter.getData().get(position);
             EventBus.getDefault().postSticky(new MsgEvent(111, mDataEntity, position));   //发送时间
-            boolean result = MainViewClick.OnClick(getContext(), nowRuleBean, dataEntity, qzSpinnerSel, qzTitle);
+            boolean result = MainViewClick.OnClick(getContext(), nowRuleBean, dataEntity, qzSpinnerSel, qzTitle,readIndex);
             if (!result) {
                 SnackbarUtil.ShortSnackbar(getView(),"该源配置不正确，无法进行下一步。",SnackbarUtil.Warning).show();
 
@@ -378,6 +383,7 @@ public class HomeDataViewFragment extends Fragment {
             }, mRecyclerView);
         }
         mHomeAdapter.setLoadMoreView(new CustomLoadMoreView());
+        mRecyclerView.scrollToPosition(readIndex);
     }
 
     /**
@@ -403,6 +409,7 @@ public class HomeDataViewFragment extends Fragment {
                     if (POSITIVE.equals(SharedPreferencesUtils.readDataSort(Objects.requireNonNull(getContext())))) {
                         SharedPreferencesUtils.writeDataSort("反", getContext());
                         mRecyclerView.scrollToPosition(mHomeAdapter.getData().size());
+                        Log.d(TAG, "onOptionsItemSelected: "+mHomeAdapter.getData().size());
                         item.setTitle("回到顶部");
 
                     } else if (NEGATIVE.equals(SharedPreferencesUtils.readDataSort(getContext()))) {

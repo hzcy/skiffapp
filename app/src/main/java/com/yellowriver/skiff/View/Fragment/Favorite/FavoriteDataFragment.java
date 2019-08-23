@@ -126,7 +126,7 @@ public class FavoriteDataFragment extends Fragment {
                     List<HomeEntity> homeEntities = SQLModel.getInstance().getXpathbyTitle(dataEntity.getSourcesName(), dataEntity.getType());
                     NowRuleBean nowRuleBean = AnalysisUtils.getInstance().getValueByStep(homeEntities.get(0), dataEntity.getStep(), "", dataEntity.getLink());
                     getActivity().runOnUiThread(() -> {
-                        boolean result = MainViewClick.OnClick(getContext(), nowRuleBean, dataEntity1, dataEntity.getSpinnerSel(), dataEntity.getTitle());
+                        boolean result = MainViewClick.OnClick(getContext(), nowRuleBean, dataEntity1, dataEntity.getSpinnerSel(), dataEntity.getTitle(),dataEntity.getReadIndex());
                         if (!result) {
 
                             SnackbarUtil.ShortSnackbar(getView(),"该源配置不正确，无法进行下一步。",SnackbarUtil.Warning).show();
