@@ -102,6 +102,10 @@ public class SQLiteUtils {
     {
         return daoSession.queryRaw(HomeEntity.class, " where "+HomeEntityDao.Properties.Title.columnName+" = ? " , title);
     }
+    public  List<HomeEntity> getXpathbyGroup(String group)
+    {
+        return daoSession.queryRaw(HomeEntity.class, " where "+HomeEntityDao.Properties.Grouping.columnName+" = ? " , group);
+    }
 
 //    public static List<HomeEntity> getXpathbyTitleandType(String title,String type)
 //    {
@@ -112,7 +116,21 @@ public class SQLiteUtils {
     public  void delbyTitle(String title)
     {
         List<HomeEntity> homeEntities = getXpathbyTitle(title);
+
         for (HomeEntity homeEntity : homeEntities) {
+
+            daoSession.delete(homeEntity);
+
+        }
+    }
+
+    //删除分组
+    public  void delbyGroup(String group)
+    {
+        List<HomeEntity> homeEntities = getXpathbyGroup(group);
+
+        for (HomeEntity homeEntity : homeEntities) {
+
             daoSession.delete(homeEntity);
 
         }

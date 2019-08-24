@@ -16,7 +16,7 @@ public class SourcesEntity {
     private String name;
     private String type;
     private String link;
-    private String data;
+    private String date;
 
     public String getName() {
         return name;
@@ -42,11 +42,11 @@ public class SourcesEntity {
         this.link = link;
     }
 
-    public String getData() {
-        return data;
+    public String getDate() {
+        return date;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setDate(String data) {
+        this.date = date;
     }
 }

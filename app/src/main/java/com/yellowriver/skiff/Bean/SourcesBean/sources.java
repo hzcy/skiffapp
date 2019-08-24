@@ -12,6 +12,8 @@ public class sources implements MultiItemEntity {
     private String sourcesName;
     //源日期
     private String sourcesDate;
+    //源类型
+    private String sourcesType;
     //源地址
     private String sourcesLink;
     //源介绍
@@ -19,6 +21,13 @@ public class sources implements MultiItemEntity {
     //源是否导入
     private String sourcesIshave;
 
+    public String getSourcesType() {
+        return sourcesType;
+    }
+
+    public void setSourcesType(String sourcesType) {
+        this.sourcesType = sourcesType;
+    }
 
     public String getSourcesName() {
         return sourcesName;

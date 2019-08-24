@@ -1,6 +1,7 @@
 package com.yellowriver.skiff.View.Fragment.Sources;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -78,7 +79,6 @@ public class SourceFragment extends Fragment {
      * 绑定控件
      */
     private Unbinder bind;
-    private ImageView addSetting;
     /**
      * tablayout和viewpage相关
      */
@@ -309,12 +309,20 @@ public class SourceFragment extends Fragment {
 
 
                     } else {
+                        ProgressDialog waitingDialog =
+                                new ProgressDialog(getContext());
+                        waitingDialog.setTitle("提示");
+                        waitingDialog.setMessage("加载中...");
+                        waitingDialog.setIndeterminate(true);
+                        waitingDialog.setCancelable(false);
+                        waitingDialog.show();
                         String url = sourceadder.getText().toString();
                         new Thread(() -> {
                             boolean isAdd = SourceDataSource.getInstance().addSource(url);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    waitingDialog.cancel();
                                     if (isAdd) {
                                         updateLocalSource();
                                     } else {

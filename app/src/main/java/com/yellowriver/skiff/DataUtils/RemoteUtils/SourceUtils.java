@@ -43,6 +43,7 @@ public class SourceUtils {
 
         List<MultiItemEntity> list = new ArrayList<>();
         String grouplisturl = baseURL + "/sources/groupList.json";
+        String baseurl = "https://hege.gitee.io/api/sources";
 
         // 获取文档内容
         String json = NetUtils.getInstance().getRequest(grouplisturl, "1");
@@ -64,12 +65,27 @@ public class SourceUtils {
                 group groupBean = new group();
                 groupBean.setGroupName(sourceBean.get(i).getName());
                 groupBean.setGroupLink(sourceBean.get(i).getLink());
+
                 List<sources> sourcesList = getSourceByGroup(sourceBean.get(i).getLink());
                 groupBean.setSourcess(sourcesList);
                 Log.d(TAG, "getSourceAllGroup: "+sourcesList.size());
+                int havecount = 0;
                 for (sources sources : sourcesList)
                 {
                     groupBean.addSubItem(sources);
+                    String ishave = sources.getSourcesIshave();
+                    if(ishave.equals("0"))
+                    {
+                        //不存在
+                        havecount++;
+                    }
+                }
+                if (havecount>0){
+                    //表示有未导入的
+                    groupBean.setGroupIshave("0");
+                }else{
+                    //说明已全部导入
+                    groupBean.setGroupIshave("1");
                 }
                 list.add(groupBean);
 
@@ -109,7 +125,8 @@ public class SourceUtils {
                 sources sourcesBean = new sources();
                 sourcesBean.setSourcesName(sourcesEntities.get(i).getName());
                 sourcesBean.setSourcesLink(sourcesEntities.get(i).getLink());
-                sourcesBean.setSourcesDate(sourcesEntities.get(i).getType());
+                sourcesBean.setSourcesType(sourcesEntities.get(i).getType());
+                sourcesBean.setSourcesDate(sourcesEntities.get(i).getDate());
                 sourcesBean.setSourcesIshave(ishave);
                 sourcesBeanList.add(sourcesBean);
 

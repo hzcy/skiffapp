@@ -44,17 +44,10 @@ public class GroupAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,Base
             case TYPE_LEVEL_0:
                 final group group = (group) item;
                 helper.setText(R.id.tv_title, group.getGroupName()+"("+group.getSourcess().size()+")");
-                if (group.getGroupDesc() == null) {
 
-                    helper.getView(R.id.tv_summary).setVisibility(View.GONE);
-                }
                 if (group.getGroupDate() == null) {
                     helper.getView(R.id.tv_date).setVisibility(View.GONE);
                 }
-
-
-                helper.getView(R.id.tv_ishave).setVisibility(View.GONE);
-
 
                 if (group.isExpanded()) {
                     helper.setImageResource(R.id.iv_del, R.drawable.ic_keyboard_arrow_down_black_24dp);
@@ -68,8 +61,24 @@ public class GroupAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,Base
 
                 }else
                 {
-                    helper.setText(R.id.tv_summary,group.getGroupLink());
-                    helper.getView(R.id.tv_summary).setVisibility(View.GONE);
+
+                    //表示源以及导入 换成对勾图标
+                    if (group.getGroupIshave()!=null)
+                    {
+
+                        if (HAVE.equals(group.getGroupIshave())) {
+                            helper.setImageResource(R.id.iv_down, R.drawable.ic_done_black_24dp);
+
+
+                        }else {
+                            helper.setImageResource(R.id.iv_down,R.drawable.ic_vertical_align_bottom_black_24dp);
+
+                        }
+                    }else
+                    {
+                        helper.setImageResource(R.id.iv_down,R.drawable.ic_vertical_align_bottom_black_24dp);
+
+                    }
                 }
                 helper.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -88,27 +97,23 @@ public class GroupAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,Base
                 final sources sources = (sources) item;
 
                 helper.setText(R.id.tv_title, sources.getSourcesName());
-                if (sources.getSourcesDesc()==null)
-                {
-                    helper.getView(R.id.tv_summary).setVisibility(View.GONE);
-                }
-                if (sources.getSourcesDate()==null)
+
+                if (sources.getSourcesDate()==null||sources.getSourcesDate().equals(""))
                 {
                     helper.getView(R.id.tv_date).setVisibility(View.GONE);
                 }else
                 {
-                    helper.getView(R.id.tv_date).setVisibility(View.GONE);
-                    if (SEARCH.equals(sources.getSourcesDate()))
-                    {
-                        helper.setImageResource(R.id.iv_icon,R.drawable.ic_search_black_24dp);
-                    }else if(HOME.equals(sources.getSourcesDate()))
-                    {
-                        helper.setImageResource(R.id.iv_icon,R.drawable.ic_remove_red_eye_black_24dp);
-
-                    }
+                    helper.setText(R.id.tv_date, sources.getSourcesDate());
 
                 }
-                helper.getView(R.id.tv_ishave).setVisibility(View.GONE);
+                if (SEARCH.equals(sources.getSourcesType()))
+                {
+                    helper.setImageResource(R.id.iv_icon,R.drawable.ic_search_black_24dp);
+                }else if(HOME.equals(sources.getSourcesType()))
+                {
+                    helper.setImageResource(R.id.iv_icon,R.drawable.ic_remove_red_eye_black_24dp);
+
+                }
                 //表示本地源
                 if (sources.getSourcesLink()==null)
                 {
@@ -116,12 +121,11 @@ public class GroupAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,Base
 
                 }else
                 {
-                    helper.setText(R.id.tv_summary,sources.getSourcesLink());
-                    helper.getView(R.id.tv_summary).setVisibility(View.GONE);
+
                     //表示源以及导入 换成对勾图标
                     if (sources.getSourcesIshave()!=null)
                     {
-                        helper.setText(R.id.tv_ishave,sources.getSourcesIshave());
+
                         if (HAVE.equals(sources.getSourcesIshave())) {
                             helper.setImageResource(R.id.iv_down, R.drawable.ic_done_black_24dp);
 
@@ -151,5 +155,7 @@ public class GroupAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity,Base
         }else{
             holder.setImageResource(R.id.iv_down,R.drawable.ic_done_black_24dp);
         }
+        //holder.setText(R.id.tv_title, group.getGroupName()+"("+group.getSourcess().size()+")");
+
     }
 }
