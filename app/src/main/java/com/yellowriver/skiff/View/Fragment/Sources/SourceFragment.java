@@ -7,15 +7,11 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,11 +21,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
@@ -40,7 +36,6 @@ import com.yellowriver.skiff.Help.SnackbarUtil;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.Model.SourceDataSource;
 import com.yellowriver.skiff.R;
-import com.yellowriver.skiff.View.Activity.ReadActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +57,7 @@ import static com.yellowriver.skiff.R.drawable.ic_more_vert_black_24dp;
  *
  * @author huang
  */
-public class SourceFragment extends Fragment {
+public class SourceFragment extends Fragment  {
     private static final String HTTP = "http";
     private static final String TAG = "SourceFragment";
     @BindView(R.id.toolbar)
@@ -74,7 +69,7 @@ public class SourceFragment extends Fragment {
     @BindView(R.id.main)
     CoordinatorLayout main;
     @BindView(R.id.addsetting)
-    ImageView addsetting;
+    LinearLayout addsetting;
     /**
      * 绑定控件
      */
@@ -85,29 +80,6 @@ public class SourceFragment extends Fragment {
     private List<String> tabIndicators;
     private List<Fragment> tabFragments;
 
-//    @Override
-//    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.sourcessetting, menu);
-//        //super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_netImport:
-//                showDialogAddHttp();
-//                return true;
-//            case R.id.action_clipboardimport:
-//                showDialogAddJSON();
-//                return true;
-//            case R.id.action_rssimport:
-//                showDialogAddRss();
-//                return true;
-//            default:
-//                return false;
-//        }
-//    }
 
     public SourceFragment() {
         // Required empty public constructor
@@ -132,28 +104,28 @@ public class SourceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
     }
-
-    SourceDataViewFragment sourceDataViewFragment;
+    LocalSourceFragment localSourceFragment;
+    RemoteSourceFragment sourceDataViewFragment;
     ContentPagerAdapter contentAdapter;
 
     private void bindView(View v) {
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
         mToolbar.setTitle(getString(R.string.sourcesSet));
-        mToolbar.setOverflowIcon(getResources().getDrawable(ic_more_vert_black_24dp));
 
         tabIndicators = new ArrayList<>();
         tabIndicators.add("本地源");
         tabIndicators.add("源市场");
-        sourceDataViewFragment = SourceDataViewFragment.getInstance("本地源", "");
-        SourceDataViewFragment sourceDataViewFragment2 = SourceDataViewFragment.getInstance("源市场", "");
+        localSourceFragment = LocalSourceFragment.getInstance("本地源", "");
+        sourceDataViewFragment = RemoteSourceFragment.getInstance("源市场", "");
         tabFragments = new ArrayList<>();
+        tabFragments.add(localSourceFragment);
         tabFragments.add(sourceDataViewFragment);
-        tabFragments.add(sourceDataViewFragment2);
         contentAdapter = new ContentPagerAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
         mViewPager.setAdapter(contentAdapter);
+        localSourceFragment.setPageAdapter(contentAdapter);
         sourceDataViewFragment.setPageAdapter(contentAdapter);
-        sourceDataViewFragment2.setPageAdapter(contentAdapter);
         mTabLayout.setViewPager(mViewPager);
+
+
 
     }
 
@@ -343,12 +315,6 @@ public class SourceFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "测试-->onCreate");
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 
     /**
      * 销毁.
@@ -421,4 +387,6 @@ public class SourceFragment extends Fragment {
         dialog.setContentView(view);
         dialog.show();
     }
+
+
 }

@@ -86,6 +86,35 @@ public class HomeViewFragment extends Fragment {
     public HomeViewFragment() {
 
     }
+
+    private void updateView(final List<String> groupNameList) {
+        //如果数据库为空
+        if (groupNameList.size() == 0) {
+            toolbar.setVisibility(View.VISIBLE);
+            toolbar.setTitle("首页");
+            mAppBarLayout.setElevation(10);
+            mllserarchView.setVisibility(View.GONE);
+
+        } else {
+            mAppBarLayout.setElevation(0);
+            qzSourcesType = "home";
+            //将数据设置ArrayAdapter
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    Objects.requireNonNull(
+                            getContext()), R.layout.myspinner, groupNameList);
+            adapter.setDropDownViewResource(R.layout.myspinner);
+            mSpinner.setAdapter(adapter);
+            mSpinner.setBackgroundResource(R.color.colorPrimary);
+            mSpinner.setSelectedIndex(0);
+            qzGroupName = (String) mSpinner.getItemAtPosition(0);
+            qzQuery = Objects.requireNonNull(mSearchView.getQuery()).toString();
+            //加载数据
+            showFragment(HomeTabFragment.getInstance(
+                    qzGroupName, qzSourcesType, qzQuery, mSpinner.getSelectedIndex()
+            ));
+        }
+    }
+
     /**
      * 缓存Fragment view.
      */
@@ -122,35 +151,16 @@ public class HomeViewFragment extends Fragment {
     }
 
 
-    private void updateView(final List<String> groupNameList) {
-        //如果数据库为空
-        if (groupNameList.size() == 0) {
-            toolbar.setVisibility(View.VISIBLE);
-            toolbar.setTitle("首页");
-            mAppBarLayout.setElevation(10);
-            mllserarchView.setVisibility(View.GONE);
 
-        } else {
-            mAppBarLayout.setElevation(0);
-            qzSourcesType = "home";
-            //将数据设置ArrayAdapter
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    Objects.requireNonNull(
-                            getContext()), R.layout.myspinner, groupNameList);
-            adapter.setDropDownViewResource(R.layout.myspinner);
-            mSpinner.setAdapter(adapter);
-            mSpinner.setBackgroundResource(R.color.colorPrimary);
-            mSpinner.setSelectedIndex(0);
-            qzGroupName = (String) mSpinner.getItemAtPosition(0);
-            qzQuery = Objects.requireNonNull(mSearchView.getQuery()).toString();
-            //加载数据
-            showFragment(HomeTabFragment.getInstance(
-                    qzGroupName, qzSourcesType, qzQuery, mSpinner.getSelectedIndex()
-            ));
-        }
-    }
 
     private void bindEvent()
+    {
+        spinnerSelected();
+        searchView();
+    }
+
+    //下拉栏选择事件
+    private void spinnerSelected()
     {
         mSpinner.setOnSpinnerItemSelectedListener(
                 (parent, view, position, id) -> {
@@ -171,7 +181,11 @@ public class HomeViewFragment extends Fragment {
                     }
 
                 });
+    }
 
+    //搜索框点击事件
+    private void searchView()
+    {
         mSearchView.setOnQueryTextListener(
                 new Search.OnQueryTextListener() {
                     @Override
@@ -201,7 +215,6 @@ public class HomeViewFragment extends Fragment {
                     }
                 });
     }
-
 
     //切换fragment
     private void showFragment(final Fragment fragment) {

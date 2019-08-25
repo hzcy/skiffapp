@@ -5,30 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import com.mikepenz.iconics.context.IconicsLayoutInflater;
-import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome;
 import com.yellowriver.skiff.R;
 import com.yellowriver.skiff.View.Activity.Other.SettingsActivity;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -40,6 +34,8 @@ public class AboutFragment extends Fragment {
     private static final String TAG = "AboutFragment";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.setting)
+    LinearLayout setting;
 
     /**
      * 绑定控件
@@ -79,15 +75,6 @@ public class AboutFragment extends Fragment {
 
     private void bindView(View mRootView) {
         mToolbar.setTitle("关于");
-        ImageView setting = mRootView.findViewById(R.id.setting);
-
-        setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
-            }
-        });
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new About2Fragment())
                 .commit();
@@ -141,12 +128,10 @@ public class AboutFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "测试-->onCreate");
-        super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(false);
-
+    @OnClick(R.id.setting)
+    public void onViewClicked() {
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(intent);
     }
 }

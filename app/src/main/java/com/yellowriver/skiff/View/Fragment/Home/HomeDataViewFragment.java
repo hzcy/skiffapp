@@ -270,50 +270,22 @@ public class HomeDataViewFragment extends Fragment {
         homeEntity = homeEntities.get(0);
         nowRuleBean = AnalysisUtils.getInstance().getValueByStep(homeEntity, qzStep, qzQuery, qzUrl);
         nextPage = nowRuleBean.getNextPageXpath();
-        //垂直显示
-        MyLinearLayoutManager myLinearLayoutManager;
-        //根据源的显示模式  1为垂直显示 2为网格水平显示
-        switch (Objects.requireNonNull(nowRuleBean.getViewMode())) {
-            case "1":
-                //标题 垂直
-                myLinearLayoutManager = new MyLinearLayoutManager(getContext());
-                if (myLinearLayoutManager != null && mRecyclerView != null) {
-                    mRecyclerView.setLayoutManager(myLinearLayoutManager);
-                }
-                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_vertical_item));
-                break;
-            case "2":
-                //标题 水平 2
-                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_horizontal_item));
-                break;
-            case "3":
-                //标题 水平 3
-                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_horizontal_item));
-                break;
-            default:
-                myLinearLayoutManager = new MyLinearLayoutManager(getContext());
-                if (myLinearLayoutManager != null && mRecyclerView != null) {
-                    mRecyclerView.setLayoutManager(myLinearLayoutManager);
-                }
-                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_vertical_item));
-                break;
-
-        }
+        //显示不同界面 垂直 或 水平
+        viewType();
         //RecyclerView的基本设置
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        //根据设置加载不同动画
         loadAnimation();
-        //是否用htmlunit加载网页 是的话提示用户加载比较耗时
-        if (AJAX.equals(Objects.requireNonNull(nowRuleBean.getIsAjax()))) {
-            //提示需要耗时加载网页
-            tvTishi.setVisibility(View.VISIBLE);
-            tvTishi.setText("该源使用模拟浏览器加载，等待页面完全加载...");
-        } else {
-            tvTishi.setVisibility(View.GONE);
-        }
-        //如果是RSS
+        //是htmlunit加载 提示 需等待较久
+        loadMode();
+        //解析xpath或json为一个viewmode 解析rss为另一个viewmodel
+        loadModel();
+        //绑定事件
+        bindEvent();
+    }
+
+    private void loadModel()
+    {
         String rssType = "{QZRSS}";
         if (homeEntity.getFirstListXpath().contains(rssType)) {
             isRss = true;
@@ -323,11 +295,17 @@ public class HomeDataViewFragment extends Fragment {
         } else {
             XpathModel = ViewModelProviders.of(this).get(MainViewModel.class);
         }
-        bindEvent();
     }
 
-
     private void bindEvent() {
+        firstLoadData();
+        swipeRefresh();
+        itemClick();
+        loadMore();
+    }
+
+    private void firstLoadData()
+    {
         //进入界面开始加载数据
         mSwipeRefreshLayout.post(() -> {
             if (mSwipeRefreshLayout != null) {
@@ -340,6 +318,10 @@ public class HomeDataViewFragment extends Fragment {
                 }
             }
         });
+    }
+
+    //下拉刷新
+    private void swipeRefresh() {
         //下拉刷新
         mSwipeRefreshLayout.setOnRefreshListener(() -> mSwipeRefreshLayout.postDelayed(() -> {
             page = 1;
@@ -355,7 +337,30 @@ public class HomeDataViewFragment extends Fragment {
                 getData();
             }
         }, 1000));
+    }
 
+    private void loadMore()
+    {
+        //下拉加载更多
+        if (!"".equals(nextPage)) {
+            mHomeAdapter.setOnLoadMoreListener(() -> {
+
+
+                page += 1;
+                if (isRss) {
+                    getRss();
+                } else {
+                    xpathLoadMore(page);
+                }
+
+            }, mRecyclerView);
+        }
+        mHomeAdapter.setLoadMoreView(new CustomLoadMoreView());
+        mRecyclerView.scrollToPosition(readIndex);
+    }
+
+    private void itemClick()
+    {
         //主适配器点击事件
         mHomeAdapter.setOnItemClickListener((adapter, view, position) -> {
             Log.d(TAG, "onItemClick: ");
@@ -367,23 +372,6 @@ public class HomeDataViewFragment extends Fragment {
 
             }
         });
-
-        //下拉加载更多
-        if (!"".equals(nextPage)) {
-            mHomeAdapter.setOnLoadMoreListener(() -> {
-
-
-                    page += 1;
-                    if (isRss) {
-                        getRss();
-                    } else {
-                        xpathLoadMore(page);
-                    }
-
-            }, mRecyclerView);
-        }
-        mHomeAdapter.setLoadMoreView(new CustomLoadMoreView());
-        mRecyclerView.scrollToPosition(readIndex);
     }
 
     /**
@@ -485,8 +473,6 @@ public class HomeDataViewFragment extends Fragment {
         //解除绑定
         bind.unbind();
         super.onDestroy();
-
-
     }
 
     @Override
@@ -565,5 +551,50 @@ public class HomeDataViewFragment extends Fragment {
         }
     }
 
+    private void viewType()
+    {
+        //垂直显示
+        MyLinearLayoutManager myLinearLayoutManager;
+        //根据源的显示模式  1为垂直显示 2为网格水平显示
+        switch (Objects.requireNonNull(nowRuleBean.getViewMode())) {
+            case "1":
+                //标题 垂直
+                myLinearLayoutManager = new MyLinearLayoutManager(getContext());
+                if (myLinearLayoutManager != null && mRecyclerView != null) {
+                    mRecyclerView.setLayoutManager(myLinearLayoutManager);
+                }
+                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_vertical_item));
+                break;
+            case "2":
+                //标题 水平 2
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_horizontal_item));
+                break;
+            case "3":
+                //标题 水平 3
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_horizontal_item));
+                break;
+            default:
+                myLinearLayoutManager = new MyLinearLayoutManager(getContext());
+                if (myLinearLayoutManager != null && mRecyclerView != null) {
+                    mRecyclerView.setLayoutManager(myLinearLayoutManager);
+                }
+                mRecyclerView.setAdapter(mHomeAdapter = new HomeAdapter(R.layout.maindata_vertical_item));
+                break;
 
+        }
+    }
+
+    private void loadMode()
+    {
+        //是否用htmlunit加载网页 是的话提示用户加载比较耗时
+        if (AJAX.equals(Objects.requireNonNull(nowRuleBean.getIsAjax()))) {
+            //提示需要耗时加载网页
+            tvTishi.setVisibility(View.VISIBLE);
+            tvTishi.setText("该源使用模拟浏览器加载，等待页面完全加载...");
+        } else {
+            tvTishi.setVisibility(View.GONE);
+        }
+    }
 }

@@ -21,7 +21,9 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
 
     }
 
-    @NotNull
+
+
+        @NotNull
     @Override
     public Fragment getItem(int position) {
         return tabFragments.size() != 0 ? tabFragments.get(position) : null;

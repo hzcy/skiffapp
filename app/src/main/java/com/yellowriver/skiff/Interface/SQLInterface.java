@@ -49,7 +49,7 @@ public interface SQLInterface {
     /**
      *根据分组 删除分组下的所有源
      */
-    void delbyTitle(String title);
+    void delbyTitle(String title,String type);
 
     /**
      *添加源

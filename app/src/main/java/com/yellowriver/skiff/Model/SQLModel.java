@@ -68,10 +68,10 @@ public class SQLModel implements SQLInterface {
     }
 
     @Override
-    public void delbyTitle(String title) {
+    public void delbyTitle(String title,String type) {
 
 
-        SQLiteUtils.getInstance().delbyTitle(title);
+        SQLiteUtils.getInstance().delbyTitle(title,type);
 
     }
 

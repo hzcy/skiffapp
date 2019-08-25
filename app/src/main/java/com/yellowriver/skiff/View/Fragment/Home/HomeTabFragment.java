@@ -14,8 +14,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.flyco.tablayout.listener.CustomTabEntity;
 import com.google.android.material.appbar.AppBarLayout;
+import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.R;
@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import skin.support.flycotablayout.widget.SkinSlidingTabLayout;
-
-
 
 
 /**
@@ -39,9 +40,13 @@ import skin.support.flycotablayout.widget.SkinSlidingTabLayout;
 public class HomeTabFragment extends Fragment {
     private static final String TAG = "HomeTabFragment";
     private static final String KONG = "void";
-    AppBarLayout mAppBarLayout;
-    ViewPager mViewPager;
+
+    @BindView(R.id.tl_search)
     SkinSlidingTabLayout mTabLayout;
+    @BindView(R.id.appbar)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.view_pager)
+    ViewPager mViewPager;
     /**
      * tablayout和viewpage相关
      */
@@ -64,10 +69,10 @@ public class HomeTabFragment extends Fragment {
      */
     private int qzSpinnerSel;
 
-//    /**
-//     * 绑定控件
-//     */
-//    private Unbinder bind;
+    /**
+     * 绑定控件
+     */
+    private Unbinder bind;
 
 
     public static HomeTabFragment getInstance(String qzGroupName, String qzSourcesType, String qzQuery, int qzSpinnerSel) {
@@ -109,9 +114,7 @@ public class HomeTabFragment extends Fragment {
 
     @SuppressLint("ResourceType")
     private void bindView(View v) {
-        mAppBarLayout = v.findViewById(R.id.appbar);
-        mViewPager = v.findViewById(R.id.view_pager);
-        mTabLayout = v.findViewById(R.id.tl_search);
+        bind = ButterKnife.bind(this, v);
     }
 
     private void bindData() {
@@ -134,7 +137,7 @@ public class HomeTabFragment extends Fragment {
             getActivity().runOnUiThread(() -> initContent());
         });
     }
-
+    ContentPagerAdapter contentAdapter;
     private void initContent() {
         if (tabFragments != null) {
             tabFragments.clear();
@@ -142,39 +145,13 @@ public class HomeTabFragment extends Fragment {
         tabFragments = new ArrayList<>();
         for (String qzSourceName : tabIndicators) {
             //第一步
-            tabFragments.add(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "",0));
+            tabFragments.add(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "", 0));
         }
-        ContentPagerAdapter fragmentAdapter = new ContentPagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(fragmentAdapter);
+        contentAdapter = new ContentPagerAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
+
+        mViewPager.setAdapter(contentAdapter);
         mViewPager.setOffscreenPageLimit(tabFragments.size());
         mTabLayout.setViewPager(mViewPager);
-    }
-
-    class ContentPagerAdapter extends FragmentPagerAdapter {
-
-        ContentPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @NotNull
-        @Override
-        public Fragment getItem(int position) {
-            return tabFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return tabIndicators.size();
-        }
-
-        @Override
-        public void destroyItem(@NonNull View container, int position, @NonNull Object object) {
-
-        }
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabIndicators.get(position);
-        }
     }
 
 
@@ -192,7 +169,7 @@ public class HomeTabFragment extends Fragment {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
         //解除绑定
-        //bind.unbind();
+        bind.unbind();
     }
 
 }

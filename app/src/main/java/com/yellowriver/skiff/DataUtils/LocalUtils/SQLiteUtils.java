@@ -113,9 +113,9 @@ public class SQLiteUtils {
 //    }
 
     //根据分组 删除分组下的所有源
-    public  void delbyTitle(String title)
+    public  void delbyTitle(String title,String type)
     {
-        List<HomeEntity> homeEntities = getXpathbyTitle(title);
+        List<HomeEntity> homeEntities = getXpathbyTitle(title,type);
 
         for (HomeEntity homeEntity : homeEntities) {
 

@@ -107,16 +107,32 @@ public class FavoriteDataFragment extends Fragment {
 
     private void bindEvent()
     {
+        firstLoadData();
+        swipeRefresh();
+        itemClick();
+        itemChildClick();
+    }
+
+    private void firstLoadData()
+    {
         //进入界面开始加载数据
         mSwipeRefreshLayout.post(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             getData(qzGroupName);
         });
+    }
+
+    private void swipeRefresh()
+    {
         //下拉刷新
         mSwipeRefreshLayout.setOnRefreshListener(() -> mSwipeRefreshLayout.postDelayed(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
             getData(qzGroupName);
         }, 1000));
+    }
+
+    private void itemClick()
+    {
         mFavoriteAdapter.setOnItemClickListener((adapter, view, position) -> {
             final FavoriteEntity dataEntity = (FavoriteEntity) adapter.getData().get(position);
             DataEntity dataEntity1 = new DataEntity(dataEntity.getTitle(), dataEntity.getSummary(), dataEntity.getCover(), dataEntity.getLink(), dataEntity.getDate(), "1", "1");
@@ -135,6 +151,10 @@ public class FavoriteDataFragment extends Fragment {
                 }
             });
         });
+    }
+
+    private void itemChildClick()
+    {
         mFavoriteAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             final FavoriteEntity dataEntity = (FavoriteEntity) adapter.getData().get(position);
             SQLModel.getInstance().delFavorite(dataEntity);
