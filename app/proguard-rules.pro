@@ -1,25 +1,3 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
 
 #############################################
 #
@@ -164,18 +142,50 @@
 
 
 #-----------处理第三方依赖库---------
+#HtmlUnit 无界面流量
+-keep public class com.gargoylesoftware.**
+-keep public class java.**
+-keep public class javax.**
+-keep public class netscape.javascript.**
+-keep public class org.w3c.dom.**
+-keep public class sun.awt.**
+-keep public class xyz.nulldev.huandroid.**
+-keep public class cz.msebera.android.httpclient.**
+-keep public class org.apache.commons.logging.**
+-dontwarn org.apache.xerces.dom.DocumentImpl
+-dontwarn net.sourceforge.htmlunit.**
+-dontwarn org.apache.bcel.verifier.**
+-dontwarn org.apache.commons.logging.**
+-dontwarn org.apache.regexp.**
+-dontwarn org.apache.xalan.**
+-dontwarn org.apache.xerces.**
+-dontwarn org.eclipse.jetty.**
+-dontwarn org.xmlpull.**
+-dontwarn javax.**
+-dontwarn android.util.Xml
 #数据库greenDao
--keep class com.huanghe.skiff.Bean.**{*;}
-
--keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
-    public static java.lang.String TABLENAME;
+-keepclassmembers class * extends MultiDexApplication {
+}
+-keep class org.greenrobot.greendao.**{*;}
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
-#treerecyclerview
--keep public class com.baozi.treerecyclerview.**
+-keepclassmembers class **$Properties {*;}
+-keep class net.sqlcipher.database.**{*;}
+-keep public interface net.sqlcipher.database.**
+-dontwarn net.sqlcipher.database.**
+-dontwarn org.greenrobot.greendao.**
+#BaseRecyclerViewAdapterHelper
+-keep class com.chad.library.adapter.** {
+*;
+}
+-keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
+-keep public class * extends com.chad.library.adapter.base.BaseViewHolder
+-keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
+     <init>(...);
+}
 
-#javaBean
--keep class com.huanghe.skiff.Item.**{*;}
 #butterknife
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
@@ -191,8 +201,10 @@
 -keepattributes *Annotation*
 -keep class sun.misc.Unsafe { *; }
 -keep class com.google.gson.stream.** { *; }
-# Application classes that will be serialized/deserialized over Gson 下面替换成自己的实体类
--keep class com.example.bean.** { *; }
+#fastjson
+-keepattributes Signature
+-dontwarn com.alibaba.fastjson.**
+-keep class com.alibaba.fastjson.**{*;}
 #okhttp
 -dontwarn com.squareup.okhttp3.**
 -keep class com.squareup.okhttp3.** { *;}
@@ -203,16 +215,32 @@
   **[] $VALUES;
   public *;
 }
+#eventbus
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
--keep public class com.huanghe.skiff.Util.**
--keep class com.huanghe.skiff.Util.**{ *; }
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+
 -keep class android.text.**{ *; }
 -dontwarn android.text.**
 
--keep class com.huanghe.skiff.Net.**{*;}
--keep public class com.huanghe.skiff.Net.**
--keepclassmembers class * extends com.huanghe.skiff.DataUtils.RemoteUtils.HtmlunitUtils {*;}
--keep class com.huanghe.skiff.ViewModel.**{*;}
-
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}
+#javaBean
+-keep class com.yellowriver.skiff.Item.**{*;}
+-keep class com.yellowriver.skiff.Net.**{*;}
+-keep public class com.yellowriver.skiff.Net.**
+-keepclassmembers class * extends com.yellowriver.skiff.DataUtils.RemoteUtils.HtmlunitUtils {*;}
+-keep class com.yellowriver.skiff.ViewModel.**{*;}
+-keep class com.yellowriver.skiff.Model.**{*;}
+-keep class com.yellowriver.skiff.Interface.**{*;}
+-keep class com.yellowriver.skiff.DataUtils.**{*;}
+-keep class com.yellowriver.skiff.Bean.**{*;}
+-keep class com.yellowriver.skiff.Bean.DataBaseBean.**{*;}
+-keep public class com.yellowriver.skiff.Util.**
+-keep class com.yellowriver.skiff.Util.**{ *; }

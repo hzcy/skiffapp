@@ -36,7 +36,7 @@ public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> {
         {
             helper.getView(R.id.searchgocd).setElevation(3);
         }
-        if (item.getSummary() == null) {
+        if (item.getSummary() == null || item.getSummary().equals("")) {
             helper.getView(R.id.tv_summary).setVisibility(View.GONE);
 
         }else
@@ -46,7 +46,7 @@ public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> {
         }
 
         //如果没有日期  就隐藏日期的view
-        if (item.getDate() == null) {
+        if (item.getDate() == null || item.getDate().equals("")) {
             helper.getView(R.id.tv_date).setVisibility(View.GONE);
 
         }else

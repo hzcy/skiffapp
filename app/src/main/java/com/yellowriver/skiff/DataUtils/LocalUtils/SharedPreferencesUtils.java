@@ -37,10 +37,6 @@ public class SharedPreferencesUtils {
     public static boolean readdataChange(Context mContext) {
         //获取数据正反
         SharedPreferences DataSettings = mContext.getSharedPreferences("dataChange", 0);
-
-
-
-
         return DataSettings.getBoolean("Change", false);
 
     }
@@ -49,14 +45,25 @@ public class SharedPreferencesUtils {
     public static void dataChange(boolean dataChange,Context mContext) {
         SharedPreferences DataSettings = mContext.getSharedPreferences("dataChange", 0);
         SharedPreferences.Editor editor = DataSettings.edit();
-
-
         editor.putBoolean("Change", dataChange);
-
-
         editor.apply();
     }
 
+    //读取数据  源管理 源变更 本地源与源市场之间使用
+    public static boolean readdataChangeSource(Context mContext) {
+        //获取数据正反
+        SharedPreferences DataSettings = mContext.getSharedPreferences("dataChangeSource", 0);
+        return DataSettings.getBoolean("ChangeSource", false);
+
+    }
+
+    //修改数据  源管理 源变更
+    public static void dataChangeSource(boolean dataChange,Context mContext) {
+        SharedPreferences DataSettings = mContext.getSharedPreferences("dataChangeSource", 0);
+        SharedPreferences.Editor editor = DataSettings.edit();
+        editor.putBoolean("ChangeSource", dataChange);
+        editor.apply();
+    }
 
 
     //读取数据  添加收藏

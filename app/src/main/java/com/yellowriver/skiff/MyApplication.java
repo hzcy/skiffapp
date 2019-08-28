@@ -6,11 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-
-
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yellowriver.skiff.Bean.DataBaseBean.DaoMaster;
 import com.yellowriver.skiff.Bean.DataBaseBean.DaoSession;
-import com.tencent.bugly.crashreport.CrashReport;
+
 
 import skin.support.SkinCompatManager;
 import skin.support.app.SkinAppCompatViewInflater;
@@ -34,10 +33,11 @@ public class MyApplication extends MultiDexApplication  {
                 .addInflater(new SkinConstraintViewInflater())          // ConstraintLayout 控件换肤初始化[可选]
                 .addInflater(new SkinCardViewInflater())                // CardView v7 控件换肤初始化[可选]
                 .loadSkin();
-        MultiDex.install(this);
-        CrashReport.initCrashReport(getApplicationContext(), "c46c245326", true);
+
+       CrashReport.initCrashReport(getApplicationContext(), "c46c245326", true);
         instances = this;
         setDatabase();
+        MultiDex.install(this);
     }
 
 

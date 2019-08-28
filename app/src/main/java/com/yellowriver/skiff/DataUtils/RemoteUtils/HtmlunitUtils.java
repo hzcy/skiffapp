@@ -33,14 +33,15 @@ class HtmlunitUtils {
 
     /**
      * 获取动态生成的数据
+     *
      * @return
      * @throws IOException
      */
     @SuppressLint("SetJavaScriptEnabled")
-    public static String HtmlUtilGET(String actionUrl, HashMap<String, String> paramsMap, HashMap<String, String> headerMap, String Charset) throws IOException {
+    public static String HtmlUtilGET(String actionUrl,HashMap<String, String> headerMap){
 
         Log.d("HtmlUtil", "HtmlUtil: 正在使用htmlutil");
-         WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        WebClient webClient = new WebClient(BrowserVersion.CHROME);
         webClient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
         webClient.getOptions().setActiveXNative(false);
@@ -48,17 +49,23 @@ class HtmlunitUtils {
         webClient.getOptions().setJavaScriptEnabled(true); //很重要，启用JS
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());//很重要，设置支持AJAX
         //等待js时间
-        webClient.waitForBackgroundJavaScript(600*1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
+        webClient.waitForBackgroundJavaScript(600 * 1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
         //不跟踪抓取
         webClient.getOptions().setDoNotTrackEnabled(false);
 
 
-        WebRequest request=new WebRequest(new URL(actionUrl), HttpMethod.GET);
-        if (paramsMap != null && !paramsMap.isEmpty()) {
-            for (Map.Entry<String, String> param : paramsMap.entrySet()) {
-                request.getRequestParameters().add(new NameValuePair(param.getKey(), param.getValue()));
-            }
+        Log.d(TAG, "HtmlUtilGET: "+actionUrl);
+        WebRequest request = null;
+        try {
+            request = new WebRequest(new URL(actionUrl), HttpMethod.GET);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
+//        if (paramsMap != null && !paramsMap.isEmpty()) {
+//            for (Map.Entry<String, String> param : paramsMap.entrySet()) {
+//                request.getRequestParameters().add(new NameValuePair(param.getKey(), param.getValue()));
+//            }
+//        }
         if (headerMap != null && !headerMap.isEmpty()) {
             request.setAdditionalHeaders(headerMap);
         }
@@ -67,120 +74,29 @@ class HtmlunitUtils {
         String pageXml = null;
         try {
             page = webClient.getPage(request);//尝试加载上面图片例子给出的网页
-             pageXml = page.asXml();//直接将加载完成的页面转换成xml格式的字符串
+            pageXml = page.asXml();//直接将加载完成的页面转换成xml格式的字符串
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             webClient.close();
         }
-
-
 
 
         return pageXml;
 
     }
 
-    /**
-     * 获取动态生成的数据
-     * @return
-     * @throws IOException
-     */
+
+
     @SuppressLint("SetJavaScriptEnabled")
-    public static String HtmlUtilPOST(String actionUrl, HashMap<String, String>  paramsMap, HashMap<String, String> headerMap, String Charset) throws Exception{
-        String result;
-        Log.d("HtmlUtil", "HtmlUtil: 正在使用htmlutil");
-        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
-        webClient.getOptions().setActiveXNative(false);
-        webClient.getOptions().setCssEnabled(false);//是否启用CSS, 因为不需要展现页面, 所以不需要启用
-        webClient.getOptions().setJavaScriptEnabled(true); //很重要，启用JS
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());//很重要，设置支持AJAX
-        //等待js时间
-        webClient.waitForBackgroundJavaScript(600*1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
-        //不跟踪抓取
-        webClient.getOptions().setDoNotTrackEnabled(false);
-
-
-        WebRequest request=new WebRequest(new URL(actionUrl), HttpMethod.POST);
-
-        if (paramsMap != null && !paramsMap.isEmpty()) {
-            if ("on".equals(Objects.requireNonNull(paramsMap.get("type"))))
-            {
-
-            }else {
-                for (Map.Entry<String, String> param : paramsMap.entrySet()) {
-                    request.getRequestParameters().add(new NameValuePair(param.getKey(), param.getValue()));
-                }
-            }
-        }
-        if (headerMap != null && !headerMap.isEmpty()) {
-            request.setAdditionalHeaders(headerMap);
-        }
-
-        HtmlPage page = null;
-
-        try {
-            if (paramsMap != null && !paramsMap.isEmpty())
-            {
-                if ("on".equals(Objects.requireNonNull(paramsMap.get("type"))))
-                {
-                    Log.d(TAG, "HtmlUtilPOST: 获取ON");
-                    HtmlInput inputs;
-                    HtmlInput btn;
-                    page = webClient.getPage(actionUrl);
-                    inputs = (HtmlInput) page.getElementById(paramsMap.get("input"));
-                    btn = (HtmlInput) page.getElementById(paramsMap.get("button"));
-                    inputs.setValueAttribute(Objects.requireNonNull(paramsMap.get("query")));
-                    Log.d(TAG, "HtmlUtilPOST: "+paramsMap.get("query"));
-                    try {
-                        page = btn.click();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }else {
-                page = webClient.getPage(request);//尝试加载上面图片例子给出的网页
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            webClient.close();
-        }
-
-        String pageXml = Objects.requireNonNull(page).asXml();//直接将加载完成的页面转换成xml格式的字符串
-        System.out.println(pageXml);
-        switch (Charset) {
-            //utf-8
-            case "1":
-                result = pageXml;
-                break;
-            case "2":
-                result = pageXml;
-                break;
-            default:
-                result = pageXml;
-                break;
-        }
-
-        return result;
-
-    }
-    @SuppressLint("SetJavaScriptEnabled")
-    public static String HtmlUtil(String actionUrl, HashMap<String, String>  paramsMap) {
+    public static String HtmlUtil(String actionUrl, HashMap<String, String> paramsMap) {
         WebClient webclient = new WebClient();
-        HtmlPage htmlPage;
+        HtmlPage htmlPage = null;
         HtmlInput inputs;
 
         String html;
-        HtmlPage tempPage = null;
-
-        if (paramsMap != null && !paramsMap.isEmpty())
-        {
-            if ("1".equals(Objects.requireNonNull(paramsMap.get("isAjax"))))
-            {
+        if (paramsMap != null && !paramsMap.isEmpty()) {
+            if ("1".equals(Objects.requireNonNull(paramsMap.get("isAjax")))) {
                 webclient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
                 webclient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
                 webclient.getOptions().setActiveXNative(false);
@@ -188,10 +104,9 @@ class HtmlunitUtils {
                 webclient.getOptions().setJavaScriptEnabled(true); //很重要，启用JS
                 webclient.setAjaxController(new NicelyResynchronizingAjaxController());//很重要，设置支持AJAX
                 //等待js时间
-                webclient.waitForBackgroundJavaScript(600*1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
+                webclient.waitForBackgroundJavaScript(600 * 1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
 
-            }else
-            {
+            } else {
                 webclient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
                 webclient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
                 webclient.getOptions().setActiveXNative(false);
@@ -199,23 +114,25 @@ class HtmlunitUtils {
                 webclient.getOptions().setJavaScriptEnabled(false); //很重要，启用JS
 
             }
+
         }
-
         try {
-            if (paramsMap != null && !paramsMap.isEmpty()) {
 
-                htmlPage = webclient.getPage(actionUrl);
+
+            htmlPage = webclient.getPage(actionUrl);
+            if (paramsMap != null && !paramsMap.isEmpty()) {
                 inputs = (HtmlInput) htmlPage.getElementById(paramsMap.get("input"));//btn = (HtmlInput) htmlPage.getElementById(paramsMap.get("button"));
                 inputs.setValueAttribute(Objects.requireNonNull(paramsMap.get("query")));
-
                 try {
-                    tempPage = htmlPage.getElementById(paramsMap.get("button")).click();
+                    htmlPage = htmlPage.getElementById(paramsMap.get("button")).click();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             }
+            
+
+
         } catch (FailingHttpStatusCodeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,7 +143,7 @@ class HtmlunitUtils {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        html = Objects.requireNonNull(tempPage).asXml();
+        html = Objects.requireNonNull(htmlPage).asXml();
         System.out.println(html);
 
         return html;

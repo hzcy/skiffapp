@@ -192,7 +192,7 @@ public class HomeViewFragment extends Fragment {
                     public boolean onQueryTextSubmit(final CharSequence query) {
                         Intent intent = new Intent(getActivity(),
                                 SearchActivity.class);
-                        intent.putExtra("qzSpinnerSel", mSpinner.getSelectedIndex());
+                        intent.putExtra("qzGroupName", qzGroupName);
                         intent.putExtra("qzQuery", query);
                         startActivity(intent);
                         //隐藏输入法

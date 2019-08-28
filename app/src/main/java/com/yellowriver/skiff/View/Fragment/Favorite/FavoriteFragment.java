@@ -32,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import skin.support.flycotablayout.widget.SkinSlidingTabLayout;
 
-import static com.just.agentweb.UrlLoaderImpl.TAG;
 
 /**
  * 收藏tab
@@ -133,14 +132,14 @@ public class FavoriteFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "测试-->onCreate");
+
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "测试-->onDestroy");
+
         super.onDestroy();
         //解除绑定
         bind.unbind();

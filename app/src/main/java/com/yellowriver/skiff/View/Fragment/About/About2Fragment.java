@@ -31,8 +31,6 @@ import butterknife.Unbinder;
  */
 public class About2Fragment extends Fragment {
     private static final String TAG = "About2Fragment";
-    @BindView(R.id.license)
-    LinearLayout license;
     @BindView(R.id.update)
     LinearLayout update;
     @BindView(R.id.changelog)
@@ -41,6 +39,8 @@ public class About2Fragment extends Fragment {
     LinearLayout homepage;
     @BindView(R.id.share)
     LinearLayout share;
+    @BindView(R.id.license)
+    LinearLayout license;
     @BindView(R.id.qqgroup)
     LinearLayout qqgroup;
     @BindView(R.id.weixingroup)
@@ -59,6 +59,7 @@ public class About2Fragment extends Fragment {
     LinearLayout weixinjz;
     @BindView(R.id.disclaimer)
     LinearLayout disclaimer;
+
 
     public About2Fragment() {
         // Required empty public constructor

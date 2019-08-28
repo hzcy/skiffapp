@@ -94,7 +94,8 @@ public class SourceFragment extends Fragment  {
             mRootView = inflater.inflate(R.layout.fragment_source, container, false);
             bind = ButterKnife.bind(this, mRootView);
             //加载视图
-            bindView(mRootView);
+            mToolbar.setTitle(getString(R.string.sourcesSet));
+            bindView();
         }
         return mRootView;
     }
@@ -108,14 +109,14 @@ public class SourceFragment extends Fragment  {
     RemoteSourceFragment sourceDataViewFragment;
     ContentPagerAdapter contentAdapter;
 
-    private void bindView(View v) {
-        mToolbar.setTitle(getString(R.string.sourcesSet));
+    private void bindView() {
+
 
         tabIndicators = new ArrayList<>();
         tabIndicators.add("本地源");
         tabIndicators.add("源市场");
-        localSourceFragment = LocalSourceFragment.getInstance("本地源", "");
-        sourceDataViewFragment = RemoteSourceFragment.getInstance("源市场", "");
+        localSourceFragment = LocalSourceFragment.getInstance();
+        sourceDataViewFragment = RemoteSourceFragment.getInstance();
         tabFragments = new ArrayList<>();
         tabFragments.add(localSourceFragment);
         tabFragments.add(sourceDataViewFragment);
@@ -153,12 +154,13 @@ public class SourceFragment extends Fragment  {
                             long addresult = SQLModel.getInstance().addSouce(homeEntity);
                             if (addresult >= 0) {
                                 SnackbarUtil.ShortSnackbar(getView(), "源添加成功！", SnackbarUtil.Confirm).show();
-
+                                bindView();
                                 //保存修改了数据的状态 当这里修改成功 首页要重新加载
                                 SharedPreferencesUtils.dataChange(true, getContext());
-                                updateLocalSource();
+
+
                             } else {
-                                SnackbarUtil.ShortSnackbar(getView(), "源添加失败！", SnackbarUtil.Warning).show();
+                                SnackbarUtil.ShortSnackbar(getView(), "源添加失败！", SnackbarUtil.Alert).show();
 
                             }
 

@@ -7,12 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome;
 import com.yellowriver.skiff.R;
 import com.yellowriver.skiff.View.Activity.Other.AboutWebViewActivity;
 
@@ -106,9 +108,9 @@ public class LicenseFragment extends Fragment {
 
     private void bindView(View mRootView) {
 
-        //ImageView version = mRootView.findViewById(R.id.version);
-
-        //v/ersion.setImageResource(FontAwesome.Icon.faw_android);
+//        ImageView version = mRootView.findViewById(R.id.version);
+//
+//        version.setImageResource(FontAwesome.Icon.faw_android);
 
     }
 

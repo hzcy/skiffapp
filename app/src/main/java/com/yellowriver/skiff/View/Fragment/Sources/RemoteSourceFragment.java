@@ -123,11 +123,9 @@ public class RemoteSourceFragment extends Fragment {
     }
 
 
-    public static RemoteSourceFragment getInstance(String title, String link) {
+    public static RemoteSourceFragment getInstance() {
         RemoteSourceFragment sourceDataViewFragment = new RemoteSourceFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
-        args.putString("link", link);
         sourceDataViewFragment.setArguments(args);
         return sourceDataViewFragment;
     }
@@ -340,6 +338,7 @@ public class RemoteSourceFragment extends Fragment {
                             {
                                 SnackbarUtil.ShortSnackbar(getView(),"源添加成功！",SnackbarUtil.Confirm).show();
                                 SharedPreferencesUtils.dataChange(true, getContext());
+                                SharedPreferencesUtils.dataChangeSource(true, getContext());
                                 int positionAtAll = mGroupAdapter.getParentPositionInAll(position);
                                 mGroupAdapter.notifyItemChanged(position,"addok");
                                 if (positionAtAll != -1) {
@@ -349,7 +348,7 @@ public class RemoteSourceFragment extends Fragment {
                                     }
                                 }
                             }else{
-                                SnackbarUtil.ShortSnackbar(getView(),"源添加失败！",SnackbarUtil.Warning).show();
+                                SnackbarUtil.ShortSnackbar(getView(),"源添加失败！",SnackbarUtil.Alert).show();
                             }
                         }
                     });
@@ -378,10 +377,10 @@ public class RemoteSourceFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isPrepared && isVisibleToUser) {
             //加载数据
-            if(SharedPreferencesUtils.readdataChange(getContext()))
+            if(SharedPreferencesUtils.readdataChangeSource(getContext()))
             {
                 getData();
-                SharedPreferencesUtils.dataChange(
+                SharedPreferencesUtils.dataChangeSource(
                         false, getContext());
             }
         }

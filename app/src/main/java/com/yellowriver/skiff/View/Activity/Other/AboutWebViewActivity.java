@@ -45,7 +45,6 @@ public class AboutWebViewActivity extends AppCompatActivity {
 
     private String fromTitle;
 
-    //AgentWeb mAgentWeb;
     private Toolbar mToolbar;
 
 
@@ -74,7 +73,7 @@ public class AboutWebViewActivity extends AppCompatActivity {
 
 
         //滑动隐藏AppBarLayout
-        webView = new NestedScrollAgentWebView(this);
+       webView = new NestedScrollAgentWebView(this);
 
         CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(-1, -1);
 
@@ -120,7 +119,7 @@ public class AboutWebViewActivity extends AppCompatActivity {
     private void addBgChild(FrameLayout frameLayout) {
 
         ImageView mImageView = new ImageView(frameLayout.getContext());
-        mImageView.setImageResource(R.mipmap.ic_launcher_round);
+        mImageView.setImageResource(R.mipmap.skifflogo_round);
 
         TextView mTextView = new TextView(frameLayout.getContext());
         mTextView.setText("轻舟");
@@ -237,7 +236,7 @@ public class AboutWebViewActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //mAgentWeb.destroy();
+        mAgentWeb.destroy();
         mAgentWeb.getWebLifeCycle().onDestroy();
 
     }

@@ -71,7 +71,7 @@ public class SearchActivity extends AppCompatActivity {
     private void initData()
     {
         qzQuery = getIntent().getStringExtra("qzQuery");
-        qzSpinnerSel = getIntent().getIntExtra("qzSpinnerSel", 0);
+        groupName = getIntent().getStringExtra("qzGroupName");
         type = "search";
     }
 
@@ -116,11 +116,12 @@ public class SearchActivity extends AppCompatActivity {
         //设置下拉列表框的下拉选项样式
         adapter.setDropDownViewResource(R.layout.myspinner);
         mSpinner.setAdapter(adapter);
+        qzSpinnerSel = adapter.getPosition(groupName);
+        Log.d(TAG, "updateView: "+groupName);
+        Log.d(TAG, "updateView: "+qzSpinnerSel);
         //让第一个数据项已经被选中
         mSpinner.setSelectedIndex(qzSpinnerSel);
         //进入界面时获取第一个分组名称
-        groupName = (String) mSpinner.getItemAtPosition(qzSpinnerSel);//从spinner中获取被选择的数据
-
         ArrayList<String> list1 = SQLModel.getInstance().getTitleByGroup(mSpinner.getItemAtPosition(qzSpinnerSel).toString(), "search");
 
         if (list1.isEmpty()) {

@@ -30,19 +30,12 @@ import androidx.fragment.app.Fragment;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.Help.LocalBackup;
-import com.yellowriver.skiff.Help.URIHelper;
+
 import com.yellowriver.skiff.R;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.FileChannel;
-import java.util.StringTokenizer;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,8 +43,6 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import skin.support.SkinCompatManager;
 
-import static com.mikepenz.iconics.Iconics.getApplicationContext;
-import static com.mikepenz.iconics.Iconics.logger;
 
 
 /**

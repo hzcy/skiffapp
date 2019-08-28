@@ -1,0 +1,2 @@
+com/yellowriver/skiff/Bean/DataBaseBean/DaoMaster.class
+com/yellowriver/skiff/Bean/DataBaseBean/DaoSession.class

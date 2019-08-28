@@ -124,11 +124,9 @@ public class LocalSourceFragment extends Fragment {
     }
 
 
-    public static LocalSourceFragment getInstance(String title, String link) {
+    public static LocalSourceFragment getInstance() {
         LocalSourceFragment sourceDataViewFragment = new LocalSourceFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
-        args.putString("link", link);
         sourceDataViewFragment.setArguments(args);
         return sourceDataViewFragment;
     }
@@ -156,9 +154,9 @@ public class LocalSourceFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isPrepared && isVisibleToUser) {
             //加载数据
-            if (SharedPreferencesUtils.readdataChange(getContext())) {
+            if (SharedPreferencesUtils.readdataChangeSource(getContext())) {
                 getData();
-                SharedPreferencesUtils.dataChange(
+                SharedPreferencesUtils.dataChangeSource(
                         false, getContext());
             }
         }
@@ -289,13 +287,14 @@ public class LocalSourceFragment extends Fragment {
                     List<HomeEntity> homeEntityList = SQLModel.getInstance().getXpathbyTitle(name, type);
 
                     if (!homeEntityList.isEmpty()) {
-                        SnackbarUtil.ShortSnackbar(getView(), "删除失败！", SnackbarUtil.Warning).show();
+                        SnackbarUtil.ShortSnackbar(getView(), "删除失败！", SnackbarUtil.Alert).show();
 
 
                     } else {
                         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-                            SnackbarUtil.ShortSnackbar(getView(), "删除成功！", SnackbarUtil.Warning).show();
+                            SnackbarUtil.ShortSnackbar(getView(), "删除成功！", SnackbarUtil.Confirm).show();
                             SharedPreferencesUtils.dataChange(true, getContext());
+                            SharedPreferencesUtils.dataChangeSource(true, getContext());
                             int positionAtAll = mGroupAdapter.getParentPositionInAll(position);
                             //mGroupAdapter.notifyItemChanged(position,"delete");
                             mGroupAdapter.remove(position);

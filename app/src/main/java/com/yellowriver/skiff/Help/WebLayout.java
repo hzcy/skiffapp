@@ -8,7 +8,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+//
 import com.just.agentweb.IWebLayout;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
@@ -18,11 +18,11 @@ import com.yellowriver.skiff.R;
 /**
  * Created by cenxiaozhong on 2017/7/1.
  * source code  https://github.com/Justson/AgentWeb
- * @author cenxiaozhong
+ * @author cenxiaozhong  implements IWebLayout
  */
 public class WebLayout implements IWebLayout {
 
-    private final TwinklingRefreshLayout mTwinklingRefreshLayout;
+   private final TwinklingRefreshLayout mTwinklingRefreshLayout;
     private final WebView mWebView;
 
     public WebLayout(Activity activity) {

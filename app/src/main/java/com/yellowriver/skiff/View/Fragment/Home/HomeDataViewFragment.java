@@ -186,12 +186,14 @@ public class HomeDataViewFragment extends Fragment {
                             mHomeAdapter.setFooterView(LayoutInflater.from(getActivity()).inflate(R.layout.footer_loadover, mRecyclerView, false));
                         }
                     }else {
-                        mHomeAdapter.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.empty_layout, mRecyclerView, false));
+                        View view = View.inflate(getContext(), R.layout.empty_layout, null);
+                        mHomeAdapter.setEmptyView(view);
                     }
                 }
             } else {
                 //加载空视图
-                mHomeAdapter.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.empty_layout, mRecyclerView, false));
+                View view = View.inflate(getContext(), R.layout.empty_layout, null);
+                mHomeAdapter.setEmptyView(view);
             }
         });
     }
@@ -246,6 +248,7 @@ public class HomeDataViewFragment extends Fragment {
     private void bindData() {
         //获取传递过来的数据
         qzGroupName = Objects.requireNonNull(getArguments()).getString("qzGroupName");
+        Log.d(TAG, "bindData: "+qzGroupName);
         qzSourceName = Objects.requireNonNull(getArguments()).getString("qzSourceName");
         qzStep = getArguments().getString("qzStep");
         qzUrl = getArguments().getString("qzUrl");

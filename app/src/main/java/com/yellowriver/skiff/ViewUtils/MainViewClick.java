@@ -3,7 +3,9 @@ package com.yellowriver.skiff.ViewUtils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Bean.HomeBean.NowRuleBean;
@@ -11,7 +13,6 @@ import com.yellowriver.skiff.DataUtils.RemoteUtils.AnalysisUtils;
 import com.yellowriver.skiff.View.Activity.NextActivity;
 import com.yellowriver.skiff.View.Activity.ReadActivity;
 import com.yellowriver.skiff.View.Activity.SearchActivity;
-import com.yellowriver.skiff.View.Activity.VideoActivity;
 import com.yellowriver.skiff.View.Activity.WebViewActivity;
 
 /**
@@ -88,23 +89,27 @@ public class MainViewClick {
             //文件
             case "5":
                 if (null != mDataEntity.getLink()) {
-                    if (mDataEntity.getLink().startsWith(HTTP)) {
-                        result = true;
-                        openFileMode(mContext, mDataEntity, nowRuleBean.getReadXpath());
-                    }else {
-                        result = false;
-                    }
+                    result = false;
+
+//                    if (mDataEntity.getLink().startsWith(HTTP)) {
+//                        result = true;
+//                        openFileMode(mContext, mDataEntity, nowRuleBean.getReadXpath());
+//                    }else {
+//                        result = false;
+//                    }
                 }
                 break;
             //音频
             case "6":
+                result = false;
                 break;
             //图片
             case "7":
+                result = false;
                 break;
             //搜索
             case "8":
-                openSearchMode(mContext, mDataEntity, index);
+                openSearchMode(mContext, mDataEntity,nowRuleBean);
                 break;
             //rss
             case "9":
@@ -196,13 +201,12 @@ public class MainViewClick {
 
     //打开视频播放器
     public static void openVideoMode(Context mContext, DataEntity mDataEntity) {
-        Intent intent;
-        intent = new Intent(mContext, VideoActivity.class);
-        //点击的标题
-        intent.putExtra("videourl", mDataEntity.getLink());
-        intent.putExtra("cover", mDataEntity.getCover());
-        intent.putExtra("title", mDataEntity.getTitle());
-        mContext.startActivity(intent);
+        String url = mDataEntity.getLink();
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
+        mediaIntent.setDataAndType(Uri.parse(url), mimeType);
+        mContext.startActivity(mediaIntent);
     }
 
     //打开文件
@@ -257,13 +261,14 @@ public class MainViewClick {
     }
 
     //打开搜索
-    public static void openSearchMode(Context mContext, DataEntity mDataEntity, int index) {
+    public static void openSearchMode(Context mContext, DataEntity mDataEntity,NowRuleBean nowRuleBean) {
         Intent intent;
         //使用点击项的标题去搜索
         intent = new Intent(mContext, SearchActivity.class);
         //点击的标题
         intent.putExtra("qzQuery", mDataEntity.getTitle());
-        intent.putExtra("qzSpinnerSel", index);
+        intent.putExtra("qzGroupName",nowRuleBean.getQzGroupName());
+
         mContext.startActivity(intent);
     }
 

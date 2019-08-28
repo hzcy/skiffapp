@@ -242,7 +242,7 @@ public class WebViewActivity extends AppCompatActivity {
             }
         }
         mToolbar.setTitle(fromTitle);
-        mAgentWeb.getWebCreator().getWebView().setBackgroundColor(BGColor);
+        //mAgentWeb.getWebCreator().getWebView().setBackgroundColor(BGColor);
     }
 
     /**
@@ -271,7 +271,7 @@ public class WebViewActivity extends AppCompatActivity {
     private void addBgChild(FrameLayout frameLayout) {
 
         ImageView mImageView = new ImageView(frameLayout.getContext());
-        mImageView.setImageResource(R.mipmap.ic_launcher_round);
+        mImageView.setImageResource(R.mipmap.skifflogo_round);
 
         TextView mTextView = new TextView(frameLayout.getContext());
         mTextView.setText("轻舟");
@@ -345,7 +345,7 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.webmenu, menu);
-        item = menu.add(Menu.NONE, MENU_CONFIRM, 0, "关闭");
+        item = menu.add(Menu.NONE, MENU_CONFIRM, 0, "阅读模式");
         //主要是这句话 显示图标
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         item.setIcon(R.drawable.ic_chrome_reader_mode_black_24dp);
@@ -429,7 +429,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        mAgentWeb.getWebLifeCycle().onResume();
+       mAgentWeb.getWebLifeCycle().onResume();
         super.onResume();
     }
 
@@ -438,7 +438,7 @@ public class WebViewActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         //mAgentWeb.destroy();
-        mAgentWeb.getWebLifeCycle().onDestroy();
+        //mAgentWeb.getWebLifeCycle().onDestroy();
         //移除全部粘性事件
         EventBus.getDefault().removeAllStickyEvents();
         //解绑事件

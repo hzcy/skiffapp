@@ -65,6 +65,7 @@ class XpathUtils {
                 List<Object> lists = jxDocument.sel(sourceRule.getListXpath());
 
                 if (lists != null) {
+                    Log.d(TAG, "GetData: "+lists.toString());
                     //先定义标题 图片 简介 链接 日期
                     String title = null, cover = null, summary = null, link = null, date = null;
                     Log.d(TAG, "Xpath获取的数据大小: " + lists.size());
@@ -270,15 +271,17 @@ class XpathUtils {
         //请求头  源使用json写hearder 将json格式的hearder转为hashmap
         HashMap<String, String> headerMap = getHeaders(sourceRule.getHeaders());
         //如果是js异步加载数据 用htmlutil  1.不是 2是
+        String html;
         if (AJAX.equals(sourceRule.getIsAjax())) {
             //使用htmlunit获取html 再解析
-
+             html = HtmlunitUtils.HtmlUtilGET(actionUrl,headerMap);
         } else {
             //获取dom
-            String html = NetUtils.getInstance().getRequest(actionUrl, headerMap, sourceRule.getCharset());
-            if (null != html) {
-                doc = Jsoup.parse(html);
-            }
+             html = NetUtils.getInstance().getRequest(actionUrl, headerMap, sourceRule.getCharset());
+
+        }
+        if (null != html) {
+            doc = Jsoup.parse(html);
         }
         return doc;
     }
@@ -305,16 +308,18 @@ class XpathUtils {
             headerMap = JSON.parseObject(sourceRule.getHeaders(), HashMap.class);
         }
         //如果是js异步加载数据 用htmlutil  1.不是 2是
+        String html;
         if (AJAX.equals(sourceRule.getIsAjax())) {
             //使用htmlunit获取html 再解析
-
+             html =  HtmlunitUtils.HtmlUtil(actionUrl,paramsMap);
 
         } else {
             //获取dom
-            String html = NetUtils.getInstance().requestPost(actionUrl, paramsMap, headerMap, sourceRule.getCharset());
-            if (null != html) {
-                doc = Jsoup.parse(html);
-            }
+             html = NetUtils.getInstance().requestPost(actionUrl, paramsMap, headerMap, sourceRule.getCharset());
+
+        }
+        if (null != html) {
+            doc = Jsoup.parse(html);
         }
         return doc;
     }
@@ -348,11 +353,12 @@ class XpathUtils {
                     //第一步处理 处理图片 如果需要处理的值不为空  （一般情况下使用左拼接将图片拼接完整）
                     actionUrl = AnalysisUtils.getInstance().processingValue(actionUrl, sourceRule.getNextProcessingValue(), sourceRule.getUrl(), page);
                 }
-                Log.d(TAG, "GetHtmlDoc: " + actionUrl);
+
                 //包含
                 actionUrl = actionUrl.replace("{QZPage}", String.valueOf(page));
                 actionUrl = actionUrl.replace("{QZLink}", sourceRule.getUrl());
-
+                actionUrl = actionUrl.replace("{QZQuery}", sourceRule.getQuery());
+                Log.d(TAG, "GetHtmlDoc: " + actionUrl);
 
             } else {
                 //加载多页时有bug
