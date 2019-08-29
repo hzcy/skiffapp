@@ -110,7 +110,8 @@ dependencies {
     //colorpicker 颜色选择器
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     //腾讯bugly
-    implementation 'com.tencent.bugly:crashreport:3.0.0'
+    //implementation 'com.tencent.bugly:crashreport:3.0.0'
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.4.1'
     //图标库
     implementation "com.mikepenz:iconics-core:4.0.1-b01"
     implementation "com.mikepenz:iconics-views:4.0.1-b01"
