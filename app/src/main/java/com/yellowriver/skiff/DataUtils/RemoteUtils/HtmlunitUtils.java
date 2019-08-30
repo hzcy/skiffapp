@@ -96,7 +96,7 @@ class HtmlunitUtils {
 
         String html;
         if (paramsMap != null && !paramsMap.isEmpty()) {
-            if ("1".equals(Objects.requireNonNull(paramsMap.get("isAjax")))) {
+            if (paramsMap.get("isAjax")==null){
                 webclient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
                 webclient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
                 webclient.getOptions().setActiveXNative(false);
@@ -106,13 +106,25 @@ class HtmlunitUtils {
                 //等待js时间
                 webclient.waitForBackgroundJavaScript(600 * 1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
 
-            } else {
-                webclient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
-                webclient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
-                webclient.getOptions().setActiveXNative(false);
-                webclient.getOptions().setCssEnabled(false);//是否启用CSS, 因为不需要展现页面, 所以不需要启用
-                webclient.getOptions().setJavaScriptEnabled(false); //很重要，启用JS
+            }else {
+                if ("1".equals(Objects.requireNonNull(paramsMap.get("isAjax")))) {
+                    webclient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
+                    webclient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
+                    webclient.getOptions().setActiveXNative(false);
+                    webclient.getOptions().setCssEnabled(false);//是否启用CSS, 因为不需要展现页面, 所以不需要启用
+                    webclient.getOptions().setJavaScriptEnabled(true); //很重要，启用JS
+                    webclient.setAjaxController(new NicelyResynchronizingAjaxController());//很重要，设置支持AJAX
+                    //等待js时间
+                    webclient.waitForBackgroundJavaScript(600 * 1000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
 
+                } else {
+                    webclient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
+                    webclient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
+                    webclient.getOptions().setActiveXNative(false);
+                    webclient.getOptions().setCssEnabled(false);//是否启用CSS, 因为不需要展现页面, 所以不需要启用
+                    webclient.getOptions().setJavaScriptEnabled(false); //很重要，启用JS
+
+                }
             }
 
         }

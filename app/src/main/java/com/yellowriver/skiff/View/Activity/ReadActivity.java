@@ -210,51 +210,43 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
     private void bindEvent() {
         mReadAdapter.bindToRecyclerView(mReadRecyclerView);
         mReadAdapter.disableLoadMoreIfNotFullPage();
-        //下拉刷新
-        mSwipeRefreshLayout.setOnRefreshListener(() -> mSwipeRefreshLayout.postDelayed(() -> {
-            //开启下拉刷新
-            mSwipeRefreshLayout.setRefreshing(true);
+        firstLoadData();
+        swipeRefresh();
+        menuEvent();
+        updateTitle();
+        loadMore();
+    }
 
-            //开启线程加载数据
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (fromindex != -1 && mMenuDataEntity != null) {
-                        url = mMenuDataEntity.get(fromindex).getLink();
+    private void updateTitle()
+    {
+        mReadRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.i(TAG, "--------------------------------------");
+                int mFirstVisibleItem = myLinearLayoutManagerRead.findFirstVisibleItemPosition();
+                int nowindex = mFirstVisibleItem + fromindex;
+
+                if (data != null && mFirstVisibleItem != -1 ) {
+                    if(nowindex < mMenuDataEntity.size()) {
+                        title = mMenuDataEntity.get(nowindex).getTitle();
+
+                        mToolbar.setTitle(title);
+                    }else{
+                        Log.d(TAG, "onScrolled: 到底了");
                     }
-                    data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mReadAdapter.setNewData(data);
 
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
+                }else{
+                    Log.d(TAG, "onScrolled: 没有数据");
                 }
-            }).start();
-
-
-        }, 1000));
-        //进入界面开始加载数据
-        mSwipeRefreshLayout.post(() -> {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mReadAdapter.setNewData(data);
-
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-                }
-            }).start();
-
+            }
         });
+
+    }
+
+    private void menuEvent()
+    {
         if (null != mMenuDataEntity) {
             mMenuAdapter.setNewData(mMenuDataEntity);
             mupTitle.setText(upTitle);
@@ -307,31 +299,62 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
             }).start();
 
         });
-        mReadRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.i(TAG, "--------------------------------------");
-                int mFirstVisibleItem = myLinearLayoutManagerRead.findFirstVisibleItemPosition();
-                int nowindex = mFirstVisibleItem + fromindex;
+    private void firstLoadData()
+    {
+        //进入界面开始加载数据
+        mSwipeRefreshLayout.post(() -> {
+            mSwipeRefreshLayout.setRefreshing(true);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mReadAdapter.setNewData(data);
 
-                if (data != null && mFirstVisibleItem != -1 ) {
-                    if(nowindex < mMenuDataEntity.size()) {
-                        title = mMenuDataEntity.get(nowindex).getTitle();
-
-                        mToolbar.setTitle(title);
-                    }else{
-                        Log.d(TAG, "onScrolled: 到底了");
-                    }
-
-                }else{
-                    Log.d(TAG, "onScrolled: 没有数据");
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
                 }
-            }
+            }).start();
+
         });
+    }
+    private void swipeRefresh()
+    {
+//下拉刷新
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mSwipeRefreshLayout.postDelayed(() -> {
+            //开启下拉刷新
+            mSwipeRefreshLayout.setRefreshing(true);
+
+            //开启线程加载数据
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (fromindex != -1 && mMenuDataEntity != null) {
+                        url = mMenuDataEntity.get(fromindex).getLink();
+                    }
+                    data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mReadAdapter.setNewData(data);
+
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
+            }).start();
 
 
+        }, 1000));
+    }
+
+    private void loadMore()
+    {
         //下拉加载更多
 
         mReadAdapter.setOnLoadMoreListener(() -> {
@@ -380,9 +403,6 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
         }, mReadRecyclerView);
 
         mReadAdapter.setLoadMoreView(new CustomLoadMoreView());
-
-
-
     }
 
 

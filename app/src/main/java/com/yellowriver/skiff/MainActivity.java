@@ -3,8 +3,10 @@ package com.yellowriver.skiff;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 
+import com.yellowriver.skiff.Help.SnackbarUtil;
 import com.yellowriver.skiff.View.Fragment.About.AboutFragment;
 import com.yellowriver.skiff.View.Fragment.Favorite.FavoriteFragment;
 import com.yellowriver.skiff.View.Fragment.Home.HomeViewFragment;
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout drawerLayout;
     @BindView(R.id.nav_view)
     SkinMaterialBottomNavigationView navView;
+
+    //两次返回退出
+    private long mExitTime;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -219,6 +225,26 @@ public class MainActivity extends AppCompatActivity {
             sharedPreferences.edit().putBoolean("First",false).commit();
         }
         return first_run;
+    }
+
+
+    /*
+     *两次返回退出
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Object mHelperUtils;
+
+                Toast.makeText(this, "再按一次退出轻舟", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

@@ -47,6 +47,7 @@ public class RssViewModel extends ViewModel {
             @Override
             public void onTaskCompleted(@NotNull List<Article> list) {
                 if (list != null) {
+
                     Vector<DataEntity> dataEntities = new Vector<>();
                     for (Article article : list) {
                         String pubDateString = null;

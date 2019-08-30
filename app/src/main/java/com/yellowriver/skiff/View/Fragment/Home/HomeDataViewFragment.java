@@ -261,12 +261,12 @@ public class HomeDataViewFragment extends Fragment {
         SharedPreferencesUtils.writeDataSort("正", Objects.requireNonNull(getContext()));
         SQLiteUtils.getInstance().getDaoSession().startAsyncSession().runInTx(() -> {
             List<HomeEntity> homeEntities = SQLModel.getInstance().getXpathbyTitle(qzSourceName, qzSourcesType);
-            getActivity().runOnUiThread(() -> updateView(homeEntities));
+            getActivity().runOnUiThread(() -> updateView2(homeEntities));
         });
     }
 
 
-    private void updateView(List<HomeEntity> homeEntities) {
+    private void updateView2(List<HomeEntity> homeEntities) {
         setHasOptionsMenu(true);
         //下拉刷新颜色
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorLogo1, R.color.colorLogo2, R.color.colorLogo3, R.color.colorLogo4);
@@ -328,7 +328,6 @@ public class HomeDataViewFragment extends Fragment {
         //下拉刷新
         mSwipeRefreshLayout.setOnRefreshListener(() -> mSwipeRefreshLayout.postDelayed(() -> {
             page = 1;
-            mHomeAdapter.removeAllFooterView();
             //开启下拉刷新
             if (mSwipeRefreshLayout != null) {
                 mSwipeRefreshLayout.setRefreshing(true);
@@ -337,7 +336,7 @@ public class HomeDataViewFragment extends Fragment {
                 getRss();
             } else {
 
-                getData();
+                xpathReload();
             }
         }, 1000));
     }

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -207,6 +208,8 @@ public class About2Fragment extends Fragment {
                 break;
             case R.id.share:
                 //分享软件
+                qzLink = "http://hege.gitee.io/page/share.html";
+                qzTitle = "分享海报";
                 break;
             case R.id.qqgroup:
                 qzLink = "http://hege.gitee.io/page/qqGroup.html";
@@ -219,8 +222,8 @@ public class About2Fragment extends Fragment {
             case R.id.weixingzh:
                 //复制公众号到剪贴板
                 SmallUtils.getInstance().toCopy(getContext(), "轻舟");
-                SnackbarUtil.ShortSnackbar(main, "公众号名称已复制到剪贴板", SnackbarUtil.Confirm).show();
-
+                //SnackbarUtil.ShortSnackbar(getView(), "公众号名称已复制到剪贴板", SnackbarUtil.Confirm).show();
+                Toast.makeText(getContext(), "公众号名称已复制到剪贴板", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mail:
                 Intent data = new Intent(Intent.ACTION_SENDTO);

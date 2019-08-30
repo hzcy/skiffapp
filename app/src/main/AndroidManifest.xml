@@ -3,13 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yellowriver.skiff">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -19,26 +12,29 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Activity.Other.SettingsActivity"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".View.Activity.Other.LicenseActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".View.Activity.ReadActivity"
-            android:theme="@style/AppTheme"/>
-
+        <activity android:name=".View.Activity.Other.ShareActivity"></activity>
+        <activity
+            android:name=".View.Activity.Other.SettingsActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".View.Activity.Other.LicenseActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".View.Activity.ReadActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".View.Activity.WebViewActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".View.Activity.Other.AboutWebViewActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/otherPageStyle"/>
+            android:theme="@style/otherPageStyle" />
         <activity
             android:name=".View.Activity.NextActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".View.Activity.SearchActivity"
             android:theme="@style/AppTheme">
@@ -57,5 +53,16 @@
             </intent-filter>
         </activity>
     </application>
+
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
 
 </manifest>

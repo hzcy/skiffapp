@@ -23,7 +23,7 @@ android {
     }
 
     buildTypes {
-      debug {
+        debug {
 //            //启用代码混淆
 //            minifyEnabled true
 //            //混淆规则配置文件
@@ -45,7 +45,7 @@ android {
 
         }
     }
-        //指定jdk版本
+    //指定jdk版本
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -58,6 +58,7 @@ android {
         abortOnError false
     }
 
+    useLibrary 'org.apache.http.legacy'
 }
 
 
@@ -83,6 +84,8 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.0.1"
     //agentweb 浏览器
     implementation 'com.just.agentweb:agentweb:4.0.3-beta' // (必选)
+    implementation 'com.just.agentweb:filechooser:4.1.2'// (可选)
+    implementation 'com.download.library:Downloader:4.1.2'// (可选)
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
     //googel gson
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -102,6 +105,7 @@ dependencies {
     //RSS
     implementation 'com.github.ahorn:android-rss:1.0-rc1'
     implementation 'com.prof.rssparser:rssparser:2.0.4'
+    implementation 'com.einmalfel:earl:1.2.0'
     //butterknife
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'

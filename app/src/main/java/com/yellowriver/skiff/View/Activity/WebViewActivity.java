@@ -1,10 +1,13 @@
 package com.yellowriver.skiff.View.Activity;
+import	java.util.Iterator;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,20 +29,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.download.library.DownloadImpl;
+import com.download.library.DownloadListenerAdapter;
+import com.download.library.Extra;
+import com.download.library.ResourceRequest;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
+import com.just.agentweb.DefaultDownloadImpl;
 import com.just.agentweb.DefaultWebClient;
+import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.IWebLayout;
+import com.just.agentweb.MiddlewareWebChromeBase;
+import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.NestedScrollAgentWebView;
+import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebChromeClient;
+import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.WebViewClient;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.ReadModeUtils;
 import com.yellowriver.skiff.Help.FileUtil;
+import com.yellowriver.skiff.Help.MiddlewareChromeClient;
+import com.yellowriver.skiff.Help.MiddlewareWebViewClient;
 import com.yellowriver.skiff.Help.SmallUtils;
 import com.yellowriver.skiff.Help.SnackbarUtil;
 import com.yellowriver.skiff.Help.WebLayout;
@@ -90,7 +106,8 @@ public class WebViewActivity extends AppCompatActivity {
     private String content;
 
     private AgentWeb mAgentWeb;
-
+    private MiddlewareWebClientBase mMiddleWareWebClient;
+    private MiddlewareWebChromeBase mMiddleWareWebChrome;
 
     private int readMode = 0;
     NestedScrollAgentWebView webView;
@@ -107,6 +124,7 @@ public class WebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         ButterKnife.bind(this);
+
 
         initData();
         initView();
@@ -163,23 +181,128 @@ public class WebViewActivity extends AppCompatActivity {
         webView = new NestedScrollAgentWebView(this);
         CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(-1, -1);
         lp.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+//        mAgentWeb = AgentWeb.with(this)//
+//                .setAgentWebParent(main, 1, lp)//lp记得设置behavior属性
+//                //.setAgentWebParent((LinearLayout) view, -1, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
+//                .useDefaultIndicator(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
+//                .setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
+//                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
+//                .setWebChromeClient(mWebChromeClient) //WebChromeClient
+//                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
+//                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
+//                //.setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
+//                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
+//                .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
+//                //.additionalHttpHeader(getUrl(), "cookie", "41bc7ddf04a26b91803f6b11817a5a1c")
+//                .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
+//                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+//                .interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
+//                .createAgentWeb()//创建AgentWeb。
+//                .ready()//设置 WebSettings。
+//                .go(link); //WebView载入该url地址的页面并显示。
+
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(main, 1, lp)//lp记得设置behavior属性
                 //.setAgentWebParent((LinearLayout) view, -1, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
                 .useDefaultIndicator(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
-                //.setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
+                .setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .setWebLayout(getWebLayout())
+                .setPermissionInterceptor(mPermissionInterceptor)
+                .useMiddlewareWebChrome(getMiddlewareWebChrome())
+                .useMiddlewareWebClient(getMiddlewareWebClient())
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 //.setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
                 .setWebView(webView)
                 .interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。
                 .go(link); //WebView载入该url地址的页面并显示。
+    }
+
+    protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
+
+        /**
+         * PermissionInterceptor 能达到 url1 允许授权， url2 拒绝授权的效果。
+         * @param url
+         * @param permissions
+         * @param action
+         * @return true 该Url对应页面请求权限进行拦截 ，false 表示不拦截。
+         */
+        @Override
+        public boolean intercept(String url, String[] permissions, String action) {
+            // Log.i(TAG, "mUrl:" + url + "  permission:" + mGson.toJson(permissions) + " action:" + action);
+            return false;
+        }
+    };
+
+    /**
+     * @return IAgentWebSettings
+     */
+    public IAgentWebSettings getSettings() {
+        return new AbsAgentWebSettings() {
+            private AgentWeb mAgentWeb;
+
+            @Override
+            protected void bindAgentWebSupport(AgentWeb agentWeb) {
+                this.mAgentWeb = agentWeb;
+            }
+
+            /**
+             * AgentWeb 4.0.0 内部删除了 DownloadListener 监听 ，以及相关API ，将 Download 部分完全抽离出来独立一个库，
+             * 如果你需要使用 AgentWeb Download 部分 ， 请依赖上 compile 'com.download.library:Downloader:4.1.1' ，
+             * 如果你需要监听下载结果，请自定义 AgentWebSetting ， New 出 DefaultDownloadImpl
+             * 实现进度或者结果监听，例如下面这个例子，如果你不需要监听进度，或者下载结果，下面 setDownloader 的例子可以忽略。
+             * @param webView
+             * @param downloadListener
+             * @return WebListenerManager
+             */
+            @Override
+            public WebListenerManager setDownloader(WebView webView, android.webkit.DownloadListener downloadListener) {
+                return super.setDownloader(webView,
+                        new DefaultDownloadImpl((Activity) webView.getContext(),
+                                webView,
+                                this.mAgentWeb.getPermissionInterceptor()) {
+
+                            @Override
+                            protected ResourceRequest createResourceRequest(String url) {
+                                return DownloadImpl.getInstance()
+                                        .with(getApplicationContext())
+                                        .url(url)
+                                        .quickProgress()
+                                        .addHeader("", "")
+                                        .setEnableIndicator(true)
+                                        .autoOpenIgnoreMD5()
+                                        .setRetry(5)
+                                        .setBlockMaxTime(100000L);
+                            }
+
+                            @Override
+                            protected void taskEnqueue(ResourceRequest resourceRequest) {
+                                resourceRequest.enqueue(new DownloadListenerAdapter() {
+                                    @Override
+                                    public void onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+                                        super.onStart(url, userAgent, contentDisposition, mimetype, contentLength, extra);
+                                    }
+
+                                    @MainThread
+                                    @Override
+                                    public void onProgress(String url, long downloaded, long length, long usedTime) {
+                                        super.onProgress(url, downloaded, length, usedTime);
+                                    }
+
+                                    @Override
+                                    public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+                                        return super.onResult(throwable, path, url, extra);
+                                    }
+                                });
+                            }
+                        });
+            }
+        };
     }
 
     private void bindEvent()
@@ -338,6 +461,12 @@ public class WebViewActivity extends AppCompatActivity {
 
 
         }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+            Log.i("CommonWebChromeClient", "onProgressChanged:" + newProgress + "  view:" + view);
+        }
     };
 
     private static final int MENU_CONFIRM = 18;
@@ -458,6 +587,48 @@ public class WebViewActivity extends AppCompatActivity {
 
 
 
+    /**
+     * MiddlewareWebClientBase 是 AgentWeb 3.0.0 提供一个强大的功能，
+     * 如果用户需要使用 AgentWeb 提供的功能， 不想重写 WebClientView方
+     * 法覆盖AgentWeb提供的功能，那么 MiddlewareWebClientBase 是一个
+     * 不错的选择 。
+     *
+     * @return
+     */
+    protected MiddlewareWebClientBase getMiddlewareWebClient() {
+        return this.mMiddleWareWebClient = new MiddlewareWebViewClient() {
+            /**
+             *
+             * @param view
+             * @param url
+             * @return
+             */
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.e(TAG, "MiddlewareWebClientBase#shouldOverrideUrlLoading url:" + url);
+				/*if (url.startsWith("agentweb")) { // 拦截 url，不执行 DefaultWebClient#shouldOverrideUrlLoading
+					Log.i(TAG, "agentweb scheme ~");
+					return true;
+				}*/
 
+                if (super.shouldOverrideUrlLoading(view, url)) { // 执行 DefaultWebClient#shouldOverrideUrlLoading
+                    return true;
+                }
+                // do you work
+                return false;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Log.e(TAG, "MiddlewareWebClientBase#shouldOverrideUrlLoading request url:" + request.getUrl().toString());
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+        };
+    }
+
+    protected MiddlewareWebChromeBase getMiddlewareWebChrome() {
+        return this.mMiddleWareWebChrome = new MiddlewareChromeClient() {
+        };
+    }
 
 }
