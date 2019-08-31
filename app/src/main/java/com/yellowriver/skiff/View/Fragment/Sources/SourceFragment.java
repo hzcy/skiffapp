@@ -234,6 +234,13 @@ public class SourceFragment extends Fragment  {
         new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("导入RSS源(测试功能)")
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
+                    ProgressDialog waitingDialog =
+                            new ProgressDialog(getContext());
+                    waitingDialog.setTitle("提示");
+                    waitingDialog.setMessage("加载中...");
+                    waitingDialog.setIndeterminate(true);
+                    waitingDialog.setCancelable(false);
+                    waitingDialog.show();
                     if (TextUtils.isEmpty(sourceadder.getText()) || TextUtils.isEmpty(sourcegroup.getText())) {
                         SnackbarUtil.ShortSnackbar(getView(), "请输入RSS源地址或给分组取个名！", SnackbarUtil.Warning).show();
 
@@ -244,6 +251,7 @@ public class SourceFragment extends Fragment  {
                             Log.d(TAG, "run: RSS");
                             //RSS
                             boolean add = RSSUtils.insertRSS(json, group);
+                            waitingDialog.cancel();
                             if (add) {
                                 SnackbarUtil.ShortSnackbar(getView(), "RSS源添加成功！", SnackbarUtil.Confirm).show();
 
@@ -325,8 +333,10 @@ public class SourceFragment extends Fragment  {
     public void onDestroy() {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
-        //解除绑定
-        bind.unbind();
+        if (bind!=null) {
+            //解除绑定
+            bind.unbind();
+        }
     }
 
     @Override

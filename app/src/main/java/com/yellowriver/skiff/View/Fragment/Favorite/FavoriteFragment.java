@@ -141,8 +141,10 @@ public class FavoriteFragment extends Fragment {
     public void onDestroy() {
 
         super.onDestroy();
-        //解除绑定
-        bind.unbind();
+        if (bind!=null) {
+            //解除绑定
+            bind.unbind();
+        }
     }
 
 }

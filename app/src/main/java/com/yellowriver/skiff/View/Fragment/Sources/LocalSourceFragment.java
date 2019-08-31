@@ -328,7 +328,10 @@ public class LocalSourceFragment extends Fragment {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
         //解除绑定
-        bind.unbind();
+        if (bind!=null) {
+            //解除绑定
+            bind.unbind();
+        }
 
     }
 

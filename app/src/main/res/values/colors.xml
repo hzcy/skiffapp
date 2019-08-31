@@ -28,9 +28,11 @@
 
 
     //固定值
-    <color name="colorDataTitle">#1A1A1A</color>
-    <color name="colorDataSummary">#444444</color>
-    <color name="colorDataDate">#999999</color>
+    <color name="colorDataTitle">#000000</color>
+    <color name="colorDataSummary">#4F4D4D</color>
+    <color name="colorDataSummary2">#828080</color>
+<!--    <color name="colorDataSummary">#525252</color>-->
+    <color name="colorDataDate">#6A6666</color>
 
 
     <color name="colorLogo1">#FF9100</color>

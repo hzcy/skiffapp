@@ -91,7 +91,7 @@
             android:singleLine="true"
             android:id="@+id/tv_summary"
             android:maxLines="1"
-            android:textColor="@color/colorDataSummary"
+            android:textColor="@color/colorDataSummary2"
             android:layout_marginStart="10dp"
             android:textSize="17sp"
             android:text="@string/datasummary"

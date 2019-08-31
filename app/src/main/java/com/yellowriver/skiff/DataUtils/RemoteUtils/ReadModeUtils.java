@@ -42,36 +42,37 @@ public class ReadModeUtils {
 
             }
         }
-        String contentstr = content.toString();
-        for (int j = 0; j < content.children().size(); j++) {
-            Element c = content.child(j); // 获取每个元素
+        String contentstr ="";
+        if (content != null) {
+             contentstr = content.toString();
+            for (int j = 0; j < content.children().size(); j++) {
+                Element c = content.child(j); // 获取每个元素
 
-            Log.d(TAG, "getContent: "+c.select("img").size());
-            // 抽取出图片
-            if (c.select("img").size() > 0) {
-                Elements imgs = c.getElementsByTag("img");
-                for (Element img : imgs) {
-                    if (!"".equals(img.attr("src"))) {
+                Log.d(TAG, "getContent: " + c.select("img").size());
+                // 抽取出图片
+                if (c.select("img").size() > 0) {
+                    Elements imgs = c.getElementsByTag("img");
+                    for (Element img : imgs) {
+                        if (!"".equals(img.attr("src"))) {
 
-                        Log.d(TAG, "getRickContext: "+img.parent().attr("href"));
-                        Log.d(TAG, "getRickContext: "+img.attr("src"));
-                        // 大图链接
-                        if (!"".equals(img.parent().attr("href"))) {
-                            if (!img.parent().attr("href").startsWith("http"))
-                            {
-                                Log.d(TAG, "getRickContext: "+readImgSrc);
-                                Log.d(TAG, "getRickContext: "+img.parent().attr("href"));
-                                contentstr = content.toString().replace(img.parent().attr("href").toString(),readImgSrc + img.parent().attr("href").toString());
+                            Log.d(TAG, "getRickContext: " + img.parent().attr("href"));
+                            Log.d(TAG, "getRickContext: " + img.attr("src"));
+                            // 大图链接
+                            if (!"".equals(img.parent().attr("href"))) {
+                                if (!img.parent().attr("href").startsWith("http")) {
+                                    Log.d(TAG, "getRickContext: " + readImgSrc);
+                                    Log.d(TAG, "getRickContext: " + img.parent().attr("href"));
+                                    contentstr = content.toString().replace(img.parent().attr("href").toString(), readImgSrc + img.parent().attr("href").toString());
+                                }
+
+                                System.out.println("href="
+                                        + img.parent().attr("href"));
+
                             }
-
-                            System.out.println("href="
-                                    + img.parent().attr("href"));
-
-                        }
-                        if (!img.attr("src").startsWith("http"))
-                        {
-                            Log.d(TAG, "getRickContext: "+readImgSrc);
-                            contentstr = content.toString().replace(img.attr("src").toString(),readImgSrc + img.attr("src").toString());
+                            if (!img.attr("src").startsWith("http")) {
+                                Log.d(TAG, "getRickContext: " + readImgSrc);
+                                contentstr = content.toString().replace(img.attr("src").toString(), readImgSrc + img.attr("src").toString());
+                            }
                         }
                     }
                 }
@@ -81,66 +82,7 @@ public class ReadModeUtils {
     }
 
 
-    public static Vector<MultipleItem> getRickContext(String url, String contentXpath, String readImgSrc, String readCharset)
-    {
-        Vector<MultipleItem> multipleItems = new Vector<>();
-        Element content = null;
-        if ("".equals(contentXpath)) {
-            //content = Jsoup.parse(textcontent).children().get(0);
-            //Log.d(TAG, "getContent: "+content);
-        } else {
-            // 获取文档内容
-            Document doc = Jsoup.parse(NetUtils.getInstance().getRequest(url, readCharset));
 
-            if (doc != null) {
-
-                Log.d(TAG, "getContent: " + doc.toString());
-                // 获取文章内容
-                content = doc.select(contentXpath).get(0);
-
-            }
-        }
-        Log.d(TAG, "getRickContext: "+content.html());
-        String contentstr = content.toString();
-        for (int j = 0; j < content.children().size(); j++) {
-            Element c = content.child(j); // 获取每个元素
-
-            Log.d(TAG, "getContent: "+c.select("img").size());
-            // 抽取出图片
-            if (c.select("img").size() > 0) {
-                Elements imgs = c.getElementsByTag("img");
-                for (Element img : imgs) {
-                    if (!"".equals(img.attr("src"))) {
-
-                        Log.d(TAG, "getRickContext: "+img.parent().attr("href"));
-                        Log.d(TAG, "getRickContext: "+img.attr("src"));
-                        // 大图链接
-                        if (!"".equals(img.parent().attr("href"))) {
-                            if (!img.parent().attr("href").startsWith("http"))
-                            {
-                                Log.d(TAG, "getRickContext: "+readImgSrc);
-                                Log.d(TAG, "getRickContext: "+img.parent().attr("href"));
-                                contentstr = content.toString().replace(img.parent().attr("href").toString(),readImgSrc + img.parent().attr("href").toString());
-                            }
-
-                            System.out.println("href="
-                                    + img.parent().attr("href"));
-
-                        }
-                        if (!img.attr("src").startsWith("http"))
-                        {
-                            Log.d(TAG, "getRickContext: "+readImgSrc);
-                            contentstr = content.toString().replace(img.attr("src").toString(),readImgSrc + img.attr("src").toString());
-                        }
-                    }
-                }
-            }
-        }
-        MultipleItem multipleItem = new MultipleItem();
-        multipleItem.setContent(contentstr);
-        multipleItems.add(multipleItem);
-        return multipleItems;
-    }
 
 
 

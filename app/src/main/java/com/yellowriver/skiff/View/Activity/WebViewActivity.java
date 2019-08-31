@@ -170,7 +170,7 @@ public class WebViewActivity extends AppCompatActivity {
 
         fontColor = Integer.toHexString(FontColor);
         fontColor = fontColor.substring(2, fontColor.length());
-        getCSS_STYLE(fontSize, fontColor);
+        getCSS_STYLE(fontSize,fontColor,BGColor);
 
 
     }
@@ -221,6 +221,8 @@ public class WebViewActivity extends AppCompatActivity {
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。
                 .go(link); //WebView载入该url地址的页面并显示。
+
+
     }
 
     protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
@@ -319,53 +321,75 @@ public class WebViewActivity extends AppCompatActivity {
     private void loadData(boolean goTop) {
         if (contentXpath != null) {
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    content = ReadModeUtils.getContext(link, contentXpath, readCharset, readHost);
-                    //点击的标题
+            if (!"".equals(contentXpath)) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        content = ReadModeUtils.getContext(link, contentXpath, readCharset, readHost);
+                        //点击的标题
+                        content = content != null ? content.replace("<img/", "<img style=\"max-width:100%;height:auto") : null;
+
+
+                        content = getNewContent(content);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (goTop) {
+                                    String template = FileUtil.getFileContent(getApplicationContext(), "code.html");
+                                    // 生成结果
+                                    String html = template.replace("{{code}}", content);
+                                    mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL("file:///android_asset/", CSS_STYLE + html, "text/html", "utf-8", null);
+                                    mAgentWeb.getWebCreator().getWebView().getSettings().setTextZoom(120);
+                                } else {
+                                    mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL(null, CSS_STYLE + content, "text/html", "utf-8", null);
+
+                                }
+                            }
+                        });
+
+                    }
+                }).start();
+            }else if (content != null) {
+                if (!"".equals(content)) {
+                    Log.d("浏览器", "initView: " + content);
                     content = content != null ? content.replace("<img/", "<img style=\"max-width:100%;height:auto") : null;
 
-
                     content = getNewContent(content);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    if (goTop) {
+                        String template = FileUtil.getFileContent(getApplicationContext(), "code.html");
+                        // 生成结果
+                        String html = template.replace("{{code}}", content);
+                        mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL("file:///android_asset/", CSS_STYLE + html, "text/html", "utf-8", null);
 
-                            if (goTop) {
-                                String template = FileUtil.getFileContent(getApplicationContext(), "code.html");
-                                // 生成结果
-                                String html = template.replace("{{code}}", content);
-                                mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL("file:///android_asset/",   html, "text/html", "utf-8", null);
-                                mAgentWeb.getWebCreator().getWebView().getSettings().setTextZoom(120);
-                            } else {
-                                mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL(null, CSS_STYLE + content, "text/html", "utf-8", null);
+                    } else {
+                        mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL(null, CSS_STYLE + content, "text/html", "utf-8", null);
 
-                            }
-                        }
-                    });
-
+                    }
                 }
-            }).start();
+            }
 
         } else if (content != null) {
-            Log.d("浏览器", "initView: " + content);
-            content = content != null ? content.replace("<img/", "<img style=\"max-width:100%;height:auto") : null;
+            if (!"".equals(content)) {
+                Log.d("浏览器", "initView: " + content);
+                content = content != null ? content.replace("<img/", "<img style=\"max-width:100%;height:auto") : null;
 
-            content = getNewContent(content);
-            if (goTop) {
-                String template = FileUtil.getFileContent(getApplicationContext(), "code.html");
-                // 生成结果
-                String html = template.replace("{{code}}", content);
-                mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL("file:///android_asset/", CSS_STYLE + html, "text/html", "utf-8", null);
+                content = getNewContent(content);
+                if (goTop) {
+                    String template = FileUtil.getFileContent(getApplicationContext(), "code.html");
+                    // 生成结果
+                    String html = template.replace("{{code}}", content);
+                    mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL("file:///android_asset/", CSS_STYLE + html, "text/html", "utf-8", null);
 
-            } else {
-                mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL(null, CSS_STYLE + content, "text/html", "utf-8", null);
+                } else {
+                    mAgentWeb.getWebCreator().getWebView().loadDataWithBaseURL(null, CSS_STYLE + content, "text/html", "utf-8", null);
 
+                }
             }
         }
         mToolbar.setTitle(fromTitle);
-        //mAgentWeb.getWebCreator().getWebView().setBackgroundColor(BGColor);
+        mAgentWeb.getWebCreator().getWebView().setBackgroundColor(BGColor);
+
     }
 
     /**
@@ -579,8 +603,10 @@ public class WebViewActivity extends AppCompatActivity {
 
 
 
-    private void getCSS_STYLE(int fontSize, String fontColor) {
-        CSS_STYLE = "<style>* {font-size:" + fontSize + "px;color:#" + fontColor + ";}</style>";
+    private void getCSS_STYLE(int fontSize, String fontColor,int BGColor) {
+        String BGColorstr = Integer.toHexString(BGColor);
+        BGColorstr = BGColorstr.substring(2, BGColorstr.length());
+        CSS_STYLE = "<style>* {font-size:" + fontSize + "px;} p{color:#" + fontColor + ";} body{background-color:#" + BGColorstr + ";}</style>";
 
     }
 

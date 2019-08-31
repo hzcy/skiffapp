@@ -42,6 +42,7 @@ import com.just.agentweb.NestedScrollAgentWebView;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.WebViewClient;
+import com.yellowriver.skiff.Help.AndroidInterface;
 import com.yellowriver.skiff.Help.MiddlewareChromeClient;
 import com.yellowriver.skiff.Help.MiddlewareWebViewClient;
 import com.yellowriver.skiff.Help.WebLayout;
@@ -137,7 +138,15 @@ public class AboutWebViewActivity extends AppCompatActivity {
                 .go(link); //WebView载入该url地址的页面并显示。
 
 
+        if (mAgentWeb != null) {
+            mAgentWeb.getUrlLoader().reload(); // 刷新
+        }
         mAgentWeb.getWebCreator().getWebView().getSettings().setTextZoom(100);
+
+        if(mAgentWeb!=null){
+            //注入对象
+            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this));
+        }
 
         //添加下拉背景  轻舟logo
         addBgChild(mAgentWeb.getWebCreator().getWebParentLayout());

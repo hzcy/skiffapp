@@ -150,7 +150,7 @@ public class HomeTabFragment extends Fragment {
         contentAdapter = new ContentPagerAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
 
         mViewPager.setAdapter(contentAdapter);
-        mViewPager.setOffscreenPageLimit(tabFragments.size());
+        //mViewPager.setOffscreenPageLimit(tabFragments.size());
         mTabLayout.setViewPager(mViewPager);
     }
 
@@ -168,8 +168,10 @@ public class HomeTabFragment extends Fragment {
     public void onDestroy() {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
-        //解除绑定
-        bind.unbind();
+        if (bind!=null) {
+            //解除绑定
+            bind.unbind();
+        }
     }
 
 }

@@ -331,4 +331,17 @@ public class SettingsFragment extends Fragment {
     }
 
 
+    /**
+     * 销毁.
+     */
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "测试-->onDestroy");
+        super.onDestroy();
+        if (bind!=null) {
+            //解除绑定
+            bind.unbind();
+        }
+
+    }
 }
