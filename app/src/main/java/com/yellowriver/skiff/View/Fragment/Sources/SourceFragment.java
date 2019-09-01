@@ -57,7 +57,7 @@ import static com.yellowriver.skiff.R.drawable.ic_more_vert_black_24dp;
  *
  * @author huang
  */
-public class SourceFragment extends Fragment  {
+public class SourceFragment extends Fragment {
     private static final String HTTP = "http";
     private static final String TAG = "SourceFragment";
     @BindView(R.id.toolbar)
@@ -105,6 +105,7 @@ public class SourceFragment extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
 
     }
+
     LocalSourceFragment localSourceFragment;
     RemoteSourceFragment sourceDataViewFragment;
     ContentPagerAdapter contentAdapter;
@@ -127,15 +128,8 @@ public class SourceFragment extends Fragment  {
         mTabLayout.setViewPager(mViewPager);
 
 
-
     }
 
-    /**
-     * 添加成功后 重新加载本地源
-     */
-    private void updateLocalSource() {
-        contentAdapter.notifyDataSetChanged();
-    }
 
     private void loadSql(String newtitle, String newtype, HomeEntity homeEntity) {
         SQLiteUtils.getInstance().getDaoSession().startAsyncSession().runInTx(new Runnable() {
@@ -154,6 +148,7 @@ public class SourceFragment extends Fragment  {
                             long addresult = SQLModel.getInstance().addSouce(homeEntity);
                             if (addresult >= 0) {
                                 SnackbarUtil.ShortSnackbar(getView(), "源添加成功！", SnackbarUtil.Confirm).show();
+                                //重新加载源管理页面
                                 bindView();
                                 //保存修改了数据的状态 当这里修改成功 首页要重新加载
                                 SharedPreferencesUtils.dataChange(true, getContext());
@@ -193,9 +188,8 @@ public class SourceFragment extends Fragment  {
                     } else {
                         String json = sourceadder.getText().toString();
                         new Thread(() -> {
-                            //String group = sourcegroup.getText().toString();
+
                             if (JsonUtils.isJSONValid(json)) {
-                                Log.d(TAG, "showDialogAddJSON: 是json");
                                 //JSON 轻舟源
                                 Type type = new TypeToken<HomeEntity>() {
                                 }.getType();
@@ -251,17 +245,28 @@ public class SourceFragment extends Fragment  {
                             Log.d(TAG, "run: RSS");
                             //RSS
                             boolean add = RSSUtils.insertRSS(json, group);
-                            waitingDialog.cancel();
-                            if (add) {
-                                SnackbarUtil.ShortSnackbar(getView(), "RSS源添加成功！", SnackbarUtil.Confirm).show();
 
 
-                                SharedPreferencesUtils.dataChange(true, getContext());
-                            } else {
-                                SnackbarUtil.ShortSnackbar(getView(), "RSS源添加失败！", SnackbarUtil.Warning).show();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    waitingDialog.cancel();
+                                    if (add) {
+
+                                        SnackbarUtil.ShortSnackbar(getView(), "RSS源添加成功！", SnackbarUtil.Confirm).show();
+
+                                        //重新加载源管理页面
+                                        bindView();
+                                        SharedPreferencesUtils.dataChange(true, getContext());
+                                    } else {
+                                        SnackbarUtil.ShortSnackbar(getView(), "RSS源添加失败！", SnackbarUtil.Warning).show();
 
 
-                            }
+                                    }
+                                }
+                            });
+
+
                         }).start();
                     }
                 }).setNegativeButton("取消", null).show();
@@ -306,7 +311,10 @@ public class SourceFragment extends Fragment  {
                                 public void run() {
                                     waitingDialog.cancel();
                                     if (isAdd) {
-                                        updateLocalSource();
+                                        //重新加载源管理页面
+                                        bindView();
+                                        SharedPreferencesUtils.dataChange(true, getContext());
+
                                     } else {
                                         SnackbarUtil.ShortSnackbar(getView(), "源添加失败！", SnackbarUtil.Warning).show();
 
@@ -333,7 +341,7 @@ public class SourceFragment extends Fragment  {
     public void onDestroy() {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
-        if (bind!=null) {
+        if (bind != null) {
             //解除绑定
             bind.unbind();
         }

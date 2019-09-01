@@ -23,7 +23,7 @@ public class NetUtils {
 
     private static final String TAG = "NetUtils";
     private static OkHttpClient buildHttpClient() {
-        return new OkHttpClient.Builder().retryOnConnectionFailure(true).connectTimeout(30, TimeUnit.SECONDS).build();
+        return new OkHttpClient.Builder().retryOnConnectionFailure(true).connectTimeout(20, TimeUnit.SECONDS).build();
     }
 
     private static final NetUtils INSTANCE = new NetUtils();

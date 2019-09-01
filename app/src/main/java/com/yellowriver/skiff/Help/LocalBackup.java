@@ -136,8 +136,10 @@ public class LocalBackup {
                 byte [] bufferFrovite  = new byte[lengthFrovite];
                 fisSources.read(bufferSources);
                 fisFrovite.read(bufferFrovite);
-                String sourcesStr = EncodingUtils.getString(bufferSources, "UTF-8");
-                String froviteStr = EncodingUtils.getString(bufferFrovite, "UTF-8");
+                String sourcesStr =  new String(bufferSources, "UTF-8");
+                String froviteStr =  new String(bufferFrovite, "UTF-8");
+//                String sourcesStr = EncodingUtils.getString(bufferSources, "UTF-8");
+//                String froviteStr = EncodingUtils.getString(bufferFrovite, "UTF-8");
                 homeSql(sourcesStr);
                 favioteSql(froviteStr);
                 Toast.makeText(mContext,"恢复完成",Toast.LENGTH_LONG).show();

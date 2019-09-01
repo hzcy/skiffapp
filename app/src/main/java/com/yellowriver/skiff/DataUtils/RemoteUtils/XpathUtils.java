@@ -47,7 +47,7 @@ class XpathUtils {
                 doc = postDocument(sourceRule);
             }
         } else {
-            Log.d(TAG, "GetHtmlDoc: 规则为空");
+            //Log.d(TAG, "GetHtmlDoc: 规则为空");
         }
         return doc;
     }
@@ -65,7 +65,7 @@ class XpathUtils {
                 List<Object> lists = jxDocument.sel(sourceRule.getListXpath());
 
                 if (lists != null) {
-                    Log.d(TAG, "GetData: "+lists.toString());
+                    //Log.d(TAG, "GetData: "+lists.toString());
                     //先定义标题 图片 简介 链接 日期
                     String title = null, cover = null, summary = null, link = null, date = null;
                     Log.d(TAG, "Xpath获取的数据大小: " + lists.size());

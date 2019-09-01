@@ -223,13 +223,13 @@ public class About2Fragment extends Fragment {
                 break;
             case R.id.weixingzh:
                 //复制公众号到剪贴板
-                SmallUtils.getInstance().toCopy(getContext(), "轻舟");
+                SmallUtils.getInstance().toCopy(getContext(), "轻舟软件");
                 //SnackbarUtil.ShortSnackbar(getView(), "公众号名称已复制到剪贴板", SnackbarUtil.Confirm).show();
                 Toast.makeText(getContext(), "公众号名称已复制到剪贴板", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mail:
                 Intent data = new Intent(Intent.ACTION_SENDTO);
-                data.setData(Uri.parse("mailto:skiff@163.com"));
+                data.setData(Uri.parse("mailto:skiffapp@163.com"));
                 startActivity(data);
                 break;
             case R.id.alipayhb:

@@ -413,7 +413,7 @@
                             android:layout_height="wrap_content"
 
                             android:layout_marginStart="@dimen/dp_10"
-                            android:text="轻舟"
+                            android:text="轻舟软件"
                             android:textColor="@color/colorDataDate"
                             android:textSize="16sp" />
 

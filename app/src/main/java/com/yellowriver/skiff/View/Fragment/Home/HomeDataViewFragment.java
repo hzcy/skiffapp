@@ -223,6 +223,22 @@ public class HomeDataViewFragment extends Fragment {
         return homeDataViewFragment;
     }
 
+    public static HomeDataViewFragment newInstance(String qzGroupName, String qzSourceName, String qzStep, String qzUrl, String qzSourcesType, String qzQuery, int qzSpinnerSel, String qzTitle,int readIndex){
+        HomeDataViewFragment homeDataViewFragment = new HomeDataViewFragment();
+        Bundle args = new Bundle();
+        args.putString("qzGroupName", qzGroupName);
+        args.putString("qzSourceName", qzSourceName);
+        args.putString("qzStep", qzStep);
+        args.putString("qzUrl", qzUrl);
+        args.putString("qzSourcesType", qzSourcesType);
+        args.putString("qzQuery", qzQuery);
+        args.putString("qzTitle", qzTitle);
+        args.putInt("qzSpinnerSel", qzSpinnerSel);
+        args.putInt("readIndex", readIndex);
+        homeDataViewFragment.setArguments(args);
+        return homeDataViewFragment;
+    }
+
     public HomeDataViewFragment() {
         // Required empty public constructor
     }
@@ -483,6 +499,11 @@ public class HomeDataViewFragment extends Fragment {
     public void onDestroyView() {
         Log.d(TAG, "测试-->onDestroyView");
         super.onDestroyView();
+        mSwipeRefreshLayout.setRefreshing(false);
+
+        mSwipeRefreshLayout.destroyDrawingCache();
+
+        mSwipeRefreshLayout.clearAnimation();
         if (null != mRootView) {
             ((ViewGroup) mRootView.getParent()).removeView(mRootView);
 

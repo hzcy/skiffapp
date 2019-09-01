@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
+import com.yellowriver.skiff.Adapter.ViewPageAdapter.FragmentAdapter;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.R;
@@ -137,7 +138,7 @@ public class HomeTabFragment extends Fragment {
             getActivity().runOnUiThread(() -> initContent());
         });
     }
-    ContentPagerAdapter contentAdapter;
+    FragmentAdapter contentAdapter;
     private void initContent() {
         if (tabFragments != null) {
             tabFragments.clear();
@@ -145,9 +146,9 @@ public class HomeTabFragment extends Fragment {
         tabFragments = new ArrayList<>();
         for (String qzSourceName : tabIndicators) {
             //第一步
-            tabFragments.add(HomeDataViewFragment.getInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "", 0));
+            tabFragments.add(HomeDataViewFragment.newInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "", 0));
         }
-        contentAdapter = new ContentPagerAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
+        contentAdapter = new FragmentAdapter(getChildFragmentManager(),tabIndicators, tabFragments);
 
         mViewPager.setAdapter(contentAdapter);
         //mViewPager.setOffscreenPageLimit(tabFragments.size());

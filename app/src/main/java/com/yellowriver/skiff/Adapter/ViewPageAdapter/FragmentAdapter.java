@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -16,28 +18,43 @@ import java.util.List;
  */
 public class FragmentAdapter  extends FragmentPagerAdapter {
     private List<Fragment> fragmentList;
+    private List<String> mTitles;
     private FragmentManager fm;
 
-    public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+    public FragmentAdapter(FragmentManager fm, List<String> titles, List<Fragment> fragmentList) {
         super(fm);
-        this.fragmentList = fragmentList;
         this.fm = fm;
+        this.mTitles = titles;
+        this.fragmentList = fragmentList;
 
     }
 
+//    @Override
+//    public Fragment getItem(int position) {
+//        Fragment fragment = fragmentList.get(position);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("id","" + position);
+//        fragment.setArguments(bundle);
+//        Log.d("ddd", "getItem: "+fragmentList.size());
+//        return fragment;
+//    }
+
+
+    @NotNull
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = fragmentList.get(position);
-        Bundle bundle = new Bundle();
-        bundle.putString("id","" + position);
-        fragment.setArguments(bundle);
-        Log.d("ddd", "getItem: "+fragmentList.size());
-        return fragment;
+        return fragmentList.size() != 0 ? fragmentList.get(position) : null;
     }
+
 
     @Override
     public int getCount() {
-        return fragmentList.size();
+        return fragmentList == null ? 0 : fragmentList.size();
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return mTitles.size() != 0 ? mTitles.get(position) : "";
     }
 
     @Override

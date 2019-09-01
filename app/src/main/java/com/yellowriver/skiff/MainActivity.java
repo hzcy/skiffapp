@@ -3,6 +3,7 @@ package com.yellowriver.skiff;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -177,6 +178,18 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.add(
                                 R.id.fragment_container, sourceFragment);
                     } else {
+                        if (SharedPreferencesUtils
+                                .readSourceReload(getApplicationContext())) {
+                            fragmentTransaction.remove(sourceFragment);
+                            sourceFragment = new SourceFragment();
+                            fragmentTransaction.add(
+                                    R.id.fragment_container, sourceFragment);
+                            //控制收藏是否重新加载  源更新时
+                            SharedPreferencesUtils.writeSourceReload(
+                                    false, getApplicationContext());
+                        } else {
+                            fragmentTransaction.show(sourceFragment);
+                        }
                         fragmentTransaction.show(sourceFragment);
                     }
                     //提交事件

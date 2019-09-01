@@ -169,9 +169,12 @@ public class SettingsFragment extends Fragment {
                 } else {
                     localBackup.resume();
                 }
-
+                //首页要重新加载
                 SharedPreferencesUtils.dataChange(true, getContext());
-
+                //源管理要重新加载
+                SharedPreferencesUtils.writeSourceReload(true,getContext());
+                //收藏页要重新加载
+                SharedPreferencesUtils.FavoriteChange(true,getContext());
                 break;
             default:
                 break;

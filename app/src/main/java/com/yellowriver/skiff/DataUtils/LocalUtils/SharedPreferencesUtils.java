@@ -65,14 +65,28 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
+    //源管理 是否重新加载
+    public static boolean readSourceReload(Context mContext) {
+        //获取数据正反
+        SharedPreferences DataSettings = mContext.getSharedPreferences("sourceReload", 0);
+        return DataSettings.getBoolean("sourcesettingReload", false);
+
+    }
+
+    //源管理 是否重新加载
+    public static void writeSourceReload(boolean dataChange,Context mContext) {
+        SharedPreferences DataSettings = mContext.getSharedPreferences("sourceReload", 0);
+        SharedPreferences.Editor editor = DataSettings.edit();
+        editor.putBoolean("sourcesettingReload", dataChange);
+        editor.apply();
+    }
+
+
 
     //读取数据  添加收藏
     public static boolean readFavoriteChange(Context mContext) {
-        //获取数据正反
+
         SharedPreferences DataSettings = mContext.getSharedPreferences("favoriteChange", 0);
-
-
-
 
         return DataSettings.getBoolean("favoriteChange", false);
 

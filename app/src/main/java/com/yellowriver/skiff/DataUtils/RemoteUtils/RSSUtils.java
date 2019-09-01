@@ -46,36 +46,40 @@ public class RSSUtils {
 
         String title = "";
         String xml = NetUtils.getInstance().getRequest(url,"1");
-        SyndFeedInput input = new SyndFeedInput();
-        SyndFeed feed = null;
-        ByteArrayInputStream inputStream= null;
-        try {
-            inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        try {
-            feed = input.build(new XmlReader(inputStream));
-            Log.d("ok", "insertRSS: "+feed.getTitle());
-            title = feed.getTitle();
-        } catch (FeedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (!"".equals(title)) {
-            HomeEntity homeEntity = new HomeEntity();
-            homeEntity.setTitle(title);
-            homeEntity.setGrouping(group);
-            homeEntity.setType("home");
-            homeEntity.setFirsturl(url);
-            homeEntity.setFirstLinkType("9");
-            homeEntity.setFirstListXpath("{QZRSS}");
-
-            long addresult = SQLModel.getInstance().addSouce(homeEntity);
-            if (addresult >= 0) {
-                isadd = true;
+        if(xml!=null) {
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed feed = null;
+            ByteArrayInputStream inputStream = null;
+            try {
+                inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
+            try {
+                feed = input.build(new XmlReader(inputStream));
+                Log.d("ok", "insertRSS: " + feed.getTitle());
+                title = feed.getTitle();
+            } catch (FeedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (!"".equals(title)) {
+                HomeEntity homeEntity = new HomeEntity();
+                homeEntity.setTitle(title);
+                homeEntity.setGrouping(group);
+                homeEntity.setType("home");
+                homeEntity.setFirsturl(url);
+                homeEntity.setFirstLinkType("9");
+                homeEntity.setFirstListXpath("{QZRSS}");
+
+                long addresult = SQLModel.getInstance().addSouce(homeEntity);
+                if (addresult >= 0) {
+                    isadd = true;
+                }
+            }
+        }else{
+            isadd = false;
         }
         return isadd;
     }

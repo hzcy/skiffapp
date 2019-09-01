@@ -177,7 +177,7 @@ public class RemoteSourceFragment extends Fragment {
         swipeRefresh();
         groupAddAndDelete();
         sourceAddAndDelete();
-        SharedPreferencesUtils.dataChange(
+        SharedPreferencesUtils.dataChangeSource(
                 false, getContext());
     }
 

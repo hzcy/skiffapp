@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.yellowriver.skiff.Adapter.ViewPageAdapter.FragmentAdapter;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.R;
@@ -102,33 +103,11 @@ public class FavoriteFragment extends Fragment {
         for (String title : tabIndicators) {
             tabFragments.add(FavoriteDataFragment.newInstance(title));
         }
-        ContentPagerAdapter contentAdapter = new ContentPagerAdapter(getChildFragmentManager());
+        FragmentAdapter contentAdapter = new FragmentAdapter(getChildFragmentManager(),tabIndicators,tabFragments);
         mViewPager.setAdapter(contentAdapter);
         mTabLayout.setViewPager(mViewPager);
     }
 
-
-    class ContentPagerAdapter extends FragmentPagerAdapter {
-
-        ContentPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-        @NotNull
-        @Override
-        public Fragment getItem(int position) {
-            return tabFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return tabIndicators.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabIndicators.get(position);
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

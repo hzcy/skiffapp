@@ -190,6 +190,7 @@ public class FavoriteDataFragment extends Fragment {
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mFavoriteAdapter.setNewData(mFavoriteEntity);
             } else {
+                mSwipeRefreshLayout.setRefreshing(false);
                 mRecyclerView.setVisibility(View.GONE);
             }
         }

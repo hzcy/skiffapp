@@ -34,7 +34,7 @@ public class MyApplication extends MultiDexApplication  {
                 .addInflater(new SkinConstraintViewInflater())          // ConstraintLayout 控件换肤初始化[可选]
                 .addInflater(new SkinCardViewInflater())                // CardView v7 控件换肤初始化[可选]
                 .loadSkin();
-        Bugly.init(getApplicationContext(), "c46c245326", true);
+        Bugly.init(getApplicationContext(), "c46c245326", false);
        //CrashReport.initCrashReport(getApplicationContext(), "c46c245326", true);
         instances = this;
         setDatabase();
