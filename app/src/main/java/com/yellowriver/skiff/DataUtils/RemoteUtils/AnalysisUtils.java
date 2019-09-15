@@ -337,6 +337,8 @@ public class AnalysisUtils {
 
                             newValue = newValue.replace(oldStr, newStr);
 
+                        }else{
+                            newValue = value.replace(valueStr,"");
                         }
                         break;
                     case "delete":
@@ -409,9 +411,15 @@ public class AnalysisUtils {
                     case "substring":
                         String[] sourceStrArray = valueStr.split(",");
                         if (sourceStrArray.length == 2) {
+
                             String beginindex = sourceStrArray[0];
                             String endindex = sourceStrArray[1];
-                            newValue = value.substring(Integer.valueOf(beginindex), Integer.valueOf(endindex));
+                            if (endindex.startsWith("-")) {
+                                endindex = endindex.replace("-", "");
+                                newValue = newValue.substring(Integer.valueOf(beginindex), newValue.length() - Integer.valueOf(endindex));
+                            } else {
+                                newValue = newValue.substring(Integer.valueOf(beginindex), Integer.valueOf(endindex));
+                            }
 
                         }
                         break;
@@ -423,6 +431,8 @@ public class AnalysisUtils {
 
                             newValue = value.replace(oldStr, newStr);
 
+                        }else{
+                            newValue = value.replace(valueStr,"");
                         }
                         break;
                     case "delete":

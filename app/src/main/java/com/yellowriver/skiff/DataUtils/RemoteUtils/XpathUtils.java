@@ -3,6 +3,7 @@ package com.yellowriver.skiff.DataUtils.RemoteUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Bean.HomeBean.NowRuleBean;
 
@@ -11,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.seimicrawler.xpath.JXDocument;
 
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Vector;
 
@@ -62,7 +64,14 @@ class XpathUtils {
             JXDocument jxDocument = JXDocument.create(doc.toString());
             //通过列表xpath获取的列表的dom
             if (sourceRule.getListXpath().startsWith("//*")) {
-                List<Object> lists = jxDocument.sel(sourceRule.getListXpath());
+                List<Object> lists = null;
+                try {
+                    lists  = jxDocument.sel(sourceRule.getListXpath());
+                }catch (InputMismatchException e)
+                {
+
+                }
+
 
                 if (lists != null) {
                     //Log.d(TAG, "GetData: "+lists.toString());
@@ -97,7 +106,7 @@ class XpathUtils {
                         } else {
                             //不是搜索 必须有标题和链接
                             if (title != null || link != null) {
-                                if (!title.equals("")) {
+                                if (!"".equals(title)) {
                                     //将获取的标题 简介 图片 链接保存为实体
                                     DataEntity dataEntity = new DataEntity(title, summary, cover, link, date, sourceRule.getViewMode(), sourceRule.getLinkType());
                                     dataEntities.add(dataEntity);
@@ -388,7 +397,13 @@ class XpathUtils {
     private HashMap<String, String> getHeaders(String headers) {
         HashMap<String, String> headerMap = null;
         if (!"".equals(headers)) {
-            headerMap = JSON.parseObject(headers, HashMap.class);
+            try {
+                headerMap = JSON.parseObject(headers, HashMap.class);
+            }catch (JSONException e)
+            {
+
+            }
+
         }
         return headerMap;
     }

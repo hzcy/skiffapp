@@ -285,7 +285,10 @@ public class HomeDataViewFragment extends Fragment {
     private void updateView2(List<HomeEntity> homeEntities) {
         setHasOptionsMenu(true);
         //下拉刷新颜色
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorLogo1, R.color.colorLogo2, R.color.colorLogo3, R.color.colorLogo4);
+        if (mSwipeRefreshLayout!=null) {
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.colorLogo1, R.color.colorLogo2, R.color.colorLogo3, R.color.colorLogo4);
+
+        }
         homeEntity = homeEntities.get(0);
         nowRuleBean = AnalysisUtils.getInstance().getValueByStep(homeEntity, qzStep, qzQuery, qzUrl);
         nextPage = nowRuleBean.getNextPageXpath();

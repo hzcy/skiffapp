@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
@@ -193,14 +194,22 @@ public class SourceFragment extends Fragment {
                                 //JSON 轻舟源
                                 Type type = new TypeToken<HomeEntity>() {
                                 }.getType();
-                                HomeEntity homeEntity = gson.fromJson(json, type);
+                                HomeEntity homeEntity = null;
+                                try {
+                                    homeEntity = gson.fromJson(json, type);
+                                }catch (JsonSyntaxException e)
+                                {
+
+                                }catch (IllegalStateException e){
+
+                                }
+
                                 if (homeEntity != null) {
-                                    Log.d(TAG, "showDialogAddJSON: 不为空");
                                     String newtitle = homeEntity.getTitle();
                                     String newtype = homeEntity.getType();
                                     loadSql(newtitle, newtype, homeEntity);
                                 } else {
-                                    SnackbarUtil.ShortSnackbar(getView(), "源格式无效，无法导入！", SnackbarUtil.Warning).show();
+                                    SnackbarUtil.ShortSnackbar(getView(), "源不匹配，无法导入！", SnackbarUtil.Warning).show();
 
                                 }
                             } else {

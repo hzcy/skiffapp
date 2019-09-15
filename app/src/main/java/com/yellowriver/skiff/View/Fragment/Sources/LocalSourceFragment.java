@@ -1,4 +1,5 @@
 package com.yellowriver.skiff.View.Fragment.Sources;
+import	java.awt.Point;
 
 
 import android.annotation.SuppressLint;
@@ -100,7 +101,6 @@ public class LocalSourceFragment extends Fragment {
 
     private void updateView(List<MultiItemEntity> list) {
 
-        Log.d(TAG, "handleMessage: " + list.size());
         mSwipeRefreshLayout.setRefreshing(false);
         //解决刷新时快速滑动导致cash
         sourcesCount = 0;
@@ -110,7 +110,7 @@ public class LocalSourceFragment extends Fragment {
 
                     if (mAdapter != null) {
                         int i = 0;
-                        mAdapter.setPageTitle(i, title + "（" + sourcesCount + "）");
+                       // mAdapter.setPageTitle(i, title + "（" + sourcesCount + "）");
                     }
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mGroupAdapter.setNewData(list);
@@ -228,10 +228,14 @@ public class LocalSourceFragment extends Fragment {
                     case TYPE_LEVEL_0:
                         final group group = (group) adapter.getData().get(position);
                         String groupname = group.getGroupName();
-                        int size = group.getSourcess().size();
+                        if (group!=null) {
+                            if (group.getSourcess()!=null) {
+                                int size = group.getSourcess().size();
 
-                        delAlert(groupname, "", size, TYPE_LEVEL_0, position);
+                                delAlert(groupname, "", size, TYPE_LEVEL_0, position);
 
+                            }
+                        }
                         break;
                     case TYPE_LEVEL_1:
                     default:
@@ -295,17 +299,22 @@ public class LocalSourceFragment extends Fragment {
                             SnackbarUtil.ShortSnackbar(getView(), "删除成功！", SnackbarUtil.Confirm).show();
                             SharedPreferencesUtils.dataChange(true, getContext());
                             SharedPreferencesUtils.dataChangeSource(true, getContext());
-                            int positionAtAll = mGroupAdapter.getParentPositionInAll(position);
-                            //mGroupAdapter.notifyItemChanged(position,"delete");
-                            mGroupAdapter.remove(position);
-                            getData();
-                            if (positionAtAll != -1) {
-                                IExpandable multiItemEntity = (IExpandable) mGroupAdapter.getData().get(positionAtAll);
-                                if (!mGroupAdapter.hasSubItems(multiItemEntity)) {
+                            try {
+                                int positionAtAll = mGroupAdapter.getParentPositionInAll(position);
+                                //mGroupAdapter.notifyItemChanged(position,"delete");
+                                mGroupAdapter.remove(position);
+                                getData();
+                                if (positionAtAll != -1) {
+                                    IExpandable multiItemEntity = (IExpandable) mGroupAdapter.getData().get(positionAtAll);
+                                    if (!mGroupAdapter.hasSubItems(multiItemEntity)) {
 
-                                    mGroupAdapter.remove(positionAtAll);
-                                    //mGroupAdapter.notifyItemChanged(positionAtAll,"delete");
+                                        mGroupAdapter.remove(positionAtAll);
+                                        //mGroupAdapter.notifyItemChanged(positionAtAll,"delete");
+                                    }
                                 }
+                            }catch (IndexOutOfBoundsException e)
+                            {
+
                             }
                         });
                     }

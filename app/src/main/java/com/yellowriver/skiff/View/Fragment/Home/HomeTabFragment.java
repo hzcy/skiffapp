@@ -148,11 +148,17 @@ public class HomeTabFragment extends Fragment {
             //第一步
             tabFragments.add(HomeDataViewFragment.newInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "", 0));
         }
-        contentAdapter = new FragmentAdapter(getChildFragmentManager(),tabIndicators, tabFragments);
+        try {
+            contentAdapter = new FragmentAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
 
-        mViewPager.setAdapter(contentAdapter);
-        //mViewPager.setOffscreenPageLimit(tabFragments.size());
-        mTabLayout.setViewPager(mViewPager);
+        }catch (IllegalStateException e){
+
+        }
+        if (contentAdapter!=null) {
+            mViewPager.setAdapter(contentAdapter);
+            //mViewPager.setOffscreenPageLimit(tabFragments.size());
+            mTabLayout.setViewPager(mViewPager);
+        }
     }
 
 

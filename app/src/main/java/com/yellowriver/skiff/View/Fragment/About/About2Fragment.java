@@ -230,7 +230,13 @@ public class About2Fragment extends Fragment {
             case R.id.mail:
                 Intent data = new Intent(Intent.ACTION_SENDTO);
                 data.setData(Uri.parse("mailto:skiffapp@163.com"));
-                startActivity(data);
+                try {
+                    startActivity(data);
+                } catch(ActivityNotFoundException exception) {
+                    Toast.makeText(getContext(), "没有发现邮箱客户端", Toast.LENGTH_SHORT).show();
+
+                }
+
                 break;
             case R.id.alipayhb:
                 String qrcode = "9GAZc1x07989uzufesr4jfzu2f85Vq";

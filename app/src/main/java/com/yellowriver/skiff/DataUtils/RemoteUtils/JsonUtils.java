@@ -6,6 +6,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Bean.HomeBean.NowRuleBean;
 
@@ -130,28 +133,38 @@ public class JsonUtils {
             JSONObject jsonObject = JSON.parseObject(json);
             String[] sourceStrArray = sourceRule.getListXpath().replace("{QZJSon}", "").split("\\.");
             JSONArray datalist = null;
+            Log.d(TAG, "getJsonData: " + sourceStrArray.length);
             if (sourceStrArray.length > 0) {
-
-
                 for (int i = 0; i < sourceStrArray.length; i++) {
 
                     //最后一次获取的是JSONArray
                     if (i == sourceStrArray.length - 1 && jsonObject != null) {
-                        datalist = jsonObject.getJSONArray(sourceStrArray[i]);
+                        try {
+                            datalist = jsonObject.getJSONArray(sourceStrArray[i]);
+                        } catch (ClassCastException e) {
+
+                        } catch (JSONException e) {
+
+                        }
                     } else {
                         //获取的为JSONObject
-                        jsonObject = Objects.requireNonNull(jsonObject).getJSONObject(sourceStrArray[i]);
+                        try {
+                            jsonObject = Objects.requireNonNull(jsonObject).getJSONObject(sourceStrArray[i]);
+                        } catch (ClassCastException e) {
+
+                        } catch (JSONException e) {
+
+                        }
                     }
 
 
                 }
 
-
             } else {
 
                 datalist = jsonObject.getJSONArray(sourceRule.getListXpath());
             }
-            //Log.d(TAG, "GetJsonData: " + datalist);
+            Log.d(TAG, "GetJsonData: " + datalist);
             if (datalist != null) {
                 if (datalist.size() > 0) {
                     Log.d(TAG, "JSon获取的数据大小: " + datalist.size());
@@ -160,46 +173,29 @@ public class JsonUtils {
 
                         if (!"".equals(sourceRule.getTitleXpath())) {
 
-                            if (sourceRule.getTitleXpath().contains("\\.")) {
-                                title = getJSONbyxpath(listarray, sourceRule.getTitleXpath());
+                            Log.d(TAG, "getJsonData: " + sourceRule.getTitleXpath());
+                            title = getJSONbyxpath(listarray, sourceRule.getTitleXpath());
 
-                            } else {
-                                title = listarray.getString(sourceRule.getTitleXpath());
-                            }
-
+                            Log.d(TAG, "title json" + title);
 
                         }
                         //如果连接xpath存在
                         if (!"".equals(sourceRule.getLinkXpath())) {
-                            if (sourceRule.getLinkXpath().contains("\\.")) {
-                                link = getJSONbyxpath(listarray, sourceRule.getLinkXpath());
-
-                            } else {
-                                link = listarray.getString(sourceRule.getLinkXpath());
-                            }
+                            link = getJSONbyxpath(listarray, sourceRule.getLinkXpath());
                             if (!"".equals(sourceRule.getLinkProcessingValue())) {
                                 //第一步处理 处理图片 如果需要处理的值不为空  （一般情况下使用左拼接将图片拼接完整）
                                 link = AnalysisUtils.getInstance().processingValue(link, sourceRule.getLinkProcessingValue(), sourceRule.getUrl(), 0);
                             }
+                            Log.d(TAG, "link json" + link);
                         }
                         //如果简介xpath存在
                         if (!"".equals(sourceRule.getSummaryXpath())) {
-                            if (sourceRule.getSummaryXpath().contains("\\.")) {
-                                summary = getJSONbyxpath(listarray, sourceRule.getSummaryXpath());
-
-                            } else {
-                                summary = listarray.getString(sourceRule.getSummaryXpath());
-                            }
+                            summary = getJSONbyxpath(listarray, sourceRule.getSummaryXpath());
                         }
                         //如果图片xpath存在
                         if (!"".equals(sourceRule.getCoverXpath())) {
 
-                            if (sourceRule.getCoverXpath().contains("\\.")) {
-                                cover = getJSONbyxpath(listarray, sourceRule.getCoverXpath());
-
-                            } else {
-                                cover = listarray.getString(sourceRule.getCoverXpath());
-                            }
+                            cover = getJSONbyxpath(listarray, sourceRule.getCoverXpath());
                             if (!"".equals(sourceRule.getCoverProcessingValue())) {
                                 //第一步处理 处理图片 如果需要处理的值不为空  （一般情况下使用左拼接将图片拼接完整）
                                 cover = AnalysisUtils.getInstance().processingValue(cover, sourceRule.getCoverProcessingValue(), sourceRule.getUrl(), 0);
@@ -207,12 +203,7 @@ public class JsonUtils {
                         }
                         //如果日期xpath存在
                         if (!"".equals(sourceRule.getDateXpath())) {
-                            if (sourceRule.getDateXpath().contains("\\.")) {
-                                date = getJSONbyxpath(listarray, sourceRule.getDateXpath());
-
-                            } else {
-                                date = listarray.getString(sourceRule.getDateXpath());
-                            }
+                            date = getJSONbyxpath(listarray, sourceRule.getDateXpath());
 
                         }
                         //标题和链接是必须选项
@@ -241,27 +232,44 @@ public class JsonUtils {
     private static String getJSONbyxpath(JSONObject jsonObject, String key) {
 
         String[] sourceStrArray = key.split("\\.");
-        String value;
-        JSONArray datalist = null;
+        String value = null;
         if (sourceStrArray.length > 0) {
 
 
             for (int i = 0; i < sourceStrArray.length; i++) {
-
+                Log.d(TAG, "getJSONbyxpath: " + sourceStrArray[i]);
+                Log.d(TAG, "getJSONbyxpath: " + i);
+                Log.d(TAG, "getJSONbyxpath: " + sourceStrArray.length);
                 if (i == sourceStrArray.length - 1) {
-                    datalist = jsonObject.getJSONArray(sourceStrArray[i]);
+                    try {
+                        Log.d(TAG, "getJSONbyxpath: 最后"+jsonObject.toJSONString());
+                        Log.d(TAG, "getJSONbyxpath: 最后"+sourceStrArray[i]);
+
+                        value = jsonObject.getString(sourceStrArray[i]);
+
+                    } catch (ClassCastException e) {
+
+                    } catch (JSONException e) {
+
+                    }
                 } else {
-                    jsonObject = jsonObject.getJSONObject(sourceStrArray[i]);
+                    try {
+                        jsonObject = jsonObject.getJSONObject(sourceStrArray[i]);
+                        Log.d(TAG, "getJSONbyxpath: jsonjosn"+jsonObject.toJSONString());
+                    } catch (ClassCastException e) {
+
+                    } catch (JSONException e) {
+
+                    }
                 }
 
 
             }
-            value = Objects.requireNonNull(datalist).toString();
 
         } else {
-
             value = jsonObject.getString(key);
         }
+        Log.d(TAG, "datalist" + value);
         return value;
     }
 

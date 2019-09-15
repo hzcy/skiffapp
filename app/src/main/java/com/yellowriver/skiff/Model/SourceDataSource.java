@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
@@ -17,6 +18,8 @@ import com.yellowriver.skiff.DataUtils.RemoteUtils.JsonUtils;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.NetUtils;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.SourceUtils;
 import com.yellowriver.skiff.Interface.SourceDataInterface;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -56,7 +59,14 @@ public class SourceDataSource implements SourceDataInterface {
                 if (JsonUtils.isJSONValid(data)) {
                     Type type = new TypeToken<HomeEntity>() {
                     }.getType();
-                    HomeEntity homeEntity = gson.fromJson(data, type);
+                    HomeEntity homeEntity = null;
+                    try {
+                        homeEntity = gson.fromJson(data, type);
+                    } catch (IllegalStateException e) {
+
+                    } catch (JsonSyntaxException e) {
+
+                    }
                     if (homeEntity != null) {
                         String newtitle = homeEntity.getTitle();
                         String newtype = homeEntity.getType();
@@ -129,7 +139,6 @@ public class SourceDataSource implements SourceDataInterface {
     @Override
     public LiveData<List<MultiItemEntity>> getRemoteSourcesData() {
         final MutableLiveData<List<MultiItemEntity>> remoteSources = new MutableLiveData<>();
-
 
 
         ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1,

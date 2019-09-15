@@ -90,10 +90,16 @@ public class HomeViewFragment extends Fragment {
     private void updateView(final List<String> groupNameList) {
         //如果数据库为空
         if (groupNameList.size() == 0) {
-            toolbar.setVisibility(View.VISIBLE);
-            toolbar.setTitle("首页");
-            mAppBarLayout.setElevation(10);
-            mllserarchView.setVisibility(View.GONE);
+            if (toolbar!=null) {
+                toolbar.setVisibility(View.VISIBLE);
+                toolbar.setTitle("首页");
+            }
+            if (mAppBarLayout!=null) {
+                mAppBarLayout.setElevation(10);
+            }
+            if (mllserarchView!=null) {
+                mllserarchView.setVisibility(View.GONE);
+            }
 
         } else {
             mAppBarLayout.setElevation(0);
@@ -134,10 +140,12 @@ public class HomeViewFragment extends Fragment {
     @SuppressLint("ResourceAsColor")
     private void bindView(final View v) {
         bind = ButterKnife.bind(this, v);
-        mSearchView.setShape(Search.Shape.CLASSIC);
-        mSearchView.setShadow(false);
-        mSearchView.setShadowColor(R.color.colorPrimary);
-        mSearchView.setHint(R.string.search_hint);
+        if (mSearchView!=null) {
+            mSearchView.setShape(Search.Shape.CLASSIC);
+            mSearchView.setShadow(false);
+            mSearchView.setShadowColor(R.color.colorPrimary);
+            mSearchView.setHint(R.string.search_hint);
+        }
     }
 
 

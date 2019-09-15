@@ -43,35 +43,44 @@ public class NetUtils {
      */
     public String getRequest(String path, String Charset) {
         OkHttpClient client = buildHttpClient();
-        final Request request = new Request.Builder()
-                .get()
-                .url(path)
-                .addHeader("Connection", "close")
-                .build();
+        Request request = null;
+        try {
+            request = new Request.Builder()
+                    .get()
+                    .url(path)
+                    .addHeader("Connection", "close")
+                    .build();
+        }catch (IllegalArgumentException e)
+        {
+
+        }
 
         String result = null;
         Response response;
         try {
-            response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                switch (Charset) {
-                    //utf-8
-                    case "1":
-                        result = Objects.requireNonNull(response.body()).string();
-                        break;
-                    case "2":
-                        //获取数据的bytes
-                        byte[] b = Objects.requireNonNull(response.body()).bytes();
-                        result = new String(b, "GB2312");
-                        break;
-                    default:
-                        result = Objects.requireNonNull(response.body()).string();
-                        break;
+            if (request != null) {
+                response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    switch (Charset) {
+                        //utf-8
+                        case "1":
+                            result = Objects.requireNonNull(response.body()).string();
+                            break;
+                        case "2":
+                            //获取数据的bytes
+                            byte[] b = Objects.requireNonNull(response.body()).bytes();
+                            result = new String(b, "GB2312");
+                            break;
+                        default:
+                            result = Objects.requireNonNull(response.body()).string();
+                            break;
+                    }
+
+
+                } else {
+                    //throw new IOException("Unexpected code " + response);
                 }
 
-
-            } else {
-                //throw new IOException("Unexpected code " + response);
             }
         } catch (IOException e) {
             //e.printStackTrace();

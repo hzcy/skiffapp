@@ -229,12 +229,14 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
                 int nowindex = mFirstVisibleItem + fromindex;
 
                 if (data != null && mFirstVisibleItem != -1 ) {
-                    if(nowindex < mMenuDataEntity.size()) {
-                        title = mMenuDataEntity.get(nowindex).getTitle();
+                    if (mMenuDataEntity!=null) {
+                        if (nowindex < mMenuDataEntity.size()) {
+                            title = mMenuDataEntity.get(nowindex).getTitle();
 
-                        mToolbar.setTitle(title);
-                    }else{
-                        Log.d(TAG, "onScrolled: 到底了");
+                            mToolbar.setTitle(title);
+                        } else {
+                            Log.d(TAG, "onScrolled: 到底了");
+                        }
                     }
 
                 }else{
@@ -257,8 +259,10 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
                     if (POSITIVE.equals(SharedPreferencesUtils.readDataSort(Objects.requireNonNull(getApplicationContext())))) {
                         Log.d(TAG, "onClick: 底部");
                         SharedPreferencesUtils.writeDataSort("反", getApplicationContext());
-                        mMenuRecyclerView.scrollToPosition(mMenuDataEntity.size()-1);
-                        Log.d(TAG, "onClick: "+mMenuAdapter.getData().size());
+                        if (mMenuDataEntity != null) {
+                            mMenuRecyclerView.scrollToPosition(mMenuDataEntity.size() - 1);
+                        }
+                        //Log.d(TAG, "onClick: "+mMenuAdapter.getData().size());
 
 
                     } else if (NEGATIVE.equals(SharedPreferencesUtils.readDataSort(getApplicationContext()))) {
@@ -289,7 +293,9 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mReadAdapter.setNewData(data);
+                            if (data != null) {
+                                mReadAdapter.setNewData(data);
+                            }
                             mSwipeRefreshLayout.setRefreshing(false);
                             mToolbar.setTitle(title);
                             mReadRecyclerView.scrollToPosition(0);
@@ -313,7 +319,9 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mReadAdapter.setNewData(data);
+                            if (data != null) {
+                                mReadAdapter.setNewData(data);
+                            }
 
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
@@ -341,7 +349,9 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mReadAdapter.setNewData(data);
+                            if (data != null) {
+                                mReadAdapter.setNewData(data);
+                            }
 
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
@@ -361,41 +371,43 @@ public class ReadActivity extends AppCompatActivity implements ColorPickerDialog
 
             //mReadAdapter.removeAllFooterView();
 
+            if (mMenuDataEntity!=null) {
 
-            if (mMenuDataEntity.size() <= 1) {
+                if (mMenuDataEntity.size() <= 1) {
 
-            } else {
-
-                selindex++;
-                if (selindex < 0 || selindex >= mMenuDataEntity.size()) {
-                    mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
-                    mReadAdapter.loadMoreEnd(true);
                 } else {
-                    mReadAdapter.removeAllFooterView();
-                    url = mMenuDataEntity.get(selindex).getLink();
-                    title = mMenuDataEntity.get(selindex).getTitle();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
 
-                                    if (data != null) {
-                                        mReadAdapter.addData(data);
-                                        mReadAdapter.loadMoreComplete();
+                    selindex++;
+                    if (selindex < 0 || selindex >= mMenuDataEntity.size()) {
+                        mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
+                        mReadAdapter.loadMoreEnd(true);
+                    } else {
+                        mReadAdapter.removeAllFooterView();
+                        url = mMenuDataEntity.get(selindex).getLink();
+                        title = mMenuDataEntity.get(selindex).getTitle();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                data = ReadModeUtils.getContent(url, contentXpath, readHost, readCharset, content);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if (data != null) {
+                                            mReadAdapter.addData(data);
+                                            mReadAdapter.loadMoreComplete();
 
 
-                                    } else {
-                                        mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
-                                        mReadAdapter.loadMoreEnd(true);
+                                        } else {
+                                            mReadAdapter.setFooterView(LayoutInflater.from(getApplicationContext()).inflate(R.layout.footer_loadover, mReadRecyclerView, false));
+                                            mReadAdapter.loadMoreEnd(true);
+                                        }
+
                                     }
-
-                                }
-                            });
-                        }
-                    }).start();
+                                });
+                            }
+                        }).start();
+                    }
                 }
             }
 

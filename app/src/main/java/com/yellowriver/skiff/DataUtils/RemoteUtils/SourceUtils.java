@@ -48,48 +48,51 @@ public class SourceUtils {
         // 获取文档内容
         String json = NetUtils.getInstance().getRequest(grouplisturl, "1");
 
-        Log.d(TAG, "getSourceAllGroup: "+json);
-        List<GroupEntity> sourceBean = null;
-        if (JsonUtils.isJSONValid(json)) {
-            Log.d(TAG, "getSourceAllGroup: 是json");
-            Type type = new TypeToken<List<GroupEntity>>() {
-            }.getType();
-            sourceBean = gson.fromJson(json, type);
-        }
+        if (json!=null) {
 
-        if (sourceBean != null) {
-            Log.d(TAG, "getSourceAllGroup: "+sourceBean.size());
+            Log.d(TAG, "getSourceAllGroup: " + json);
+            List<GroupEntity> sourceBean = null;
+            if (JsonUtils.isJSONValid(json)) {
+                Log.d(TAG, "getSourceAllGroup: 是json");
+                Type type = new TypeToken<List<GroupEntity>>() {
+                }.getType();
+                sourceBean = gson.fromJson(json, type);
+            }
 
-            for (int i = 0; i < sourceBean.size(); i++) {
+            if (sourceBean != null) {
+                Log.d(TAG, "getSourceAllGroup: " + sourceBean.size());
 
-                group groupBean = new group();
-                groupBean.setGroupName(sourceBean.get(i).getName());
-                groupBean.setGroupLink(sourceBean.get(i).getLink());
+                for (int i = 0; i < sourceBean.size(); i++) {
 
-                List<sources> sourcesList = getSourceByGroup(sourceBean.get(i).getLink());
-                groupBean.setSourcess(sourcesList);
-                Log.d(TAG, "getSourceAllGroup: "+sourcesList.size());
-                int havecount = 0;
-                for (sources sources : sourcesList)
-                {
-                    groupBean.addSubItem(sources);
-                    String ishave = sources.getSourcesIshave();
-                    if(ishave.equals("0"))
-                    {
-                        //不存在
-                        havecount++;
+                    group groupBean = new group();
+                    groupBean.setGroupName(sourceBean.get(i).getName());
+                    groupBean.setGroupLink(sourceBean.get(i).getLink());
+
+                    List<sources> sourcesList = getSourceByGroup(sourceBean.get(i).getLink());
+                    if (sourcesList!=null) {
+                        groupBean.setSourcess(sourcesList);
+                        Log.d(TAG, "getSourceAllGroup: " + sourcesList.size());
+                        int havecount = 0;
+                        for (sources sources : sourcesList) {
+                            groupBean.addSubItem(sources);
+                            String ishave = sources.getSourcesIshave();
+                            if (ishave.equals("0")) {
+                                //不存在
+                                havecount++;
+                            }
+                        }
+                        if (havecount > 0) {
+                            //表示有未导入的
+                            groupBean.setGroupIshave("0");
+                        } else {
+                            //说明已全部导入
+                            groupBean.setGroupIshave("1");
+                        }
+                        list.add(groupBean);
+
                     }
-                }
-                if (havecount>0){
-                    //表示有未导入的
-                    groupBean.setGroupIshave("0");
-                }else{
-                    //说明已全部导入
-                    groupBean.setGroupIshave("1");
-                }
-                list.add(groupBean);
 
-
+                }
             }
         }
 
@@ -103,34 +106,36 @@ public class SourceUtils {
         // 获取文档内容
         String json = NetUtils.getInstance().getRequest(baseURL + "/sources" + grouplink, "1");
 
-        List<SourcesEntity> sourcesEntities = null;
-        if (JsonUtils.isJSONValid(json)) {
-            Type type = new TypeToken<List<SourcesEntity>>() {
-            }.getType();
-            sourcesEntities = gson.fromJson(json, type);
-        }
-
-        Log.d(TAG, "getSourceByGroup: "+sourcesEntities.size());
-        if (sourcesEntities != null) {
+        if (json != null) {
+            List<SourcesEntity> sourcesEntities = null;
+            if (JsonUtils.isJSONValid(json)) {
+                Type type = new TypeToken<List<SourcesEntity>>() {
+                }.getType();
+                sourcesEntities = gson.fromJson(json, type);
+            }
 
 
-            for (int i = 0; i < sourcesEntities.size(); i++) {
+            if (sourcesEntities != null) {
 
-                String ishave;
-                if (!SQLModel.getInstance().getXpathbyTitle(sourcesEntities.get(i).getName()).isEmpty()) {
-                    ishave = "1";
-                } else {
-                    ishave = "0";
+
+                for (int i = 0; i < sourcesEntities.size(); i++) {
+
+                    String ishave;
+                    if (!SQLModel.getInstance().getXpathbyTitle(sourcesEntities.get(i).getName()).isEmpty()) {
+                        ishave = "1";
+                    } else {
+                        ishave = "0";
+                    }
+                    sources sourcesBean = new sources();
+                    sourcesBean.setSourcesName(sourcesEntities.get(i).getName());
+                    sourcesBean.setSourcesLink(sourcesEntities.get(i).getLink());
+                    sourcesBean.setSourcesType(sourcesEntities.get(i).getType());
+                    sourcesBean.setSourcesDate(sourcesEntities.get(i).getDate());
+                    sourcesBean.setSourcesIshave(ishave);
+                    sourcesBeanList.add(sourcesBean);
+
+
                 }
-                sources sourcesBean = new sources();
-                sourcesBean.setSourcesName(sourcesEntities.get(i).getName());
-                sourcesBean.setSourcesLink(sourcesEntities.get(i).getLink());
-                sourcesBean.setSourcesType(sourcesEntities.get(i).getType());
-                sourcesBean.setSourcesDate(sourcesEntities.get(i).getDate());
-                sourcesBean.setSourcesIshave(ishave);
-                sourcesBeanList.add(sourcesBean);
-
-
             }
         }
 

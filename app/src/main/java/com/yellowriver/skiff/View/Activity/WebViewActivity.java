@@ -169,7 +169,9 @@ public class WebViewActivity extends AppCompatActivity {
 
 
         fontColor = Integer.toHexString(FontColor);
-        fontColor = fontColor.substring(2, fontColor.length());
+        if (fontColor!=null) {
+            fontColor = fontColor.substring(2);
+        }
         getCSS_STYLE(fontSize,fontColor,BGColor);
 
 
@@ -605,9 +607,12 @@ public class WebViewActivity extends AppCompatActivity {
 
     private void getCSS_STYLE(int fontSize, String fontColor,int BGColor) {
         String BGColorstr = Integer.toHexString(BGColor);
-        BGColorstr = BGColorstr.substring(2, BGColorstr.length());
-        CSS_STYLE = "<style>* {font-size:" + fontSize + "px;} p{color:#" + fontColor + ";} body{background-color:#" + BGColorstr + ";}</style>";
+        if (BGColorstr!=null) {
+            BGColorstr = BGColorstr.substring(2, BGColorstr.length());
 
+            CSS_STYLE = "<style>* {font-size:" + fontSize + "px;} p{color:#" + fontColor + ";} body{background-color:#" + BGColorstr + ";}</style>";
+
+        }
     }
 
 

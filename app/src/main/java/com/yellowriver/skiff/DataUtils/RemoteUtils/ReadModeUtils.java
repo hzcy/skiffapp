@@ -37,7 +37,9 @@ public class ReadModeUtils {
 
                 Log.d(TAG, "getContent: " + doc.toString());
                 // 获取文章内容
-                content = doc.select(contentXpath).get(0);
+                if (doc.select(contentXpath)!=null) {
+                    content = doc.select(contentXpath).get(0);
+                }
 
 
             }
@@ -48,7 +50,7 @@ public class ReadModeUtils {
             for (int j = 0; j < content.children().size(); j++) {
                 Element c = content.child(j); // 获取每个元素
 
-                Log.d(TAG, "getContent: " + c.select("img").size());
+                //Log.d(TAG, "getContent: " + c.select("img").size());
                 // 抽取出图片
                 if (c.select("img").size() > 0) {
                     Elements imgs = c.getElementsByTag("img");
@@ -70,7 +72,7 @@ public class ReadModeUtils {
 
                             }
                             if (!img.attr("src").startsWith("http")) {
-                                Log.d(TAG, "getRickContext: " + readImgSrc);
+                               // Log.d(TAG, "getRickContext: " + readImgSrc);
                                 contentstr = content.toString().replace(img.attr("src").toString(), readImgSrc + img.attr("src").toString());
                             }
                         }
@@ -94,7 +96,7 @@ public class ReadModeUtils {
         Element content = null;
         if ("".equals(contentXpath)) {
             content = Jsoup.parse(textcontent).children().get(0);
-            Log.d(TAG, "getContent: "+content);
+            //Log.d(TAG, "getContent: "+content);
         } else {
             // 获取文档内容
             String html = NetUtils.getInstance().getRequest(url, readCharset);
@@ -103,9 +105,11 @@ public class ReadModeUtils {
 
                 if (doc != null) {
 
-                    Log.d(TAG, "getContent: " + doc.toString());
+                    //Log.d(TAG, "getContent: " + doc.toString());
                     // 获取文章内容
-                    content = doc.select(contentXpath).get(0);
+                    if (doc.select(contentXpath)!=null) {
+                        content = doc.select(contentXpath).get(0);
+                    }
 
                 }
             }
@@ -118,7 +122,7 @@ public class ReadModeUtils {
             list.add(simpleBean);
 
         }
-        Log.d(TAG, "getContent: "+list.size());
+        //Log.d(TAG, "getContent: "+list.size());
 
         return list;
     }
