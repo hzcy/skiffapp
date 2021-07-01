@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -102,43 +103,43 @@ public class SourceDataSource implements SourceDataInterface {
     }
 
     @Override
-    public LiveData<List<MultiItemEntity>> getLocalSourcesData() {
-        final MutableLiveData<List<MultiItemEntity>> LocalSources = new MutableLiveData<>();
-
-        List<MultiItemEntity> list = new ArrayList<>();
-        List<String> titleslist;
-        List<HomeEntity> homeEntities;
-        titleslist = SQLModel.getInstance().getGroup();
-        for (int i = 0; i < titleslist.size(); i++) {
-            group groupBean = new group();
-            groupBean.setGroupName(titleslist.get(i));
-            homeEntities = SQLModel.getInstance().gethomeEntitiesByGroup(titleslist.get(i));
-
-            //可展开数据相关
-            List<sources> sourcesBeans = new ArrayList<>();
-            for (int j = 0; j < homeEntities.size(); j++) {
-                sources sourcesBean = new sources();
-                sourcesBean.setSourcesName(homeEntities.get(j).getTitle());
-                if (homeEntities.get(j).getType() != null) {
-                    if (!"".equals(homeEntities.get(j).getType())) {
-                        sourcesBean.setSourcesType(homeEntities.get(j).getType());
-                    }
-                }
-                sourcesBean.setSourcesDate(homeEntities.get(j).getDate());
-                sourcesBeans.add(sourcesBean);
-                groupBean.addSubItem(sourcesBean);
-            }
-            groupBean.setSourcess(sourcesBeans);
-            list.add(groupBean);
-        }
-        LocalSources.postValue(list);
-
-        return LocalSources;
+    public LiveData<List<BaseNode>> getLocalSourcesData() {
+       final MutableLiveData<List<BaseNode>> LocalSources = new MutableLiveData<>();
+//
+//        List<BaseNode> list = new ArrayList<>();
+//        List<String> titleslist;
+//        List<HomeEntity> homeEntities;
+//        titleslist = SQLModel.getInstance().getGroup();
+//        for (int i = 0; i < titleslist.size(); i++) {
+//            group groupBean = new group();
+//            groupBean.setGroupName(titleslist.get(i));
+//            homeEntities = SQLModel.getInstance().gethomeEntitiesByGroup(titleslist.get(i));
+//
+//            //可展开数据相关
+//            List<BaseNode> sourcesBeans = new ArrayList<>();
+//            for (int j = 0; j < homeEntities.size(); j++) {
+//                sources sourcesBean = new sources();
+//                sourcesBean.setSourcesName(homeEntities.get(j).getTitle());
+//                if (homeEntities.get(j).getType() != null) {
+//                    if (!"".equals(homeEntities.get(j).getType())) {
+//                        sourcesBean.setSourcesType(homeEntities.get(j).getType());
+//                    }
+//                }
+//                sourcesBean.setSourcesDate(homeEntities.get(j).getDate());
+//                sourcesBeans.add(sourcesBean);
+//                //groupBean.setChildNode(sourcesBean);
+//            }
+//           // groupBean.setChildNode(sourcesBeans);
+//            //list.add(groupBean);
+//        }
+//        LocalSources.postValue(list);
+//
+       return LocalSources;
     }
 
     @Override
-    public LiveData<List<MultiItemEntity>> getRemoteSourcesData() {
-        final MutableLiveData<List<MultiItemEntity>> remoteSources = new MutableLiveData<>();
+    public LiveData<List<BaseNode>> getRemoteSourcesData() {
+        final MutableLiveData<List<BaseNode>> remoteSources = new MutableLiveData<>();
 
 
         ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1,
@@ -147,10 +148,11 @@ public class SourceDataSource implements SourceDataInterface {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                List<MultiItemEntity> remoteSourcesList = SourceUtils.getSourceAllGroup();
+                List<BaseNode> remoteSourcesList = SourceUtils.getSourceAllGroup();
 
+                Log.d("新开始", "run: "+remoteSourcesList.size());
 
-                remoteSources.postValue(remoteSourcesList);
+               remoteSources.postValue(remoteSourcesList);
 
             }
         };

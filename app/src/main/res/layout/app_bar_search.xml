@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".View.Activity.SearchActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <skin.support.design.widget.SkinMaterialAppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         >
 
 
-        <LinearLayout
+        <skin.support.widget.SkinCompatLinearLayout
             android:background="@color/colorPrimary"
             android:orientation="horizontal"
             android:focusable="true"
@@ -51,7 +51,7 @@
 
 
 
-        </LinearLayout>
+        </skin.support.widget.SkinCompatLinearLayout>
 
 
 
@@ -62,7 +62,7 @@
 
 
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </skin.support.design.widget.SkinMaterialAppBarLayout>
 
     <FrameLayout
         android:background="@color/colorBackground"

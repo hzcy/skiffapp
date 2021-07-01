@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.yellowriver.skiff.Interface.SourceDataInterface;
 import com.yellowriver.skiff.Model.SourceDataSource;
 
@@ -27,7 +28,7 @@ public class RemoteSourceRepository {
         this.context = context.getApplicationContext();
     }
 
-    public LiveData<List<MultiItemEntity>> getData() {
+    public LiveData<List<BaseNode>> getData() {
         return sourceDataInterface.getRemoteSourcesData();
 
     }

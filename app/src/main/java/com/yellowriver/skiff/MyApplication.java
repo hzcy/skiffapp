@@ -3,9 +3,14 @@ package com.yellowriver.skiff;
 import android.database.sqlite.SQLiteDatabase;
 
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.app.SkinAppCompatDelegateImpl;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
+
+//import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.yellowriver.skiff.Bean.DataBaseBean.DaoMaster;
@@ -33,12 +38,16 @@ public class MyApplication extends MultiDexApplication  {
                 .addInflater(new SkinMaterialViewInflater())            // material design 控件换肤初始化[可选]
                 .addInflater(new SkinConstraintViewInflater())          // ConstraintLayout 控件换肤初始化[可选]
                 .addInflater(new SkinCardViewInflater())                // CardView v7 控件换肤初始化[可选]
+                .setSkinStatusBarColorEnable(true)                     // 关闭状态栏换肤，默认打开[可选]
+                .setSkinWindowBackgroundEnable(true)                   // 关闭windowBackground换肤，默认打开[可选]
                 .loadSkin();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Bugly.init(getApplicationContext(), "c46c245326", false);
        //CrashReport.initCrashReport(getApplicationContext(), "c46c245326", true);
         instances = this;
         setDatabase();
         MultiDex.install(this);
+        //Fresco.initialize(this);
     }
 
 

@@ -1,5 +1,6 @@
 package com.yellowriver.skiff.Adapter.RecyclerViewAdapter;
 
+import android.content.Context;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.IdRes;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.yellowriver.skiff.Bean.SimpleBean;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.Help.FileUtil;
@@ -34,23 +35,28 @@ public class ReadAdapter extends BaseQuickAdapter<SimpleBean, ReadAdapter.MyView
     protected void convert(MyViewHolder helper, SimpleBean item) {
 
 
-        int fontColor = SharedPreferencesUtils.fontColorRead(mContext);//字体颜色
-        int fontSize = SharedPreferencesUtils.fontSizeRead(mContext);//字体大小
-        int bgColor = SharedPreferencesUtils.bgColorRead(mContext);//背景颜色
-        int lineHeight = SharedPreferencesUtils.fontLineheightRead(mContext); //行高
-        int letterspa = SharedPreferencesUtils.fontLetterspaRead(mContext);  //字间距
-        int margin = SharedPreferencesUtils.fontMarginRead(mContext); //左右边距
+        int fontColor = SharedPreferencesUtils.fontColorRead(getContext());//字体颜色
+        int fontSize = SharedPreferencesUtils.fontSizeRead(getContext());//字体大小
+        int bgColor = SharedPreferencesUtils.bgColorRead(getContext());//背景颜色
+        float lineHeight = SharedPreferencesUtils.fontLineheightRead(getContext()); //行高
+        int letterspa = SharedPreferencesUtils.fontLetterspaRead(getContext());  //字间距
+        int margin = SharedPreferencesUtils.fontMarginRead(getContext()); //左右边距
+        int bottommargin = SharedPreferencesUtils.bottomMarginRead(getContext()); //下边距
 
         String fontColorstr = Integer.toHexString(fontColor);
         fontColorstr = fontColorstr.substring(2, fontColorstr.length());
         String CSS_STYLE = "<style>* {font-size:" + fontSize + "px;" +
                 "color:#" + fontColorstr + ";" +
+                "text-decoration: none;"+
                 "text-justify:inter-ideograph;" +
                 "text-align:justify;" +
-                "line-height:1."+lineHeight+"em;" +
+                "text-indent:2em;" +
+                "line-height:"+lineHeight+"em;" +
+                //"line-height:2em;" +
                 "letter-spacing:"+letterspa+"px;"+
                 "margin: auto "+margin+"px;" +
                 "} " +
+                "* {padding: "+bottommargin+"px 0px "+bottommargin+"px 0px;}"+  //控制段落高度
                 "</style>";
 
 

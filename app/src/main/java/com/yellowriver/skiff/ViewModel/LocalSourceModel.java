@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.yellowriver.skiff.Repository.LocalSourceRepository;
 
 import java.util.List;
@@ -22,13 +23,13 @@ public class LocalSourceModel extends ViewModel {
     private static final String TAG = "LocalSourceModel";
     private LocalSourceRepository localSourceRepository = LocalSourceRepository.getInstance();
     private MutableLiveData<Integer> ldPage;;
-    private LiveData<List<MultiItemEntity>> localSources;
-    public LiveData<List<MultiItemEntity>> getLocalSources() {
+    private LiveData<List<BaseNode>> localSources;
+    public LiveData<List<BaseNode>> getLocalSources() {
         if (null == localSources) {
             ldPage = new MutableLiveData<>();
-            localSources = Transformations.switchMap(ldPage, new Function<Integer, LiveData<List<MultiItemEntity>>>() {
+            localSources = Transformations.switchMap(ldPage, new Function<Integer, LiveData<List<BaseNode>>>() {
                 @Override
-                public LiveData<List<MultiItemEntity>> apply(Integer page) {
+                public LiveData<List<BaseNode>> apply(Integer page) {
 
                     return localSourceRepository.getData();
                 }

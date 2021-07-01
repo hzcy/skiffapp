@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Fragment.NavMyImpFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <TextView
+
+            android:id="@+id/titletext"
+            android:gravity="top|left"
+            android:textSize="18sp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#4E4E4E"
+            android:typeface="monospace"
+            android:text="标题:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:typeface="monospace"
+            android:id="@+id/titlexpath"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:background="@null"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"/>
+
+
+        <TextView
+            android:id="@+id/linktext"
+            android:gravity="top|left"
+            android:textSize="18sp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#4E4E4E"
+            android:typeface="monospace"
+            android:text="链接:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:typeface="monospace"
+            android:id="@+id/linkxpath"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:background="@null"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"/>
+
+
+        <TextView
+            android:id="@+id/covertext"
+            android:gravity="top|left"
+            android:textSize="18sp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#4E4E4E"
+            android:typeface="monospace"
+            android:text="图片:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:typeface="monospace"
+            android:id="@+id/coverxpath"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:background="@null"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"/>
+
+
+        <LinearLayout
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/summarytext"
+                android:gravity="top|left"
+                android:textSize="18sp"
+
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#4E4E4E"
+                android:typeface="monospace"
+                android:text="简介:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:typeface="monospace"
+            android:id="@+id/sumamryxpath"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:background="@null"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"/>
+
+
+    <LinearLayout
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/datetext"
+            android:gravity="top|left"
+            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#4E4E4E"
+            android:typeface="monospace"
+            android:text="日期:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:typeface="monospace"
+            android:id="@+id/datexpath"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:background="@null"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"/>
+
+
+        <TextView
+            android:id="@+id/nextpagetext"
+            android:gravity="top|left"
+            android:textSize="18sp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#4E4E4E"
+            android:typeface="monospace"
+            android:text="下一页:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:typeface="monospace"
+            android:id="@+id/nextpagexpath"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:background="@null"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="50dp"
+        android:id="@+id/resulttypell"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:gravity="top|left"
+                android:textSize="18sp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#4E4E4E"
+                android:typeface="monospace"
+                android:text="链接类型:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+
+
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/resulttype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:elevation="2dp"
+                android:gravity="center_horizontal"
+
+                >
+
+            </org.angmarch.views.NiceSpinner>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="50dp"
+        android:id="@+id/runbu"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/textrun"
+                android:background="@color/white"
+                android:layout_width="wrap_content"
+                android:text="测试"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="right"
+            android:paddingRight="20dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <skin.support.widget.SkinCompatButton
+                android:background="@color/colorPrimary"
+                android:id="@+id/buildsource"
+                android:layout_width="wrap_content"
+                android:textColor="@color/white"
+                android:text="生成"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

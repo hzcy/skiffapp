@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".View.Fragment.SearchOneFragment">
+
+
+    <skin.support.design.widget.SkinMaterialAppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme.AppBarOverlay"
+
+        >
+
+
+
+       <LinearLayout
+           android:orientation="horizontal"
+           android:layout_width="match_parent"
+           android:layout_height="50dp">
+
+           <LinearLayout
+               android:gravity="center_vertical"
+               android:layout_gravity="center_horizontal"
+               android:layout_weight="1"
+               android:layout_width="match_parent"
+               android:layout_height="50dp">
+
+               <TextView
+                   android:id="@+id/tv_havelode"
+                   android:textSize="15sp"
+                   android:textColor="@color/colorTitle"
+                   android:gravity="center"
+                   android:text="已加载"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"/>
+
+           </LinearLayout>
+
+           <LinearLayout
+               android:layout_weight="1"
+               android:layout_width="match_parent"
+               android:layout_height="50dp">
+
+               <TextView
+                   android:id="@+id/tv_loadingsum"
+                   android:textSize="15sp"
+                   android:textColor="@color/colorTitle"
+                   android:gravity="center"
+                   android:text="未加载"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"/>
+
+           </LinearLayout>
+
+
+       </LinearLayout>
+
+
+
+
+
+    </skin.support.design.widget.SkinMaterialAppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/searchswipeRefreshLayout" >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="50dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/results_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</FrameLayout>

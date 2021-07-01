@@ -3,6 +3,7 @@ package com.yellowriver.skiff.Interface;
 import androidx.lifecycle.LiveData;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface SourceDataInterface {
      */
     boolean addSource(String url);
 
-    LiveData<List<MultiItemEntity>> getLocalSourcesData();
+    LiveData<List<BaseNode>> getLocalSourcesData();
 
-    LiveData<List<MultiItemEntity>> getRemoteSourcesData();
+    LiveData<List<BaseNode>> getRemoteSourcesData();
 }

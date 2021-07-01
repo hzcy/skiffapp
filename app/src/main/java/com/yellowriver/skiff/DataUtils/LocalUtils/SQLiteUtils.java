@@ -95,7 +95,13 @@ public class SQLiteUtils {
     //根据title获取数据  2019/6/9 区分首页和搜索
     public  List<HomeEntity> getXpathbyTitle(String title,String type)
     {
-         return daoSession.queryRaw(HomeEntity.class, " where "+HomeEntityDao.Properties.Title.columnName+" = ? and " +HomeEntityDao.Properties.Type.columnName+ " = ? ", title,type);
+        List<HomeEntity> homeEntityList = null;
+        try {
+             homeEntityList = daoSession.queryRaw(HomeEntity.class, " where " + HomeEntityDao.Properties.Title.columnName + " = ? and " + HomeEntityDao.Properties.Type.columnName + " = ? ", title, type);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+         return homeEntityList;
     }
 
     public  List<HomeEntity> getXpathbyTitle(String title)
@@ -117,10 +123,12 @@ public class SQLiteUtils {
     {
         List<HomeEntity> homeEntities = getXpathbyTitle(title,type);
 
-        for (HomeEntity homeEntity : homeEntities) {
+        if(homeEntities!=null) {
+            for (HomeEntity homeEntity : homeEntities) {
 
-            daoSession.delete(homeEntity);
+                daoSession.delete(homeEntity);
 
+            }
         }
     }
 
@@ -158,6 +166,24 @@ public class SQLiteUtils {
         } else {
             Log.d(TAG, "addHome: 已经存在了");
         }
+
+    }
+
+    public boolean addHome2(HomeEntity homeEntity) {
+
+        boolean a = false;
+        HomeEntityDao homeEntityDao = daoSession.getHomeEntityDao();
+        List<HomeEntity> homeEntityList = getXpathbyTitle(homeEntity.getTitle(), homeEntity.getType());
+        if (homeEntityList.isEmpty()) {
+            long addid = homeEntityDao.insert(homeEntity);
+            if (addid >= 0) {
+                a = true;
+                Log.d(TAG, "addHome: 添加了");
+            }
+        } else {
+            Log.d(TAG, "addHome: 已经存在了");
+        }
+        return a;
 
     }
 

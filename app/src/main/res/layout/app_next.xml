@@ -17,7 +17,7 @@
 
 
 
-            <androidx.appcompat.widget.Toolbar
+            <skin.support.widget.SkinCompatToolbar
                 android:id="@+id/toolbar"
                 app:titleTextColor="@color/colorTitle"
                 android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
 
-            </androidx.appcompat.widget.Toolbar>
+            </skin.support.widget.SkinCompatToolbar>
 
 
 

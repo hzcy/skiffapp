@@ -14,12 +14,14 @@ public class DataEntity implements Serializable {
     private String Cover;
     private String Link;
     private String Date;
+    private String color;
 
     //数据展示类型
     private String ViewMode;
     //链接类型 处理方式
     private String LinkType;
 
+    private String fromSource;
     //状态
     private int state;
 
@@ -35,6 +37,7 @@ public class DataEntity implements Serializable {
 
     }
 
+
     public DataEntity(String Title,String Summary,String Cover,String Link,String Date)
     {
         this.Title = Title;
@@ -48,6 +51,22 @@ public class DataEntity implements Serializable {
     public DataEntity()
     {
 
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getFromSource() {
+        return fromSource;
+    }
+
+    public void setFromSource(String fromSource) {
+        this.fromSource = fromSource;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getTitle() {

@@ -1,12 +1,18 @@
 package com.yellowriver.skiff.Bean.SourcesBean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.yellowriver.skiff.Adapter.TreeAdapter.GroupAdapter;
+import com.chad.library.adapter.base.entity.node.BaseNode;
+
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * @author huang
  */
-public class sources implements MultiItemEntity {
+public class sources extends BaseNode {
+
 
     //源名称
     private String sourcesName;
@@ -70,8 +76,11 @@ public class sources implements MultiItemEntity {
     }
 
 
+
+
+    @Nullable
     @Override
-    public int getItemType() {
-        return GroupAdapter.TYPE_LEVEL_1;
+    public List<BaseNode> getChildNode() {
+        return null;
     }
 }

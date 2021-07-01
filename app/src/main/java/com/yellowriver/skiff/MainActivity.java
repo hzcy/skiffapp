@@ -1,6 +1,7 @@
 package com.yellowriver.skiff;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.app.SkinAppCompatDelegateImpl;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -20,13 +23,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 
+import com.yellowriver.skiff.DataUtils.RemoteUtils.BoilerpipeUtils;
+import com.yellowriver.skiff.DataUtils.RemoteUtils.NetUtils;
+import com.yellowriver.skiff.Help.LogUtil;
 import com.yellowriver.skiff.Help.SnackbarUtil;
+import com.yellowriver.skiff.View.Activity.WebViewActivity;
 import com.yellowriver.skiff.View.Fragment.About.AboutFragment;
 import com.yellowriver.skiff.View.Fragment.Favorite.FavoriteFragment;
 import com.yellowriver.skiff.View.Fragment.Home.HomeViewFragment;
 import com.yellowriver.skiff.View.Fragment.Sources.SourceFragment;
 
+import org.seimicrawler.xpath.JXDocument;
+
 import java.io.File;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.nav_view)
     SkinMaterialBottomNavigationView navView;
 
+
+    @NonNull
+    @Override
+    public AppCompatDelegate getDelegate() {
+        return SkinAppCompatDelegateImpl.get(this, this);
+    }
     //两次返回退出
     private long mExitTime;
 
@@ -78,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.show(homeViewFragment);
         }
         fragmentTransaction.commit();
+
     }
 
     private void initView() {
@@ -215,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    //管理Fragment相关
     private void hide(FragmentTransaction fragmentTransaction) {
         if (homeViewFragment != null) {
             fragmentTransaction.hide(homeViewFragment);
@@ -231,6 +253,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 判断是否第一次运行 第二次打开软件就修改值
+     * 加载皮肤框架
+     * 可以显示只有第一次运行的时候的欢迎界面。。。
+     * @return
+     */
     private boolean firstRun() {
         SharedPreferences sharedPreferences = getSharedPreferences("FirstRun",0);
         Boolean first_run = sharedPreferences.getBoolean("First",true);
@@ -259,5 +287,16 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    public static String StringFilter(String str) throws PatternSyntaxException {
+
+        // 清除掉所有特殊字符
+        String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        return m.replaceAll("").trim();
+    }
+
+
 
 }

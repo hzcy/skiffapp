@@ -17,9 +17,11 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
+import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.R;
 import com.yellowriver.skiff.View.Fragment.Home.HomeTabFragment;
+import com.yellowriver.skiff.View.Fragment.SearchOneFragment;
 
 import org.angmarch.views.NiceSpinner;
 
@@ -184,16 +186,33 @@ public class SearchActivity extends AppCompatActivity {
 
     private void showFragment(String groupName, String type, String query, int index) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        HomeTabFragment homeTabFragment = null;
-        Log.d(TAG, "showFragment: "+fragmentTransaction.isEmpty());
-        if (fragmentTransaction.isEmpty()) {
-            homeTabFragment = HomeTabFragment.getInstance(groupName, type, query, index);
-            fragmentTransaction.replace(R.id.fragment_container, homeTabFragment);
-        } else {
-            fragmentTransaction.remove(homeTabFragment);
-            homeTabFragment = HomeTabFragment.getInstance(groupName, type, query, index);
-            fragmentTransaction.replace(R.id.fragment_container, homeTabFragment);
+        //如果切换成聚合搜索
+        if("聚合搜索".equals(SharedPreferencesUtils.searchViewTypeRead(getApplicationContext()))){
+            SearchOneFragment searchOneFragment = null;
+            Log.d(TAG, "showFragment: "+fragmentTransaction.isEmpty());
+            if (fragmentTransaction.isEmpty()) {
+                searchOneFragment = SearchOneFragment.getInstance(groupName, type, query, index);
+                fragmentTransaction.replace(R.id.fragment_container, searchOneFragment);
+            } else {
+                fragmentTransaction.remove(searchOneFragment);
+                searchOneFragment = SearchOneFragment.getInstance(groupName, type, query, index);
+                fragmentTransaction.replace(R.id.fragment_container, searchOneFragment);
+            }
+
+        }else{
+            //分开搜索
+            HomeTabFragment homeTabFragment = null;
+            Log.d(TAG, "showFragment: "+fragmentTransaction.isEmpty());
+            if (fragmentTransaction.isEmpty()) {
+                homeTabFragment = HomeTabFragment.getInstance(groupName, type, query, index);
+                fragmentTransaction.replace(R.id.fragment_container, homeTabFragment);
+            } else {
+                fragmentTransaction.remove(homeTabFragment);
+                homeTabFragment = HomeTabFragment.getInstance(groupName, type, query, index);
+                fragmentTransaction.replace(R.id.fragment_container, homeTabFragment);
+            }
         }
+
         //提交事件
         fragmentTransaction.commit();
     }

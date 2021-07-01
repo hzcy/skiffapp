@@ -1,9 +1,10 @@
 package com.yellowriver.skiff.Bean.SourcesBean;
 
-import com.chad.library.adapter.base.entity.AbstractExpandableItem;
-import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.yellowriver.skiff.Adapter.TreeAdapter.GroupAdapter;
 
+import com.chad.library.adapter.base.entity.node.BaseNode;
+
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * 源管理
  * @author huang
  */
-public class group extends AbstractExpandableItem<sources>  implements MultiItemEntity {
+public class group extends BaseNode {
     //源名称
     private String groupName;
     //源日期
@@ -23,9 +24,34 @@ public class group extends AbstractExpandableItem<sources>  implements MultiItem
     //源是否导入
     private String groupIshave;
 
-    private List<sources> Sourcess;
+    private List<BaseNode> childNode;
+
+    public group(List<BaseNode> childNode,String groupIshave,String groupDesc,String groupLink,String groupDate,String groupName)
+    {
+        this.groupName = groupName;
+        this.childNode = childNode;
+        this.groupIshave = groupIshave;
+        this.groupDesc = groupDesc;
+        this.groupDate = groupDate;
+        this.groupLink = groupLink;
+
+    }
+
+    public group(String groupName,String groupLink,List<BaseNode> childNode)
+    {
+        this.groupName = groupName;
+        this.childNode = childNode;
+        this.groupIshave = groupIshave;
+        this.groupDesc = groupDesc;
+        this.groupDate = groupDate;
+        this.groupLink = groupLink;
+
+    }
 
 
+    public void setChildNode(List<BaseNode> childNode) {
+        this.childNode = childNode;
+    }
 
     public String getGroupName() {
         return groupName;
@@ -59,13 +85,6 @@ public class group extends AbstractExpandableItem<sources>  implements MultiItem
         this.groupDesc = groupDesc;
     }
 
-    public List<sources> getSourcess() {
-        return Sourcess;
-    }
-
-    public void setSourcess(List<sources> sourcess) {
-        Sourcess = sourcess;
-    }
 
     public String getGroupIshave() {
         return groupIshave;
@@ -75,13 +94,11 @@ public class group extends AbstractExpandableItem<sources>  implements MultiItem
         this.groupIshave = groupIshave;
     }
 
-    @Override
-    public int getLevel() {
-        return 0;
-    }
 
+
+    @Nullable
     @Override
-    public int getItemType() {
-        return GroupAdapter.TYPE_LEVEL_0;
+    public List<BaseNode> getChildNode() {
+        return childNode;
     }
 }

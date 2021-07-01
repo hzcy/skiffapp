@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<skin.support.design.widget.SkinMaterialCoordinatorLayout   xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:skin="http://schemas.android.com/android/skin"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-android:fitsSystemWindows="true"
+
  >
 
 
@@ -21,16 +20,16 @@ android:fitsSystemWindows="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-<skin.support.design.widget.SkinMaterialBottomNavigationView
-    android:id="@+id/nav_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
+    <skin.support.design.widget.SkinMaterialBottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
 
-    android:background="?android:attr/windowBackground"
-    app:itemIconTint="@color/color_state_homemenu_navi"
-    app:itemTextColor="@color/color_state_homemenu_navi"
-    app:menu="@menu/homebottom_nav_menu" ></skin.support.design.widget.SkinMaterialBottomNavigationView>
+        android:background="?android:attr/windowBackground"
+        app:itemIconTint="@color/color_state_homemenu_navi"
+        app:itemTextColor="@color/color_state_homemenu_navi"
+        app:menu="@menu/homebottom_nav_menu" />
     <!--<com.google.android.material.bottomnavigation.BottomNavigationView-->
 
         <!--android:id="@+id/nav_view"-->
@@ -42,4 +41,4 @@ android:fitsSystemWindows="true"
         <!--app:itemTextColor="@color/color_state_homemenu_navi"-->
         <!--app:menu="@menu/homebottom_nav_menu" />-->
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</skin.support.design.widget.SkinMaterialCoordinatorLayout>

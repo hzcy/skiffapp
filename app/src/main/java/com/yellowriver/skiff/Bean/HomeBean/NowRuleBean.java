@@ -7,6 +7,8 @@ package com.yellowriver.skiff.Bean.HomeBean;
  */
 public class NowRuleBean {
 
+
+
     //要解析的地址
     private String url;
     //搜索关键字
@@ -16,6 +18,7 @@ public class NowRuleBean {
     private String qzSoucesType;
     private String qzSourcesName;
 
+    private String finalSummary;
 
     private String qzStep;
 
@@ -29,6 +32,7 @@ public class NowRuleBean {
     private String dateXpath;
     private String readXpath;
     private String readImgSrc;
+    private String readNextPage;
     //请求方式  get or post
     private String RequestMethod;
     //显示方式
@@ -43,6 +47,7 @@ public class NowRuleBean {
     private String Charset;
     //是否异步加载
     private String IsAjax;
+    private String ReadIsAjax;
 
     //解析值处理
     //标题处理
@@ -60,6 +65,30 @@ public class NowRuleBean {
 
     public void setNextProcessingValue(String nextProcessingValue) {
         NextProcessingValue = nextProcessingValue;
+    }
+
+    public String getFinalSummary() {
+        return finalSummary;
+    }
+
+    public void setFinalSummary(String finalSummary) {
+        this.finalSummary = finalSummary;
+    }
+
+    public String getReadNextPage() {
+        return readNextPage;
+    }
+
+    public void setReadNextPage(String readNextPage) {
+        this.readNextPage = readNextPage;
+    }
+
+    public String getReadIsAjax() {
+        return ReadIsAjax;
+    }
+
+    public void setReadIsAjax(String readIsAjax) {
+        ReadIsAjax = readIsAjax;
     }
 
     public String getQzStep() {

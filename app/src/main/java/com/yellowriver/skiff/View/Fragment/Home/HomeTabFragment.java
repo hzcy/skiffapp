@@ -119,7 +119,7 @@ public class HomeTabFragment extends Fragment {
     }
 
     private void bindData() {
-        qzGroupName = Objects.requireNonNull(getArguments()).getString("qzGroupName");
+        qzGroupName = requireArguments().getString("qzGroupName");
         qzSourcesType = getArguments().getString("qzSourcesType");
         qzQuery = getArguments().getString("qzQuery");
         qzSpinnerSel = getArguments().getInt("qzSpinnerSel");
@@ -146,7 +146,7 @@ public class HomeTabFragment extends Fragment {
         tabFragments = new ArrayList<>();
         for (String qzSourceName : tabIndicators) {
             //第一步
-            tabFragments.add(HomeDataViewFragment.newInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "", 0));
+            tabFragments.add(HomeDataViewFragment.newInstance(qzGroupName, qzSourceName, "1", "", qzSourcesType, qzQuery, qzSpinnerSel, "", -1));
         }
         try {
             contentAdapter = new FragmentAdapter(getChildFragmentManager(), tabIndicators, tabFragments);

@@ -14,12 +14,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.PatternSyntaxException;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
 import com.yellowriver.skiff.Bean.HomeBean.NowRuleBean;
+import com.yellowriver.skiff.Help.LogUtil;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -73,15 +75,29 @@ public class AnalysisUtils {
             //第二步 根据加载规则获取网页html-doc
             Log.d(TAG, "解析数据类型为xpath");
 
+            if(!sourceRule.getListXpath().startsWith("//*")){
+
+
+                //自动化解析
+                String html = BoilerpipeGetHtml.getInstance().GetHtmlDoc(sourceRule, page);
+                if(html!=null) {
+                    dataEntities = BoilerpipeGetHtml.getInstance().GetData(html, sourceRule);
+
+                }else{
+                    dataEntities = null;
+                }
+            }else{
+
             Document doc = XpathUtils.getInstance().GetHtmlDoc(sourceRule, page);
             //第三步 根据xpath规则获取所需数据
             dataEntities = XpathUtils.getInstance().GetData(doc, sourceRule);
+            }
         }
         long consumingTime = System.currentTimeMillis() - startTime;
 
         Log.d(TAG, "通用解析方法结束，加载耗时：" + consumingTime + "毫秒");
 
-        Log.d(TAG, "MainAnalysis: "+dataEntities.size());
+        //Log.d(TAG, "MainAnalysis: "+dataEntities.size());
         return dataEntities;
 
     }
@@ -96,7 +112,9 @@ public class AnalysisUtils {
                 sourceRule = fristStepRule(homeEntity, query);
                 break;
             case "2":
+
                 sourceRule = secondStepRule(homeEntity, query, url);
+
                 break;
             case "3":
                 sourceRule = thirdStepRule(homeEntity, query, url);
@@ -118,7 +136,10 @@ public class AnalysisUtils {
         sourceRule.setUrl(homeEntity.getFirsturl());
         sourceRule.setNextPageXpath(homeEntity.getFirstNextPageXpath());
         sourceRule.setReadImgSrc(homeEntity.getFirstReadModeImgSrc());
+        sourceRule.setReadNextPage(homeEntity.getFirstReadModeNextPage());
         sourceRule.setReadXpath(homeEntity.getFirstReadModeXpath());
+        sourceRule.setReadIsAjax(homeEntity.getFirstReadAjax());
+        sourceRule.setFinalSummary(homeEntity.getFinalSummary());
         //搜索关键字
         if (GBK.equals(homeEntity.getFirstQueryIsURLencode())) {
 
@@ -179,12 +200,15 @@ public class AnalysisUtils {
         sourceRule.setQzSoucesType(homeEntity.getType());
         sourceRule.setQzSourcesName(homeEntity.getTitle());
         sourceRule.setQzStep("2");
+        sourceRule.setFinalSummary(homeEntity.getFinalSummary());
         //第二步
         sourceRule.setUrl(url);
         sourceRule.setQuery(query);
         sourceRule.setNextPageXpath(homeEntity.getSecondNextPageXpath());
         sourceRule.setReadImgSrc(homeEntity.getSecondReadModeImgSrc());
         sourceRule.setReadXpath(homeEntity.getSecondReadModeXpath());
+        sourceRule.setReadNextPage(homeEntity.getSecondReadModeNextPage());
+        sourceRule.setReadIsAjax(homeEntity.getSecondReadAjax());
         //列表xpath
         sourceRule.setListXpath(homeEntity.getSecondListXpath());
         //标题xpath
@@ -227,12 +251,15 @@ public class AnalysisUtils {
         sourceRule.setQzSoucesType(homeEntity.getType());
         sourceRule.setQzSourcesName(homeEntity.getTitle());
         sourceRule.setQzStep("3");
+        sourceRule.setFinalSummary(homeEntity.getFinalSummary());
         //第三步
         sourceRule.setUrl(url);
         sourceRule.setQuery(query);
         sourceRule.setNextPageXpath(homeEntity.getThirdNextPageXpath());
         sourceRule.setReadImgSrc(homeEntity.getThirdReadModeImgSrc());
         sourceRule.setReadXpath(homeEntity.getThirdReadModeXpath());
+        sourceRule.setReadNextPage(homeEntity.getThirdReadModeNextPage());
+        sourceRule.setReadIsAjax(homeEntity.getThirdReadAjax());
         //列表xpath
         sourceRule.setListXpath(homeEntity.getThirdListXpath());
         //标题xpath
@@ -271,14 +298,17 @@ public class AnalysisUtils {
 
     //处理值
     public String processingValue(String value, String processingValue, String url,int page) {
-        String resultValue = null;
+        String resultValue = value;
         if (JsonUtils.isJSONValid(processingValue)) {
+            Log.d(TAG, "processingValue: 是json");
             if (processingValue.startsWith("[")) {
                 resultValue = processingArrayValue(processingValue, value, url,page);
 
             } else {
                 resultValue = processingOneValue(processingValue, value, url);
             }
+        }else{
+            Log.d(TAG, "processingValue: 不是json");
         }
         return resultValue;
     }
@@ -310,6 +340,7 @@ public class AnalysisUtils {
                         } else {
                             newValue = valueStr + newValue;
                         }
+                        LogUtil.info("轻舟处理值","当前值"+newValue);
                         break;
                     case "rightjoin":
                         newValue = newValue + valueStr;
@@ -320,11 +351,18 @@ public class AnalysisUtils {
                         if (sourceStrArray.length == 2) {
                             String beginindex = sourceStrArray[0];
                             String endindex = sourceStrArray[1];
-                            if (endindex.startsWith("-")) {
-                                endindex = endindex.replace("-", "");
-                                newValue = newValue.substring(Integer.valueOf(beginindex), newValue.length() - Integer.valueOf(endindex));
-                            } else {
-                                newValue = newValue.substring(Integer.valueOf(beginindex), Integer.valueOf(endindex));
+                            try {
+                                if (endindex.startsWith("-")) {
+                                    endindex = endindex.replace("-", "");
+                                    newValue = newValue.substring(Integer.valueOf(beginindex), newValue.length() - Integer.valueOf(endindex));
+                                } else {
+                                    newValue = newValue.substring(Integer.valueOf(beginindex), Integer.valueOf(endindex));
+                                }
+                            }catch (StringIndexOutOfBoundsException e){
+
+                            }catch (NullPointerException e)
+                            {
+
                             }
 
                         }
@@ -338,7 +376,8 @@ public class AnalysisUtils {
                             newValue = newValue.replace(oldStr, newStr);
 
                         }else{
-                            newValue = value.replace(valueStr,"");
+                            LogUtil.info("轻舟处理值","当前值"+newValue);
+                            newValue = newValue.replace(valueStr,"");
                         }
                         break;
                     case "delete":
@@ -368,6 +407,39 @@ public class AnalysisUtils {
                             e.printStackTrace();
                         }
                         break;
+
+                    case "imgReferer":
+                        Log.d(TAG, "processingArrayValue: "+valueStr);
+                        if(valueStr.indexOf("{QZLink}")!=-1){
+                            newValue = newValue + "{QZ}" + valueStr;
+                            newValue = newValue.replace("{QZLink}",url);
+
+                        }else {
+                            newValue = newValue + "{QZ}" + valueStr;
+                        }
+                        break;
+                    case "Xpath":
+                        Log.d(TAG, "processingArrayValue: "+valueStr);
+                        newValue = XpathUtils.getXpath(newValue, valueStr);
+                        break;
+
+                    case "ReadReplace":
+                        String[] sourceStrArray3 = valueStr.split(",");
+                        if (sourceStrArray3.length == 2) {
+                            String oldStr = sourceStrArray3[0];
+                            String newStr = sourceStrArray3[1];
+
+                            newValue = newValue.replaceAll(oldStr, newStr);
+
+                        }else{
+                            LogUtil.info("轻舟处理值","当前值"+newValue);
+                            try {
+                                newValue = newValue.replaceAll(valueStr, "");
+                            }catch (PatternSyntaxException e){
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -376,6 +448,8 @@ public class AnalysisUtils {
         }
         return newValue;
     }
+
+
 
 
     /**
@@ -414,11 +488,18 @@ public class AnalysisUtils {
 
                             String beginindex = sourceStrArray[0];
                             String endindex = sourceStrArray[1];
-                            if (endindex.startsWith("-")) {
-                                endindex = endindex.replace("-", "");
-                                newValue = newValue.substring(Integer.valueOf(beginindex), newValue.length() - Integer.valueOf(endindex));
-                            } else {
-                                newValue = newValue.substring(Integer.valueOf(beginindex), Integer.valueOf(endindex));
+                            try {
+                                if (endindex.startsWith("-")) {
+                                    endindex = endindex.replace("-", "");
+                                    newValue = value.substring(Integer.valueOf(beginindex), value.length() - Integer.valueOf(endindex));
+                                } else {
+                                    newValue = value.substring(Integer.valueOf(beginindex), Integer.valueOf(endindex));
+                                }
+                            }catch (NullPointerException e)
+                            {
+
+                            }catch (StringIndexOutOfBoundsException e){
+
                             }
 
                         }
@@ -428,12 +509,14 @@ public class AnalysisUtils {
                         if (sourceStrArray2.length == 2) {
                             String oldStr = sourceStrArray2[0];
                             String newStr = sourceStrArray2[1];
-
+                            Log.d(TAG, "processingOneValue: "+oldStr+newStr);
                             newValue = value.replace(oldStr, newStr);
+                            Log.d(TAG, "processingOneValue: "+value);
 
                         }else{
                             newValue = value.replace(valueStr,"");
                         }
+                        Log.d(TAG, "processingOneValue: "+newValue);
                         break;
                     case "delete":
 
@@ -443,6 +526,29 @@ public class AnalysisUtils {
                             newValue = value;
                         }
 
+                        break;
+                    case "imgReferer":
+                        Log.d(TAG, "processingArrayValue: "+valueStr);
+                        if(valueStr.indexOf("{QZLink}")!=-1){
+                            newValue = value + "{QZ}" + valueStr;
+                            newValue = newValue.replace("{QZLink}",url);
+
+                        }else {
+                            newValue = value + "{QZ}" + valueStr;
+                        }
+                        break;
+                    case "ReadReplace":
+                        String[] sourceStrArray3 = valueStr.split(",");
+                        if (sourceStrArray3.length == 2) {
+                            String oldStr = sourceStrArray3[0];
+                            String newStr = sourceStrArray3[1];
+
+                            newValue = value.replaceAll(oldStr, newStr);
+
+                        }else{
+                            LogUtil.info("轻舟处理值","当前值"+newValue);
+                            newValue = value.replaceAll(valueStr,"");
+                        }
                         break;
                     default:
                         break;

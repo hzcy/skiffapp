@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:background="@color/colorTitle"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="自定义源"
+        android:typeface="monospace"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textColor="#4E4E4E"
+        android:id="@+id/mainTextView1"/>
+
+
+    <TextView
+        android:id="@+id/dd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="点击搜索按钮输入网址"
+        android:layout_below="@id/mainTextView1"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="italic"/>
+
+    <LinearLayout
+        android:id="@+id/tt"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@id/dd"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="等待网页加载完成,点击"
+
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            />
+
+        <ImageView
+            android:background="#030303"
+            android:src="@drawable/ic_gps_off_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="图标"
+
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ff"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@id/tt"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="图标变为"
+
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            />
+
+        <ImageView
+            android:background="#030303"
+            android:src="@drawable/ic_gps_fixed_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="后，点击网页上的元素"
+
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/kk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="根据提示保存所需规则即可"
+        android:layout_below="@id/ff"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"
+       />
+
+    <TextView
+        android:id="@+id/ee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="无需专业知识，完全可视化操作"
+        android:layout_below="@id/kk"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"
+        />
+
+
+    <TextView
+        android:id="@+id/bb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="点我打开百度"
+        android:layout_below="@id/ee"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:textStyle="italic"
+        android:textColor="#4E4E4E"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>

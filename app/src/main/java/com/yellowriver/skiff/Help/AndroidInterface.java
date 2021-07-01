@@ -9,16 +9,15 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
-import com.just.agentweb.AgentWeb;
 
 public class AndroidInterface {
 
     private Handler deliver = new Handler(Looper.getMainLooper());
-    private AgentWeb agent;
+
     private Context context;
 
-    public AndroidInterface(AgentWeb agent, Context context) {
-        this.agent = agent;
+    public AndroidInterface(Context context) {
+
         this.context = context;
     }
 

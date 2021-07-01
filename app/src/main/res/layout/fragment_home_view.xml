@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<skin.support.design.widget.SkinMaterialCoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:skin="http://schemas.android.com/android/skin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="25dp"
     tools:context=".View.Fragment.Home.HomeViewFragment">
 
 
-    <com.google.android.material.appbar.AppBarLayout
+    <skin.support.design.widget.SkinMaterialAppBarLayout
         android:id="@+id/appbar"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="@style/AppTheme"
         app:elevation="0dp"
         >
 
-        <LinearLayout
+        <skin.support.widget.SkinCompatLinearLayout
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +27,7 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             android:theme="@style/AppTheme">
 
-            <androidx.appcompat.widget.Toolbar
+            <skin.support.widget.SkinCompatToolbar
                 android:id="@+id/toolbar"
                 android:visibility="gone"
                 app:titleTextColor="@color/colorTitle"
@@ -37,10 +39,10 @@
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
 
-            </androidx.appcompat.widget.Toolbar>
+            </skin.support.widget.SkinCompatToolbar>
 
 
-            <LinearLayout
+            <skin.support.widget.SkinCompatLinearLayout
 
                 android:id="@+id/ll_searchview"
                 android:background="@color/colorPrimary"
@@ -75,12 +77,12 @@
                 </com.lapism.searchview.widget.SearchView>
 
 
-            </LinearLayout>
+            </skin.support.widget.SkinCompatLinearLayout>
 
-        </LinearLayout>
+        </skin.support.widget.SkinCompatLinearLayout>
 
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </skin.support.design.widget.SkinMaterialAppBarLayout>
 
 
 
@@ -97,4 +99,4 @@
 
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</skin.support.design.widget.SkinMaterialCoordinatorLayout>

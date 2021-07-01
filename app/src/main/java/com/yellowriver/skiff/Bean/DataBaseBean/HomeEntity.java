@@ -25,6 +25,7 @@ public class HomeEntity {
     //日期
     private String date = "";
 
+    private String FinalSummary = "";//详情页图片和简介抓取
 
     //****************************************************一级 first 开始
     //first源地址
@@ -94,8 +95,9 @@ public class HomeEntity {
     private String FirstReadModeCharset = "";  //1.utf-8 2.gbk
     //first 阅读模式图片拼接 ReadModeImgSrc  一般为图片src 前面加上域名
     private String FirstReadModeImgSrc = "";
-
-
+    //first 阅读模式下一页 ReadModeNextPage  一般为图片 加载更多
+    private String FirstReadModeNextPage = "";
+    private String FirstReadAjax = "";
     //****************************************************一级 first 结束
 
     //****************************************************二级 Second 开始
@@ -155,7 +157,9 @@ public class HomeEntity {
     private String SecondReadModeCharset = "";  //1.utf-8 2.gbk
     //Second 阅读模式图片拼接 ReadModeImgSrc  一般为图片src 前面加上域名
     private String SecondReadModeImgSrc = "";
-
+    //Second 阅读模式下一页 ReadModeNextPage  一般为图片 加载更多
+    private String SecondReadModeNextPage = "";
+    private String SecondReadAjax = "";
     //****************************************************二级 Second 结束
 
     //****************************************************三级 Third 开始
@@ -215,30 +219,35 @@ public class HomeEntity {
     private String ThirdReadModeCharset = "";  //1.utf-8 2.gbk
     //Third 阅读模式图片拼接 ReadModeImgSrc  一般为图片src 前面加上域名
     private String ThirdReadModeImgSrc = "";
+    //Third 阅读模式下一页 ReadModeNextPage  一般为图片 加载更多
+    private String ThirdReadModeNextPage = "";
+    private String ThirdReadAjax = "";
     //****************************************************三级 Third 结束
-    @Generated(hash = 73363793)
-    public HomeEntity(Long id, String grouping, String title, String type, String desc, String date, @NotNull String Firsturl,
-            String FirstCharset, String FirstAjax, String Firstrooturl, String FirstRequestMethod, String FirstPostData,
-            String FirstQueryIsURLencode, String FirstHeaders, String FirstListXpath, String FirstNextPageXpath,
+    @Generated(hash = 130793781)
+    public HomeEntity(Long id, String grouping, String title, String type, String desc, String date, String FinalSummary,
+            @NotNull String Firsturl, String FirstCharset, String FirstAjax, String Firstrooturl, String FirstRequestMethod,
+            String FirstPostData, String FirstQueryIsURLencode, String FirstHeaders, String FirstListXpath, String FirstNextPageXpath,
             String FirstNextProcessingValue, String FirstTitleXpath, String FirstTitleProcessingValue, String FirstSummaryXpath,
             String FirstCoverXpath, String FirstCoverProcessingValue, String FirstLinkXpath, String FirstLinkProcessingValue,
             String FirstDateXpath, String FirstViewMode, String FirstLinkType, String FirstReadModeXpath, String FirstReadModeCharset,
-            String FirstReadModeImgSrc, String Secondurl, String SecondCharset, String SecondAjax, String SecondRequestMethod,
-            String SecondPostData, String SecondHeaders, String SecondListXpath, String SecondNextPageXpath, String SecondNextProcessingValue,
-            String SecondTitleXpath, String SecondTitleProcessingValue, String SecondSummaryXpath, String SecondCoverXpath,
-            String SecondCoverProcessingValue, String SecondLinkXpath, String SecondLinkProcessingValue, String SecondDateXpath,
-            String SecondViewMode, String SecondLinkType, String SecondReadModeXpath, String SecondReadModeCharset, String SecondReadModeImgSrc,
-            String Thirdurl, String ThirdCharset, String ThirdAjax, String ThirdRequestMethod, String ThirdPostData, String ThirdHeaders,
-            String ThirdListXpath, String ThirdNextPageXpath, String ThirdNextProcessingValue, String ThirdTitleXpath,
-            String ThirdTitleProcessingValue, String ThirdSummaryXpath, String ThirdCoverXpath, String ThirdCoverProcessingValue,
-            String ThirdLinkXpath, String ThirdLinkProcessingValue, String ThirdDateXpath, String ThirdViewMode, String ThirdLinkType,
-            String ThirdReadModeXpath, String ThirdReadModeCharset, String ThirdReadModeImgSrc) {
+            String FirstReadModeImgSrc, String FirstReadModeNextPage, String FirstReadAjax, String Secondurl, String SecondCharset,
+            String SecondAjax, String SecondRequestMethod, String SecondPostData, String SecondHeaders, String SecondListXpath,
+            String SecondNextPageXpath, String SecondNextProcessingValue, String SecondTitleXpath, String SecondTitleProcessingValue,
+            String SecondSummaryXpath, String SecondCoverXpath, String SecondCoverProcessingValue, String SecondLinkXpath,
+            String SecondLinkProcessingValue, String SecondDateXpath, String SecondViewMode, String SecondLinkType, String SecondReadModeXpath,
+            String SecondReadModeCharset, String SecondReadModeImgSrc, String SecondReadModeNextPage, String SecondReadAjax, String Thirdurl,
+            String ThirdCharset, String ThirdAjax, String ThirdRequestMethod, String ThirdPostData, String ThirdHeaders, String ThirdListXpath,
+            String ThirdNextPageXpath, String ThirdNextProcessingValue, String ThirdTitleXpath, String ThirdTitleProcessingValue,
+            String ThirdSummaryXpath, String ThirdCoverXpath, String ThirdCoverProcessingValue, String ThirdLinkXpath,
+            String ThirdLinkProcessingValue, String ThirdDateXpath, String ThirdViewMode, String ThirdLinkType, String ThirdReadModeXpath,
+            String ThirdReadModeCharset, String ThirdReadModeImgSrc, String ThirdReadModeNextPage, String ThirdReadAjax) {
         this.id = id;
         this.grouping = grouping;
         this.title = title;
         this.type = type;
         this.desc = desc;
         this.date = date;
+        this.FinalSummary = FinalSummary;
         this.Firsturl = Firsturl;
         this.FirstCharset = FirstCharset;
         this.FirstAjax = FirstAjax;
@@ -263,6 +272,8 @@ public class HomeEntity {
         this.FirstReadModeXpath = FirstReadModeXpath;
         this.FirstReadModeCharset = FirstReadModeCharset;
         this.FirstReadModeImgSrc = FirstReadModeImgSrc;
+        this.FirstReadModeNextPage = FirstReadModeNextPage;
+        this.FirstReadAjax = FirstReadAjax;
         this.Secondurl = Secondurl;
         this.SecondCharset = SecondCharset;
         this.SecondAjax = SecondAjax;
@@ -285,6 +296,8 @@ public class HomeEntity {
         this.SecondReadModeXpath = SecondReadModeXpath;
         this.SecondReadModeCharset = SecondReadModeCharset;
         this.SecondReadModeImgSrc = SecondReadModeImgSrc;
+        this.SecondReadModeNextPage = SecondReadModeNextPage;
+        this.SecondReadAjax = SecondReadAjax;
         this.Thirdurl = Thirdurl;
         this.ThirdCharset = ThirdCharset;
         this.ThirdAjax = ThirdAjax;
@@ -307,6 +320,8 @@ public class HomeEntity {
         this.ThirdReadModeXpath = ThirdReadModeXpath;
         this.ThirdReadModeCharset = ThirdReadModeCharset;
         this.ThirdReadModeImgSrc = ThirdReadModeImgSrc;
+        this.ThirdReadModeNextPage = ThirdReadModeNextPage;
+        this.ThirdReadAjax = ThirdReadAjax;
     }
     @Generated(hash = 1364639484)
     public HomeEntity() {
@@ -346,6 +361,12 @@ public class HomeEntity {
     }
     public void setDate(String date) {
         this.date = date;
+    }
+    public String getFinalSummary() {
+        return this.FinalSummary;
+    }
+    public void setFinalSummary(String FinalSummary) {
+        this.FinalSummary = FinalSummary;
     }
     public String getFirsturl() {
         return this.Firsturl;
@@ -491,6 +512,18 @@ public class HomeEntity {
     public void setFirstReadModeImgSrc(String FirstReadModeImgSrc) {
         this.FirstReadModeImgSrc = FirstReadModeImgSrc;
     }
+    public String getFirstReadModeNextPage() {
+        return this.FirstReadModeNextPage;
+    }
+    public void setFirstReadModeNextPage(String FirstReadModeNextPage) {
+        this.FirstReadModeNextPage = FirstReadModeNextPage;
+    }
+    public String getFirstReadAjax() {
+        return this.FirstReadAjax;
+    }
+    public void setFirstReadAjax(String FirstReadAjax) {
+        this.FirstReadAjax = FirstReadAjax;
+    }
     public String getSecondurl() {
         return this.Secondurl;
     }
@@ -623,6 +656,18 @@ public class HomeEntity {
     public void setSecondReadModeImgSrc(String SecondReadModeImgSrc) {
         this.SecondReadModeImgSrc = SecondReadModeImgSrc;
     }
+    public String getSecondReadModeNextPage() {
+        return this.SecondReadModeNextPage;
+    }
+    public void setSecondReadModeNextPage(String SecondReadModeNextPage) {
+        this.SecondReadModeNextPage = SecondReadModeNextPage;
+    }
+    public String getSecondReadAjax() {
+        return this.SecondReadAjax;
+    }
+    public void setSecondReadAjax(String SecondReadAjax) {
+        this.SecondReadAjax = SecondReadAjax;
+    }
     public String getThirdurl() {
         return this.Thirdurl;
     }
@@ -754,6 +799,18 @@ public class HomeEntity {
     }
     public void setThirdReadModeImgSrc(String ThirdReadModeImgSrc) {
         this.ThirdReadModeImgSrc = ThirdReadModeImgSrc;
+    }
+    public String getThirdReadModeNextPage() {
+        return this.ThirdReadModeNextPage;
+    }
+    public void setThirdReadModeNextPage(String ThirdReadModeNextPage) {
+        this.ThirdReadModeNextPage = ThirdReadModeNextPage;
+    }
+    public String getThirdReadAjax() {
+        return this.ThirdReadAjax;
+    }
+    public void setThirdReadAjax(String ThirdReadAjax) {
+        this.ThirdReadAjax = ThirdReadAjax;
     }
 
 

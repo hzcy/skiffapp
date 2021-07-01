@@ -2,24 +2,16 @@ package com.yellowriver.skiff.View.Fragment.About;
 
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,19 +22,15 @@ import androidx.fragment.app.Fragment;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.Help.LocalBackup;
-
 import com.yellowriver.skiff.R;
 
 import org.jetbrains.annotations.NotNull;
-
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import skin.support.SkinCompatManager;
-
 
 
 /**
@@ -69,6 +57,18 @@ public class SettingsFragment extends Fragment {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //请求状态码
     private static int REQUEST_PERMISSION_CODE = 1;
+    @BindView(R.id.tv_viewtype)
+    TextView tvViewtype;
+    @BindView(R.id.searchview)
+    LinearLayout searchview;
+    @BindView(R.id.tv_loadsum)
+    TextView tvLoadsum;
+    @BindView(R.id.serachloadsum)
+    LinearLayout serachloadsum;
+    @BindView(R.id.tv_searchtype)
+    TextView tvSearchtype;
+    @BindView(R.id.searchtype)
+    LinearLayout searchtype;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -113,6 +113,9 @@ public class SettingsFragment extends Fragment {
 
         themeText.setText(SharedPreferencesUtils.themeRead(getContext()));
         loadText.setText(SharedPreferencesUtils.listLoadAnimationRead(getContext()));
+        tvViewtype.setText(SharedPreferencesUtils.searchViewTypeRead(getContext()));
+        tvSearchtype.setText(SharedPreferencesUtils.searchTypeRead(getContext()));
+        tvLoadsum.setText("" + SharedPreferencesUtils.searchSumRead(getContext()));
     }
 
 
@@ -129,7 +132,7 @@ public class SettingsFragment extends Fragment {
     }
 
 
-    @OnClick({R.id.theme, R.id.loadsetting, R.id.backup, R.id.recover})
+    @OnClick({R.id.theme, R.id.loadsetting, R.id.backup, R.id.recover, R.id.searchview, R.id.serachloadsum,R.id.searchtype})
     public void onViewClicked(View view) {
         LocalBackup localBackup = new LocalBackup(getContext());
         switch (view.getId()) {
@@ -172,9 +175,18 @@ public class SettingsFragment extends Fragment {
                 //首页要重新加载
                 SharedPreferencesUtils.dataChange(true, getContext());
                 //源管理要重新加载
-                SharedPreferencesUtils.writeSourceReload(true,getContext());
+                SharedPreferencesUtils.writeSourceReload(true, getContext());
                 //收藏页要重新加载
-                SharedPreferencesUtils.FavoriteChange(true,getContext());
+                SharedPreferencesUtils.FavoriteChange(true, getContext());
+                break;
+            case R.id.searchview:
+                searchviewtype();
+                break;
+            case R.id.serachloadsum:
+                searchSum();
+                break;
+            case R.id.searchtype:
+                searchType();
                 break;
             default:
                 break;
@@ -191,6 +203,81 @@ public class SettingsFragment extends Fragment {
             }
         }
     }
+
+    //搜索模式
+    private void searchType() {
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("选择搜索方式");
+        builder.setItems(new String[]{"普通模式", "精确搜索"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
+                    case 0:
+                        //无
+                        SharedPreferencesUtils.searchTypeWrite(getContext(), "普通模式");
+                        dialogInterface.dismiss();
+                        break;
+                    case 1:
+                        //渐显
+                        SharedPreferencesUtils.searchTypeWrite(getContext(), "精确搜索");
+
+                        dialogInterface.dismiss();
+                        break;
+
+                    default:
+                        break;
+                }
+                tvSearchtype.setText(SharedPreferencesUtils.searchTypeRead(getContext()));
+            }
+        });
+        builder.show();
+    }
+    //搜索显示方式
+    private void searchviewtype() {
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("选择搜索显示方式");
+        builder.setItems(new String[]{"聚合搜索", "结果展开"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
+                    case 0:
+                        //无
+                        SharedPreferencesUtils.searchViewTypeWrite(getContext(), "聚合搜索");
+                        dialogInterface.dismiss();
+                        break;
+                    case 1:
+                        //渐显
+                        SharedPreferencesUtils.searchViewTypeWrite(getContext(), "结果展开");
+
+                        dialogInterface.dismiss();
+                        break;
+
+                    default:
+                        break;
+                }
+                tvViewtype.setText(SharedPreferencesUtils.searchViewTypeRead(getContext()));
+            }
+        });
+        builder.show();
+    }
+
+    //搜索显示方式
+    private void searchSum() {
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("选择搜索线程大小");
+        builder.setItems(new String[]{"3", "6", "9", "12", "15", "18", "21", "24", "27", "30", "33", "36", "39", "42","45","48","51","54","57","60"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                int sum = (i + 1) * 3;
+                SharedPreferencesUtils.searchSumWrite(getContext(), sum);
+                dialogInterface.dismiss();
+
+                tvLoadsum.setText("" + SharedPreferencesUtils.searchSumRead(getContext()));
+            }
+        });
+        builder.show();
+    }
+
 
     private void themeSel() {
         builder = new AlertDialog.Builder(getActivity());
@@ -341,10 +428,22 @@ public class SettingsFragment extends Fragment {
     public void onDestroy() {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
-        if (bind!=null) {
+        if (bind != null) {
             //解除绑定
             bind.unbind();
         }
 
     }
+
+
+
+//    @OnClick({R.id.searchview, R.id.serachloadsum})
+//    public void onViewClicked(View view) {
+//        switch (view.getId()) {
+//            case R.id.searchview:
+//                break;
+//            case R.id.serachloadsum:
+//                break;
+//        }
+//    }
 }

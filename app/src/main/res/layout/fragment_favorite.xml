@@ -4,11 +4,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:paddingTop="25dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".View.Fragment.Favorite.FavoriteFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <skin.support.design.widget.SkinMaterialAppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -16,7 +16,7 @@
 
         >
 
-        <androidx.appcompat.widget.Toolbar
+        <skin.support.widget.SkinCompatToolbar
             android:id="@+id/toolbar"
             app:titleTextColor="@color/colorTitle"
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
 
-        </androidx.appcompat.widget.Toolbar>
+        </skin.support.widget.SkinCompatToolbar>
 
         <!--tabIndicatorColor：指示器的颜色-->
         <!--tabIndicatorHeight：指示器的高度，可设置为0，相当于没有指示器-->
@@ -45,7 +45,7 @@
             app:tl_indicator_color="@color/colorIndicator"
             app:tl_textSelectColor="@color/colorSelected"></skin.support.flycotablayout.widget.SkinSlidingTabLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </skin.support.design.widget.SkinMaterialAppBarLayout>
 
 
     <androidx.viewpager.widget.ViewPager

@@ -142,7 +142,8 @@ public class FavoriteDataFragment extends Fragment {
                     List<HomeEntity> homeEntities = SQLModel.getInstance().getXpathbyTitle(dataEntity.getSourcesName(), dataEntity.getType());
                     NowRuleBean nowRuleBean = AnalysisUtils.getInstance().getValueByStep(homeEntities.get(0), dataEntity.getStep(), "", dataEntity.getLink());
                     getActivity().runOnUiThread(() -> {
-                        boolean result = MainViewClick.OnClick(getContext(), nowRuleBean, dataEntity1, dataEntity.getSpinnerSel(), dataEntity.getTitle(),dataEntity.getReadIndex());
+                        boolean finaltype = isFinalType(nowRuleBean,dataEntity.getStep(),homeEntities.get(0),dataEntity.getLink());
+                        boolean result = MainViewClick.OnClick(getContext(), nowRuleBean, dataEntity1, dataEntity.getSpinnerSel(), dataEntity.getTitle(),dataEntity.getReadIndex(),finaltype,position);
                         if (!result) {
 
                             SnackbarUtil.ShortSnackbar(getView(),"该源配置不正确，无法进行下一步。",SnackbarUtil.Warning).show();
@@ -151,6 +152,34 @@ public class FavoriteDataFragment extends Fragment {
                 }
             });
         });
+    }
+
+    //判断是不是最后一个继续解析
+    private boolean isFinalType(NowRuleBean nowRuleBean,String step,HomeEntity homeEntity,String qzurl) {
+        boolean finaltype = false;
+        if (nowRuleBean.getLinkType().equals("1")) {
+            //当前未继续解析
+            String nextStep = "";
+            switch (step) {
+                case "1":
+                    nextStep = "2";
+                    break;
+                case "2":
+                    nextStep = "3";
+                    break;
+            }
+            NowRuleBean nextRuleBean = AnalysisUtils.getInstance().getValueByStep(homeEntity, nextStep, "", qzurl);
+            String nextLinkType = nextRuleBean.getLinkType();
+            if (!nextLinkType.equals("1")&&!nextLinkType.equals("8")) {
+                //表示最后一个列表 显示一个上面有图片 介绍 下面是列表的activity
+                finaltype = true;
+            } else {
+                finaltype = false;
+            }
+        } else {
+            finaltype = false;
+        }
+        return finaltype;
     }
 
     private void itemChildClick()

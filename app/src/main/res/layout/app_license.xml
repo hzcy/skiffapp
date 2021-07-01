@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".View.Activity.NextActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <skin.support.design.widget.SkinMaterialAppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -14,7 +14,7 @@
 
         tools:ignore="MissingConstraints">
 
-        <androidx.appcompat.widget.Toolbar
+        <skin.support.widget.SkinCompatToolbar
             android:id="@+id/toolbar"
             app:titleTextColor="@color/colorTitle"
             android:layout_width="match_parent"
@@ -24,10 +24,10 @@
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
 
-        </androidx.appcompat.widget.Toolbar>
+        </skin.support.widget.SkinCompatToolbar>
 
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </skin.support.design.widget.SkinMaterialAppBarLayout>
 
 
     <FrameLayout

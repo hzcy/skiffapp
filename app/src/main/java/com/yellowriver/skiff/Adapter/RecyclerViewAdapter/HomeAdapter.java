@@ -2,6 +2,7 @@ package com.yellowriver.skiff.Adapter.RecyclerViewAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spanned;
@@ -10,24 +11,30 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.module.LoadMoreModule;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.R;
+
+import java.util.List;
 
 /**
  * 主适配器
  * @author huang
  */
-public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> {
-
+public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> implements LoadMoreModule {
+    private static String TAG = "HomeAdapter";
     public HomeAdapter(int layoutResId) {
         super(layoutResId);
     }
@@ -36,6 +43,17 @@ public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, DataEntity item) {
         helper.setText(R.id.tv_title, item.getTitle());
+        if (item.getColor()!=null)
+        {
+            Log.d(TAG, "convert: "+item.getColor());
+            if (!item.getColor().equals(""))
+            {
+                if (item.getColor().equals("红色"))
+                {
+                    helper.setText(R.id.tv_title, ">>>"+item.getTitle()+"<<<");
+                }
+            }
+        }
         if (item.getSummary() == null&&item.getDate() == null&&item.getCover() == null)
         {
             helper.getView(R.id.searchgocd).setElevation(3);
@@ -84,27 +102,61 @@ public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> {
             }else {
                 Log.d(TAG, "convert: " + item.getCover());
                 helper.getView(R.id.iv_cover).setVisibility(View.GONE);
-                Glide.with(mContext)
-                        .load(item.getCover())
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                Log.d(TAG, "onLoadFailed: 加载失败");
-                                //helper.getView(R.id.iv_cover).setVisibility(View.GONE);
-                                return false;
-                            }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                Log.d(TAG, "onLoadFailed: 加载成功");
-                                helper.getView(R.id.iv_cover).setVisibility(View.VISIBLE);
-                                return false;
-                            }
+                GlideUrl glideUrl = null;
+                if (item.getCover().indexOf("{QZ}") != -1) {
+                    String[] sourceStrArray2 = item.getCover().split("\\{QZ\\}");
+                    if (sourceStrArray2.length == 2) {
+                        String imgurl = sourceStrArray2[0];
+                        String imgref = sourceStrArray2[1];
+                        try {
+                            glideUrl = new GlideUrl(imgurl, new LazyHeaders.Builder()
+                                    .addHeader("Referer", imgref)
+                                    .build());
+                        } catch (IllegalArgumentException e) {
 
-                        })
-                        //.error(R.drawable.moren_new)
-                        //.diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into((ImageView) helper.getView(R.id.iv_cover));
+                        }
+
+                    } else {
+                        try {
+                            glideUrl = new GlideUrl(item.getCover(), new LazyHeaders.Builder()
+                                    .build());
+                        } catch (IllegalArgumentException e) {
+
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "convert: hear为空");
+                    try {
+                        glideUrl = new GlideUrl(item.getCover(), new LazyHeaders.Builder()
+                                .build());
+                    } catch (IllegalArgumentException e) {
+
+                    }
+                }
+                if (glideUrl != null) {
+                    Glide.with(getContext())
+                            .load(glideUrl)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    Log.d(TAG, "onLoadFailed: 加载失败");
+                                    //helper.getView(R.id.iv_cover).setVisibility(View.GONE);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    Log.d(TAG, "onLoadFailed: 加载成功");
+                                    helper.getView(R.id.iv_cover).setVisibility(View.VISIBLE);
+                                    return false;
+                                }
+
+                            })
+                            //.error(R.drawable.moren_new)
+                            //.diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into((ImageView) helper.getView(R.id.iv_cover));
+                }
             }
         }
         helper.getView(R.id.iv_favorite).setVisibility(View.GONE);
@@ -123,4 +175,34 @@ public class HomeAdapter extends BaseQuickAdapter<DataEntity, BaseViewHolder> {
         return htmlContent;
 
     }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else {
+
+            holder.getView(R.id.tv_date).setVisibility(View.VISIBLE);
+            if (getData()!=null){
+                if(getData().get(position).getDate()!=null) {
+                    if (getData().get(position).getDate().indexOf("来源") != -1) {
+                        //包含来源 追加
+                        holder.setText(R.id.tv_date, getData().get(position).getSummary() + " " + payloads.get(0).toString());
+                    } else {
+                        //不包含
+                        holder.setText(R.id.tv_date, "来源: " + payloads.get(0).toString());
+                    }
+                }else {
+                    //不包含
+                    holder.setText(R.id.tv_date, "来源: " + payloads.get(0).toString());
+                }
+            }
+
+
+        }
+    }
+
+
+
 }

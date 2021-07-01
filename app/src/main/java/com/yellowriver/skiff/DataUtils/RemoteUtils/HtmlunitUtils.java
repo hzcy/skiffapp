@@ -12,6 +12,7 @@ import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.yellowriver.skiff.Help.LogUtil;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -81,9 +82,11 @@ class HtmlunitUtils {
             webClient.close();
         }
 
+        LogUtil.info("轻舟普通异步加载数据","shuju"+pageXml);
+
 
         return pageXml;
-
+       // background:url(https://img.qiaker.cn/1568620622907.jpg) no-repeat center;background-size:contain
     }
 
 

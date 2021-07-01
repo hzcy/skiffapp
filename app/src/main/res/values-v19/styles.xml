@@ -5,6 +5,29 @@
     <style name="AppTheme" parent="@style/BaseAppTheme">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="searchViewStyle">@style/Widget.SearchView</item>
+        <item name="autoCompleteTextViewStyle">@style/cursorColor</item>
     </style>
 
+
+    <style name="Widget.SearchView" parent="Widget.AppCompat.SearchView">
+
+        <item name="queryBackground">@drawable/abc_textfield_search_material</item>
+        <item name="submitBackground">@drawable/abc_textfield_search_material</item>
+
+
+        <item name="searchHintIcon">@drawable/ic_search2_black_24dp</item>
+        <item name="goIcon">@drawable/ic_close_writer_24dp</item>
+        <item name="voiceIcon">@drawable/ic_close_writer_24dp</item>
+        <item name="commitIcon">@drawable/abc_ic_commit_search_api_mtrl_alpha</item>
+    </style>
+
+    <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
+    </style>
+
+    <style name="Toolbar.MyStyle" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
+    </style>
 </resources>

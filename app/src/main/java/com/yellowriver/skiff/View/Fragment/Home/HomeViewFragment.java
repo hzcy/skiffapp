@@ -16,14 +16,17 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
+import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.R;
 import com.yellowriver.skiff.View.Activity.SearchActivity;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
+import com.yellowriver.skiff.View.Fragment.SearchOneFragment;
 
 import org.angmarch.views.NiceSpinner;
 import org.jetbrains.annotations.NotNull;
@@ -80,6 +83,7 @@ public class HomeViewFragment extends Fragment {
      * 绑定控件
      */
     private Unbinder bind;
+
     /**
      * 默认构造方法.
      */
@@ -90,14 +94,14 @@ public class HomeViewFragment extends Fragment {
     private void updateView(final List<String> groupNameList) {
         //如果数据库为空
         if (groupNameList.size() == 0) {
-            if (toolbar!=null) {
+            if (toolbar != null) {
                 toolbar.setVisibility(View.VISIBLE);
                 toolbar.setTitle("首页");
             }
-            if (mAppBarLayout!=null) {
+            if (mAppBarLayout != null) {
                 mAppBarLayout.setElevation(10);
             }
-            if (mllserarchView!=null) {
+            if (mllserarchView != null) {
                 mllserarchView.setVisibility(View.GONE);
             }
 
@@ -106,8 +110,7 @@ public class HomeViewFragment extends Fragment {
             qzSourcesType = "home";
             //将数据设置ArrayAdapter
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    Objects.requireNonNull(
-                            getContext()), R.layout.myspinner, groupNameList);
+                    requireContext(), R.layout.myspinner, groupNameList);
             adapter.setDropDownViewResource(R.layout.myspinner);
             mSpinner.setAdapter(adapter);
             mSpinner.setBackgroundResource(R.color.colorPrimary);
@@ -140,7 +143,7 @@ public class HomeViewFragment extends Fragment {
     @SuppressLint("ResourceAsColor")
     private void bindView(final View v) {
         bind = ButterKnife.bind(this, v);
-        if (mSearchView!=null) {
+        if (mSearchView != null) {
             mSearchView.setShape(Search.Shape.CLASSIC);
             mSearchView.setShadow(false);
             mSearchView.setShadowColor(R.color.colorPrimary);
@@ -159,17 +162,13 @@ public class HomeViewFragment extends Fragment {
     }
 
 
-
-
-    private void bindEvent()
-    {
+    private void bindEvent() {
         spinnerSelected();
         searchView();
     }
 
     //下拉栏选择事件
-    private void spinnerSelected()
-    {
+    private void spinnerSelected() {
         mSpinner.setOnSpinnerItemSelectedListener(
                 (parent, view, position, id) -> {
                     qzGroupName = (String) parent.getItemAtPosition(position);
@@ -177,13 +176,11 @@ public class HomeViewFragment extends Fragment {
                     showFragment(HomeTabFragment.
                             getInstance(qzGroupName, qzSourcesType, qzQuery, qzSpinnerSel));
                     //隐藏输入法
-                    if (Objects.requireNonNull(getActivity())
+                    if (requireActivity()
                             .getCurrentFocus() != null) {
-                        ((InputMethodManager) Objects.requireNonNull(
-                                getActivity().getSystemService(
-                                        INPUT_METHOD_SERVICE)))
-                                .hideSoftInputFromWindow(Objects.requireNonNull(
-                                        getActivity().getCurrentFocus()).
+                        ((InputMethodManager) requireActivity().getSystemService(
+                                        INPUT_METHOD_SERVICE))
+                                .hideSoftInputFromWindow(requireActivity().getCurrentFocus().
                                                 getWindowToken(),
                                         InputMethodManager.HIDE_NOT_ALWAYS);
                     }
@@ -192,8 +189,7 @@ public class HomeViewFragment extends Fragment {
     }
 
     //搜索框点击事件
-    private void searchView()
-    {
+    private void searchView() {
         mSearchView.setOnQueryTextListener(
                 new Search.OnQueryTextListener() {
                     @Override
@@ -204,13 +200,11 @@ public class HomeViewFragment extends Fragment {
                         intent.putExtra("qzQuery", query);
                         startActivity(intent);
                         //隐藏输入法
-                        if (Objects.requireNonNull(getActivity())
+                        if (requireActivity()
                                 .getCurrentFocus() != null) {
-                            ((InputMethodManager) Objects.requireNonNull(
-                                    getActivity().getSystemService(
-                                            INPUT_METHOD_SERVICE)))
-                                    .hideSoftInputFromWindow(Objects.requireNonNull(
-                                            getActivity().getCurrentFocus()).
+                            ((InputMethodManager) requireActivity().getSystemService(
+                                            INPUT_METHOD_SERVICE))
+                                    .hideSoftInputFromWindow(requireActivity().getCurrentFocus().
                                                     getWindowToken(),
                                             InputMethodManager.HIDE_NOT_ALWAYS);
                         }
@@ -226,9 +220,23 @@ public class HomeViewFragment extends Fragment {
 
     //切换fragment
     private void showFragment(final Fragment fragment) {
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment).commit();
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        //如果切换成聚合搜索
+
+        Log.d(TAG, "showFragment: " + fragmentTransaction.isEmpty());
+        if (fragmentTransaction.isEmpty()) {
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+        } else {
+            List<Fragment> fragmentList = getChildFragmentManager().getFragments();
+            if (fragmentList != null) {
+                for (Fragment havefragment : fragmentList) {
+                    fragmentTransaction.remove(havefragment);
+                }
+            }
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+        }
+        //提交事件
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     /**
@@ -249,11 +257,12 @@ public class HomeViewFragment extends Fragment {
     public void onDestroy() {
         Log.d(TAG, "测试-->onDestroy");
         super.onDestroy();
-        if (bind!=null) {
+        if (bind != null) {
             //解除绑定
             bind.unbind();
         }
     }
+
     /**
      * 生命周期.
      *

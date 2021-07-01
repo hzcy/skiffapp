@@ -4,6 +4,7 @@ import android.util.Log;
 
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yellowriver.skiff.Bean.SourcesBean.GroupEntity;
@@ -39,55 +40,40 @@ public class SourceUtils {
     }
 
     //源市场 所有分组
-    public static List<MultiItemEntity> getSourceAllGroup() {
+    public static List<BaseNode> getSourceAllGroup() {
 
-        List<MultiItemEntity> list = new ArrayList<>();
-        String grouplisturl = baseURL + "/sources/groupList.json";
-        String baseurl = "https://hege.gitee.io/api/sources";
+        List<BaseNode> list = new ArrayList<>();
+//        String grouplisturl = baseURL + "/sources/groupList.json";
+//        String baseurl = "https://hege.gitee.io/api/sources";
 
         // 获取文档内容
-        String json = NetUtils.getInstance().getRequest(grouplisturl, "1");
-
+        String json = NetUtils.getInstance().getRequest("https://raw.githubusercontent.com/hzcy/skiffpage/main/api/sources/groupList.json", "1");
+        Log.d("新开始", "run: "+json);
         if (json!=null) {
 
-            Log.d(TAG, "getSourceAllGroup: " + json);
+            //Log.d(TAG, "getSourceAllGroup: " + json);
             List<GroupEntity> sourceBean = null;
             if (JsonUtils.isJSONValid(json)) {
-                Log.d(TAG, "getSourceAllGroup: 是json");
+               // Log.d(TAG, "getSourceAllGroup: 是json");
                 Type type = new TypeToken<List<GroupEntity>>() {
                 }.getType();
                 sourceBean = gson.fromJson(json, type);
             }
 
             if (sourceBean != null) {
-                Log.d(TAG, "getSourceAllGroup: " + sourceBean.size());
+                //Log.d(TAG, "getSourceAllGroup: " + sourceBean.size());
 
                 for (int i = 0; i < sourceBean.size(); i++) {
 
-                    group groupBean = new group();
-                    groupBean.setGroupName(sourceBean.get(i).getName());
-                    groupBean.setGroupLink(sourceBean.get(i).getLink());
-
-                    List<sources> sourcesList = getSourceByGroup(sourceBean.get(i).getLink());
+//                    group groupBean = new group();
+//                    groupBean.setGroupName(sourceBean.get(i).getName());
+//                    groupBean.setGroupLink(sourceBean.get(i).getLink());
+                    List<BaseNode> sourcesList = new ArrayList<>();
+                    sourcesList = getSourceByGroup(sourceBean.get(i).getLink());
                     if (sourcesList!=null) {
-                        groupBean.setSourcess(sourcesList);
-                        Log.d(TAG, "getSourceAllGroup: " + sourcesList.size());
-                        int havecount = 0;
-                        for (sources sources : sourcesList) {
-                            groupBean.addSubItem(sources);
-                            String ishave = sources.getSourcesIshave();
-                            if (ishave.equals("0")) {
-                                //不存在
-                                havecount++;
-                            }
-                        }
-                        if (havecount > 0) {
-                            //表示有未导入的
-                            groupBean.setGroupIshave("0");
-                        } else {
-                            //说明已全部导入
-                            groupBean.setGroupIshave("1");
-                        }
+
+                      //  Log.d(TAG, "getSourceAllGroup: " + sourcesList.size());
+                        group groupBean = new group(sourceBean.get(i).getName(),sourceBean.get(i).getLink(),sourcesList);
                         list.add(groupBean);
 
                     }
@@ -100,9 +86,9 @@ public class SourceUtils {
     }
 
     //源市场 根据分组获取源
-    private static List<sources> getSourceByGroup(String grouplink) {
+    private static List<BaseNode> getSourceByGroup(String grouplink) {
 
-        List<sources> sourcesBeanList = new ArrayList<>();
+        List<BaseNode> sourcesBeanList = new ArrayList<>();
         // 获取文档内容
         String json = NetUtils.getInstance().getRequest(baseURL + "/sources" + grouplink, "1");
 

@@ -35,7 +35,7 @@ public class JsonUtils {
     //json相关
     public String getJson(NowRuleBean sourceRule, int page) {
         String actionUrl = null;
-        String json;
+        String json = null;
         if (GET.equals(sourceRule.getRequestMethod())) {
 
             //GET
@@ -63,9 +63,11 @@ public class JsonUtils {
                     }
                     Log.d(TAG, "GetHtmlDoc: " + actionUrl);
                     //包含
-                    actionUrl = actionUrl.replace("{QZPage}", String.valueOf(page));
-                    actionUrl = actionUrl.replace("{QZLink}", sourceRule.getUrl());
+                    if(actionUrl!=null) {
+                        actionUrl = actionUrl.replace("{QZPage}", String.valueOf(page));
+                        actionUrl = actionUrl.replace("{QZLink}", sourceRule.getUrl());
 
+                    }
 
                 } else {
                     actionUrl = AnalysisUtils.getLink(null, nexturlxpath);
@@ -85,8 +87,10 @@ public class JsonUtils {
             //获取dom
             //Log.d(TAG, "FirstAnalysis: "+headerMap+url);
 
-            json = NetUtils.getInstance().getRequest(actionUrl, headerMap, sourceRule.getCharset());
+            if (actionUrl != null) {
+                json = NetUtils.getInstance().getRequest(actionUrl, headerMap, sourceRule.getCharset());
 
+            }
 
         } else {
             //post
@@ -94,15 +98,20 @@ public class JsonUtils {
                 //表示要搜索 替换url上的搜索关键字
 
                 actionUrl = sourceRule.getUrl().replace("{QZQuery}", sourceRule.getQuery());
+            }else{
+                actionUrl = sourceRule.getUrl();
             }
             //请求头  源使用json写hearder 将json格式的hearder转为hashmap
             HashMap<String, String> headerMap = null;
             //postdata 源使用json写postdata 将json格式的postdata转为hashmap
             HashMap<String, String> paramsMap = null;
-            String PostData;
+            String PostData = null;
             if (!"".equals(sourceRule.getPostData())) {
+                PostData =  sourceRule.getPostData();
                 //表示要搜索 替换postdata里的搜索关键字
-                PostData = sourceRule.getPostData().replace("{QZQuery}", sourceRule.getQuery());
+                PostData = PostData.replace("{QZPage}", String.valueOf(page));
+
+                PostData = PostData.replace("{QZQuery}", sourceRule.getQuery());
                 //Log.d(TAG, "GetHtmlDoc postdata: " + PostData);
                 paramsMap = JSON.parseObject(PostData, HashMap.class);
             }
@@ -110,12 +119,15 @@ public class JsonUtils {
                 headerMap = JSON.parseObject(sourceRule.getHeaders(), HashMap.class);
             }
 
+            //Log.d(TAG, "getJson: "+actionUrl);
             //如果是js异步加载数据 用htmlutil  1.不是 2是
 
             //获取dom
             //Log.d(TAG, "FirstAnalysis: "+headerMap+url);
-            json = NetUtils.getInstance().requestPost(actionUrl, paramsMap, headerMap, sourceRule.getCharset());
+            if (actionUrl != null) {
+                json = NetUtils.getInstance().requestPost(actionUrl, paramsMap, headerMap, sourceRule.getCharset());
 
+            }
 
         }
         return json;
@@ -175,7 +187,10 @@ public class JsonUtils {
 
                             Log.d(TAG, "getJsonData: " + sourceRule.getTitleXpath());
                             title = getJSONbyxpath(listarray, sourceRule.getTitleXpath());
-
+                            if (!"".equals(sourceRule.getTitleProcessingValue())) {
+                                //第一步处理 处理图片 如果需要处理的值不为空  （一般情况下使用左拼接将图片拼接完整）
+                                title = AnalysisUtils.getInstance().processingValue(title, sourceRule.getTitleProcessingValue(), sourceRule.getUrl(), 0);
+                            }
                             Log.d(TAG, "title json" + title);
 
                         }
@@ -185,6 +200,11 @@ public class JsonUtils {
                             if (!"".equals(sourceRule.getLinkProcessingValue())) {
                                 //第一步处理 处理图片 如果需要处理的值不为空  （一般情况下使用左拼接将图片拼接完整）
                                 link = AnalysisUtils.getInstance().processingValue(link, sourceRule.getLinkProcessingValue(), sourceRule.getUrl(), 0);
+                            }
+                            if(link!=null){
+                                if(!link.startsWith("http")){
+                                    link =  XpathUtils.getHost(sourceRule.getUrl()) +link;
+                                }
                             }
                             Log.d(TAG, "link json" + link);
                         }
@@ -229,7 +249,7 @@ public class JsonUtils {
     }
 
 
-    private static String getJSONbyxpath(JSONObject jsonObject, String key) {
+    public static String getJSONbyxpath(JSONObject jsonObject, String key) {
 
         String[] sourceStrArray = key.split("\\.");
         String value = null;
@@ -242,8 +262,7 @@ public class JsonUtils {
                 Log.d(TAG, "getJSONbyxpath: " + sourceStrArray.length);
                 if (i == sourceStrArray.length - 1) {
                     try {
-                        Log.d(TAG, "getJSONbyxpath: 最后"+jsonObject.toJSONString());
-                        Log.d(TAG, "getJSONbyxpath: 最后"+sourceStrArray[i]);
+
 
                         value = jsonObject.getString(sourceStrArray[i]);
 
@@ -255,7 +274,7 @@ public class JsonUtils {
                 } else {
                     try {
                         jsonObject = jsonObject.getJSONObject(sourceStrArray[i]);
-                        Log.d(TAG, "getJSONbyxpath: jsonjosn"+jsonObject.toJSONString());
+                       // Log.d(TAG, "getJSONbyxpath: jsonjosn"+jsonObject.toJSONString());
                     } catch (ClassCastException e) {
 
                     } catch (JSONException e) {

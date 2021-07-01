@@ -4,6 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="25dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".View.Fragment.Sources.SourceFragment">
 
@@ -15,7 +16,7 @@
 
         >
 
-        <androidx.appcompat.widget.Toolbar
+        <skin.support.widget.SkinCompatToolbar
             android:id="@+id/toolbar"
             app:titleTextColor="@color/colorTitle"
             android:layout_width="match_parent"
@@ -46,7 +47,10 @@
 
 
 
-        </androidx.appcompat.widget.Toolbar>
+        </skin.support.widget.SkinCompatToolbar>
+
+
+
 
         <!--tabIndicatorColor：指示器的颜色-->
         <!--tabIndicatorHeight：指示器的高度，可设置为0，相当于没有指示器-->
@@ -56,15 +60,16 @@
         <!--tabMode：Tab的显示模式，默认为fixed（固定不能滑动，标签很多时会被挤压），可设置为scrollable（标签很多时可向左滑动）-->
         <!--tabGravity：内容的显示模式，可选center（居中）和fill（填充）-->
         <skin.support.flycotablayout.widget.SkinSlidingTabLayout
-            app:tl_tab_space_equal="true"
+
 
             android:id="@+id/tl_search"
             android:layout_width="match_parent"
             android:layout_height="@dimen/tabheight"
             android:background="@color/colorPrimary"
+
             app:tl_textUnselectColor="@color/colorUnSelected"
             app:tl_indicator_color="@color/colorIndicator"
-            app:tl_textSelectColor="@color/colorSelected"></skin.support.flycotablayout.widget.SkinSlidingTabLayout>
+            app:tl_textSelectColor="@color/colorSelected" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -73,8 +78,10 @@
     <androidx.viewpager.widget.ViewPager
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/view_pager"
+        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
 
 

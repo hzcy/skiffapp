@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchgocd"
+    android:orientation="vertical"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    app:cardElevation="1dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- 仅标题垂直列表-->
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/dp_10"
+        android:id="@+id/titlell"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:id="@+id/titletv"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="@color/colorDataTitle"
+            android:text="标题"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

@@ -30,6 +30,7 @@ import com.download.library.DownloadListenerAdapter;
 import com.download.library.Extra;
 import com.download.library.ResourceRequest;
 import com.google.android.material.appbar.AppBarLayout;
+
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultDownloadImpl;
@@ -145,7 +146,7 @@ public class AboutWebViewActivity extends AppCompatActivity {
 
         if(mAgentWeb!=null){
             //注入对象
-            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this));
+            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(this));
         }
 
         //添加下拉背景  轻舟logo
@@ -184,7 +185,7 @@ public class AboutWebViewActivity extends AppCompatActivity {
 
                             @Override
                             protected ResourceRequest createResourceRequest(String url) {
-                                return DownloadImpl.getInstance()
+                                return DownloadImpl.getInstance(getApplicationContext())
                                         .with(getApplicationContext())
                                         .url(url)
                                         .quickProgress()

@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -23,11 +24,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.entity.IExpandable;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.yellowriver.skiff.Adapter.TreeAdapter.GroupAdapter;
+
 import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
 import com.yellowriver.skiff.Bean.SourcesBean.SourcesEntity;
@@ -80,7 +83,7 @@ public class LocalSourceFragment extends Fragment {
      * 用着数据库查询
      */
     private String title;
-    private GroupAdapter mGroupAdapter;
+    //private GroupAdapter mGroupAdapter;
     private List<MultiItemEntity> list = new ArrayList<>();
     private int page = 1;
     private int sourcesCount = 0;
@@ -99,7 +102,7 @@ public class LocalSourceFragment extends Fragment {
         this.mAdapter = adapter;
     }
 
-    private void updateView(List<MultiItemEntity> list) {
+    private void updateView(List<BaseNode> list) {
 
         mSwipeRefreshLayout.setRefreshing(false);
         //解决刷新时快速滑动导致cash
@@ -113,7 +116,7 @@ public class LocalSourceFragment extends Fragment {
                        // mAdapter.setPageTitle(i, title + "（" + sourcesCount + "）");
                     }
                     mRecyclerView.setVisibility(View.VISIBLE);
-                    mGroupAdapter.setNewData(list);
+                   // mGroupAdapter.setNewData(list);
 
                 } else {
                     mRecyclerView.setVisibility(View.GONE);
@@ -172,20 +175,20 @@ public class LocalSourceFragment extends Fragment {
         myLinearLayoutManager = new MyLinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(myLinearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mGroupAdapter = new GroupAdapter(list));
-        mGroupAdapter.expandAll();
+      //  mRecyclerView.setAdapter(mGroupAdapter = new GroupAdapter(list));
+        //mGroupAdapter.expandAll();
     }
 
     LocalSourceModel localSourceModel;
 
     private void bindData() {
         localSourceModel = ViewModelProviders.of(this).get(LocalSourceModel.class);
-        title = Objects.requireNonNull(getArguments()).getString("title");
+        title = requireArguments().getString("title");
     }
 
     private void getData() {
 
-        localSourceModel.getLocalSources().observe(this, this::updateView);
+        localSourceModel.getLocalSources().observe(getViewLifecycleOwner(), this::updateView);
         localSourceModel.reload();
     }
 
@@ -221,56 +224,58 @@ public class LocalSourceFragment extends Fragment {
 
     //一级 分组点击事件 本地源 删除分组 源市场 添加分组
     private void groupAddAndDelete() {
-        mGroupAdapter.setOnItemChildClickListener(new GroupAdapter.OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (adapter.getItemViewType(position)) {
-                    case TYPE_LEVEL_0:
-                        final group group = (group) adapter.getData().get(position);
-                        String groupname = group.getGroupName();
-                        if (group!=null) {
-                            if (group.getSourcess()!=null) {
-                                int size = group.getSourcess().size();
 
-                                delAlert(groupname, "", size, TYPE_LEVEL_0, position);
+//        mGroupAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+//            @Override
+//            public void onItemChildClick(@NonNull @NotNull BaseQuickAdapter adapter, @NonNull @NotNull View view, int position) {
+//                switch (adapter.getItemViewType(position)) {
+//                    case TYPE_LEVEL_0:
+//                        final group group = (group) adapter.getData().get(position);
+//                        String groupname = group.getGroupName();
+//                        if (group!=null) {
+//                            if (group.getChildNode()!=null) {
+//                                int size = group.getChildNode().size();
+//
+//                                delAlert(groupname, "", size, TYPE_LEVEL_0, position);
+//
+//                            }
+//                        }
+//                        break;
+//                    case TYPE_LEVEL_1:
+//                    default:
+//                        break;
+//                }
+//            }
+//        });
 
-                            }
-                        }
-                        break;
-                    case TYPE_LEVEL_1:
-                    default:
-                        break;
-                }
-            }
-        });
     }
 
     //二级 源点击事件 本地源 删除源 源市场 导入源
     private void sourceAddAndDelete() {
-        mGroupAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (adapter.getItemViewType(position)) {
-                    case TYPE_LEVEL_0:
-                        break;
-                    case TYPE_LEVEL_1:
-                        final sources sources = (sources) adapter.getData().get(position);
-                        String sourcesName = sources.getSourcesName();
-                        String sourcesType = sources.getSourcesType();
-                        //点击 删除对话框
-                        delAlert(sourcesName, sourcesType, 0, TYPE_LEVEL_1, position);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+//        mGroupAdapter.setOnItemClickListener(new OnItemClickListener() {
+//            @Override
+//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                switch (adapter.getItemViewType(position)) {
+//                    case TYPE_LEVEL_0:
+//                        break;
+//                    case TYPE_LEVEL_1:
+//                        final sources sources = (sources) adapter.getData().get(position);
+//                        String sourcesName = sources.getSourcesName();
+//                        String sourcesType = sources.getSourcesType();
+//                        //点击 删除对话框
+//                        delAlert(sourcesName, sourcesType, 0, TYPE_LEVEL_1, position);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        });
     }
 
 
     private void delAlert(String name, String type, int size, int TYPE_LEVEL, int position) {
         final AlertDialog.Builder normalDialog =
-                new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+                new AlertDialog.Builder(requireContext());
 
         if (TYPE_LEVEL == 0) {
             normalDialog.setTitle("删除分组");
@@ -295,23 +300,23 @@ public class LocalSourceFragment extends Fragment {
 
 
                     } else {
-                        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                        requireActivity().runOnUiThread(() -> {
                             SnackbarUtil.ShortSnackbar(getView(), "删除成功！", SnackbarUtil.Confirm).show();
                             SharedPreferencesUtils.dataChange(true, getContext());
                             SharedPreferencesUtils.dataChangeSource(true, getContext());
                             try {
-                                int positionAtAll = mGroupAdapter.getParentPositionInAll(position);
-                                //mGroupAdapter.notifyItemChanged(position,"delete");
-                                mGroupAdapter.remove(position);
-                                getData();
-                                if (positionAtAll != -1) {
-                                    IExpandable multiItemEntity = (IExpandable) mGroupAdapter.getData().get(positionAtAll);
-                                    if (!mGroupAdapter.hasSubItems(multiItemEntity)) {
-
-                                        mGroupAdapter.remove(positionAtAll);
-                                        //mGroupAdapter.notifyItemChanged(positionAtAll,"delete");
-                                    }
-                                }
+//                                int positionAtAll = mGroupAdapter.(position);
+//                                //mGroupAdapter.notifyItemChanged(position,"delete");
+//                                mGroupAdapter.remove(position);
+//                                getData();
+//                                if (positionAtAll != -1) {
+//                                    IExpandable multiItemEntity = (IExpandable) mGroupAdapter.getData().get(positionAtAll);
+//                                    if (!mGroupAdapter.hasSubItems(multiItemEntity)) {
+//
+//                                        mGroupAdapter.remove(positionAtAll);
+//                                        //mGroupAdapter.notifyItemChanged(positionAtAll,"delete");
+//                                    }
+//                                }
                             }catch (IndexOutOfBoundsException e)
                             {
 

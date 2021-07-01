@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.yellowriver.skiff.Repository.LocalSourceRepository;
 import com.yellowriver.skiff.Repository.RemoteSourceRepository;
 
@@ -22,13 +23,13 @@ public class RemoteSourceModel extends ViewModel {
     private static final String TAG = "RemoteSourceModel";
     private RemoteSourceRepository remoteSourceRepository = RemoteSourceRepository.getInstance();
     private MutableLiveData<Integer> ldPage;;
-    private LiveData<List<MultiItemEntity>> remoteSources;
-    public LiveData<List<MultiItemEntity>> getRemoteSources() {
+    private LiveData<List<BaseNode>> remoteSources;
+    public LiveData<List<BaseNode>> getRemoteSources() {
         if (null == remoteSources) {
             ldPage = new MutableLiveData<>();
-            remoteSources = Transformations.switchMap(ldPage, new Function<Integer, LiveData<List<MultiItemEntity>>>() {
+            remoteSources = Transformations.switchMap(ldPage, new Function<Integer, LiveData<List<BaseNode>>>() {
                 @Override
-                public LiveData<List<MultiItemEntity>> apply(Integer page) {
+                public LiveData<List<BaseNode>> apply(Integer page) {
 
                     return remoteSourceRepository.getData();
                 }

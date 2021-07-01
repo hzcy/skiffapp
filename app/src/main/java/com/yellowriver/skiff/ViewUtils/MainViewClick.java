@@ -3,15 +3,13 @@ package com.yellowriver.skiff.ViewUtils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Bean.HomeBean.NowRuleBean;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.AnalysisUtils;
+import com.yellowriver.skiff.View.Activity.Final2Activity;
 import com.yellowriver.skiff.View.Activity.NextActivity;
-import com.yellowriver.skiff.View.Activity.ReadActivity;
 import com.yellowriver.skiff.View.Activity.SearchActivity;
 import com.yellowriver.skiff.View.Activity.WebViewActivity;
 
@@ -25,6 +23,7 @@ public class MainViewClick {
     private static final String TAG = "MainViewClick";
     private static final String HTTP = "http";
     private static final String FENGE = "||";
+
     /**
      * 主解析 根据源点击类型打开不同界面
      *
@@ -33,21 +32,19 @@ public class MainViewClick {
      * @param mDataEntity 点击的数据
      * @param index       分组下标  打开搜索  搜索界面用该值对下拉框初始化
      */
-    public static boolean OnClick(Context mContext, NowRuleBean nowRuleBean, DataEntity mDataEntity, int index, String upTitle,int readIndex) {
+    public static boolean OnClick(Context mContext, NowRuleBean nowRuleBean, DataEntity mDataEntity, int index, String upTitle, int readIndex, boolean finaltype,int position) {
         Boolean result = true;
+
         switch (nowRuleBean.getLinkType()) {
             //继续解析
             case "1":
-                Log.d(TAG, "OnClick: "+mDataEntity.getLink());
+                Log.d(TAG, "OnClick: " + mDataEntity.getLink());
                 if (null != mDataEntity.getLink()) {
-                    if (mDataEntity.getLink().startsWith(HTTP)) {
-                        result = true;
-                        goNext(mContext, mDataEntity, nowRuleBean, index,readIndex);
-                    } else {
-                        result = false;
-                    }
+                    result = true;
+                     goNext(mContext, mDataEntity, nowRuleBean, index, readIndex, finaltype);
+
                 } else {
-                    result = false;
+                    result = true;
                 }
                 break;
             //网页
@@ -69,7 +66,7 @@ public class MainViewClick {
                 if (null != mDataEntity.getLink()) {
                     if (mDataEntity.getLink().startsWith(HTTP)) {
                         result = true;
-                        openReadMode(mContext, mDataEntity, nowRuleBean, upTitle,readIndex);
+                        openReadMode(mContext, mDataEntity, nowRuleBean, upTitle, position);
                     } else {
                         result = false;
                     }
@@ -105,18 +102,25 @@ public class MainViewClick {
                 break;
             //图片
             case "7":
-                result = false;
+                if (null != mDataEntity.getLink()) {
+                    if (mDataEntity.getLink().startsWith(HTTP)) {
+                        result = true;
+                        openImgMode(mContext, mDataEntity, nowRuleBean, upTitle, readIndex);
+                    } else {
+                        result = false;
+                    }
+                }
                 break;
             //搜索
             case "8":
-                openSearchMode(mContext, mDataEntity,nowRuleBean);
+                openSearchMode(mContext, mDataEntity, nowRuleBean);
                 break;
             //rss
             case "9":
                 if (null != mDataEntity.getLink()) {
                     if (mDataEntity.getLink().startsWith(HTTP)) {
-                        openRSS(mContext, mDataEntity,nowRuleBean, upTitle);
-                    }else {
+                        openRSS(mContext, mDataEntity, nowRuleBean, upTitle);
+                    } else {
                         result = false;
                     }
                 }
@@ -131,9 +135,63 @@ public class MainViewClick {
     /**
      * 继续解析
      */
-    public static void goNext(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, int index,int readIndex) {
+    public static void goNext(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, int index, int readIndex, boolean finaltype) {
         Intent intent;
-        intent = new Intent(mContext, NextActivity.class);
+        if (finaltype) {
+            boolean gofinal = false;
+//            if(mDataEntity.getCover()==null)
+//            {
+//                LogUtil.info("轻舟hhh","图片为空");
+//            }else{
+//                LogUtil.info("轻舟hhh","图片不为空"+mDataEntity.getCover());
+//            }
+//
+//            if(nowRuleBean.getFinalSummary()==null)
+//            {
+//                LogUtil.info("轻舟hhh","详情为空");
+//            }else{
+//                LogUtil.info("轻舟hhh","详情不为空"+nowRuleBean.getFinalSummary());
+//            }
+//
+//            if(mDataEntity.getSummary()==null)
+//            {
+//                LogUtil.info("轻舟hhh","简介为空");
+//            }else{
+//                LogUtil.info("轻舟hhh","简介不为空"+mDataEntity.getSummary());
+//
+//            }
+
+            if (mDataEntity.getCover() != null && mDataEntity.getSummary() != null) {
+                gofinal = true;
+            } else if (mDataEntity.getSummary() == null && nowRuleBean.getFinalSummary() != null) {
+                if (nowRuleBean.getFinalSummary().startsWith("[")) {
+                    gofinal = true;
+                } else {
+                    gofinal = false;
+                }
+
+            } else if (mDataEntity.getCover() == null && nowRuleBean.getFinalSummary() != null) {
+                if (nowRuleBean.getFinalSummary().startsWith("[")) {
+                    gofinal = true;
+                } else {
+                    gofinal = false;
+                }
+
+            } else {
+                gofinal = false;
+            }
+
+            if (gofinal) {
+                intent = new Intent(mContext, Final2Activity.class);
+                intent.putExtra("qzFinalSummary", nowRuleBean.getFinalSummary());
+                intent.putExtra("qzCharset", nowRuleBean.getCharset());
+            } else {
+                intent = new Intent(mContext, NextActivity.class);
+            }
+
+        } else {
+            intent = new Intent(mContext, NextActivity.class);
+        }
         //点击的分组名
         intent.putExtra("qzGroupName", nowRuleBean.getQzGroupName());
         //点击的标题
@@ -166,7 +224,7 @@ public class MainViewClick {
         //点击的标题
         intent.putExtra("qzLink", mDataEntity.getLink());
         intent.putExtra("qzReadHost", nowRuleBean.getReadImgSrc());
-        Log.d(TAG, "openWebView: "+nowRuleBean.getReadImgSrc());
+        Log.d(TAG, "openWebView: " + nowRuleBean.getReadImgSrc());
         intent.putExtra("qzTitle", mDataEntity.getTitle());
         intent.putExtra("qzReadXpath", nowRuleBean.getReadXpath());
         intent.putExtra("qzCharset", nowRuleBean.getCharset());
@@ -178,20 +236,50 @@ public class MainViewClick {
     }
 
     //打开阅读模式
-    public static void openReadMode(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, String upTitle,int readIndex) {
-        Intent intent;
-        intent = new Intent(mContext, ReadActivity.class);
-        //点击的标题
-        intent.putExtra("qzLink", mDataEntity.getLink());
-        intent.putExtra("qzReadHost", nowRuleBean.getReadImgSrc());
-        intent.putExtra("readIndex", readIndex);
-        intent.putExtra("qzSourcesName",nowRuleBean.getQzSourcesName());
-        intent.putExtra("qzTitle", mDataEntity.getTitle());
-        intent.putExtra("qzReadXpath", nowRuleBean.getReadXpath());
-        intent.putExtra("qzCharset", nowRuleBean.getCharset());
-        intent.putExtra("qzUpTitle", upTitle);
-        intent.putExtra("qzContent", mDataEntity.getSummary());
-        mContext.startActivity(intent);
+    public static void openReadMode(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, String upTitle, int readIndex) {
+//        Intent intent;
+//        intent = new Intent(mContext, ReadActivity.class);
+//        //点击的标题
+//        intent.putExtra("qzLink", mDataEntity.getLink());
+//        intent.putExtra("qzReadHost", nowRuleBean.getReadImgSrc());
+//        intent.putExtra("readIndex", readIndex);
+//        intent.putExtra("qzSourcesName", nowRuleBean.getQzSourcesName());
+//        intent.putExtra("qzTitle", mDataEntity.getTitle());
+//        intent.putExtra("qzReadXpath", nowRuleBean.getReadXpath());
+//        intent.putExtra("qzCharset", nowRuleBean.getCharset());
+//        intent.putExtra("qzUpTitle", upTitle);
+//        intent.putExtra("qzContent", mDataEntity.getSummary());
+//        mContext.startActivity(intent);
+    }
+
+    //打开图片模式
+    public static void openImgMode(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, String upTitle, int readIndex) {
+//        Intent intent;
+//        intent = new Intent(mContext, ImgActivity.class);
+////        if (SharedPreferencesUtils.imgLoadRead(mContext) != null) {
+////            if (SharedPreferencesUtils.imgLoadRead(mContext).equals("普通模式")) {
+////                intent = new Intent(mContext, ImgActivity.class);
+////            } else {
+////                intent = new Intent(mContext, Img2Activity.class);
+////            }
+////        } else {
+////            intent = new Intent(mContext, ImgActivity.class);
+////        }
+//        //点击的标题
+//        intent.putExtra("qzLink", mDataEntity.getLink());
+//        intent.putExtra("qzReadHost", nowRuleBean.getReadImgSrc());
+//        intent.putExtra("qzReadNextPage", nowRuleBean.getReadNextPage());
+//        intent.putExtra("qzReadIsAjax", nowRuleBean.getReadIsAjax());
+//        intent.putExtra("readIndex", readIndex);
+//        intent.putExtra("qzSourcesName", nowRuleBean.getQzSourcesName());
+//        String newtitle = mDataEntity.getTitle().replaceAll(">>>", "");
+//        newtitle = mDataEntity.getTitle().replaceAll("<<<", "");
+//        intent.putExtra("qzTitle", mDataEntity.getTitle());
+//        intent.putExtra("qzReadXpath", nowRuleBean.getReadXpath());
+//        intent.putExtra("qzCharset", nowRuleBean.getCharset());
+//        intent.putExtra("qzUpTitle", upTitle);
+//        intent.putExtra("qzContent", mDataEntity.getSummary());
+//        mContext.startActivity(intent);
     }
 
     public static void openRSS(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean, String upTitle) {
@@ -201,12 +289,25 @@ public class MainViewClick {
 
     //打开视频播放器
     public static void openVideoMode(Context mContext, DataEntity mDataEntity) {
-        String url = mDataEntity.getLink();
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
-        mediaIntent.setDataAndType(Uri.parse(url), mimeType);
-        mContext.startActivity(mediaIntent);
+
+        //使用第三放播放器
+//        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+//        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+//        Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
+//        mediaIntent.setDataAndType(Uri.parse(url), mimeType);
+//        mContext.startActivity(mediaIntent);
+//        Intent intent;
+//        intent = new Intent(mContext, VideoActivity.class);
+//        //点击的标题
+//        intent.putExtra("qzLink", mDataEntity.getLink());
+//        //intent.putExtra("readIndex", readIndex);
+//        //intent.putExtra("qzSourcesName",nowRuleBean.getQzSourcesName());
+//        intent.putExtra("qzTitle", mDataEntity.getTitle());
+//        intent.putExtra("qzCover", mDataEntity.getCover());
+//        //intent.putExtra("qzUpTitle", upTitle);
+//
+//        mContext.startActivity(intent);
+
     }
 
     //打开文件
@@ -261,16 +362,20 @@ public class MainViewClick {
     }
 
     //打开搜索
-    public static void openSearchMode(Context mContext, DataEntity mDataEntity,NowRuleBean nowRuleBean) {
+    public static void openSearchMode(Context mContext, DataEntity mDataEntity, NowRuleBean nowRuleBean) {
         Intent intent;
         //使用点击项的标题去搜索
         intent = new Intent(mContext, SearchActivity.class);
         //点击的标题
         intent.putExtra("qzQuery", mDataEntity.getTitle());
-        intent.putExtra("qzGroupName",nowRuleBean.getQzGroupName());
+        intent.putExtra("qzGroupName", nowRuleBean.getQzGroupName());
 
         mContext.startActivity(intent);
     }
+
+
+
+
 
 
 }

@@ -180,7 +180,7 @@ public class LocalBackup {
     }
 
 
-    private void homeSql(String json)
+    public void homeSql(String json)
     {
         Gson gson = new Gson();
         Type type = new TypeToken<List<HomeEntity>>() {

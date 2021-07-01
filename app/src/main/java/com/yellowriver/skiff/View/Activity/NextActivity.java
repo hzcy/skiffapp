@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.yellowriver.skiff.Bean.DataBaseBean.FavoriteEntity;
@@ -209,14 +210,35 @@ public class NextActivity extends AppCompatActivity {
 
 
     private boolean isAdd() {
-        List<FavoriteEntity> favoriteEntityList = SQLModel.getInstance().getFavoritebyTitle(qzTitle, qzSourceName);
-        if (favoriteEntityList.isEmpty()) {
-            return false;
-        } else {
-            return true;
+        boolean isadd = false;
+        try {
+            List<FavoriteEntity> favoriteEntityList = SQLModel.getInstance().getFavoritebyTitle(qzTitle, qzSourceName);
+            if (favoriteEntityList.isEmpty()) {
+                isadd  = false;
+            } else {
+                isadd =  true;
+            }
+        }catch (IllegalArgumentException e)
+        {
+
         }
+        return isadd;
     }
 
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+//        if (fragmentManager!=null){
+//            if(fragmentManager != null)
+//            {
+//                for (Fragment fragment : fragmentList)
+//                {
+//                    fragment.onDestroy();
+//                }
+//            }
+//        }
+    }
 }

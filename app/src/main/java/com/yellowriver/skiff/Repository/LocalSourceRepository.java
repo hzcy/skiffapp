@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
 import com.yellowriver.skiff.Bean.HomeBean.DataEntity;
 import com.yellowriver.skiff.Interface.HomeDataInterface;
@@ -32,7 +33,7 @@ public class LocalSourceRepository {
         this.context = context.getApplicationContext();
     }
 
-    public LiveData<List<MultiItemEntity>> getData() {
+    public LiveData<List<BaseNode>> getData() {
         return sourceDataInterface.getLocalSourcesData();
 
     }

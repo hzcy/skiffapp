@@ -1,7 +1,9 @@
 package com.yellowriver.skiff.View.Fragment.Sources;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -20,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
 
@@ -28,15 +31,23 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.yellowriver.skiff.Adapter.ViewPageAdapter.ContentPagerAdapter;
+import com.yellowriver.skiff.Adapter.ViewPageAdapter.FragmentAdapter;
 import com.yellowriver.skiff.Bean.DataBaseBean.HomeEntity;
+import com.yellowriver.skiff.Bean.SourcesBean.GroupEntity;
+import com.yellowriver.skiff.Bean.SourcesBean.SourcesEntity;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SQLiteUtils;
 import com.yellowriver.skiff.DataUtils.LocalUtils.SharedPreferencesUtils;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.JsonUtils;
+import com.yellowriver.skiff.DataUtils.RemoteUtils.NetUtils;
 import com.yellowriver.skiff.DataUtils.RemoteUtils.RSSUtils;
+import com.yellowriver.skiff.Help.LocalBackup;
+import com.yellowriver.skiff.Help.LogUtil;
 import com.yellowriver.skiff.Help.SnackbarUtil;
 import com.yellowriver.skiff.Model.SQLModel;
 import com.yellowriver.skiff.Model.SourceDataSource;
 import com.yellowriver.skiff.R;
+import com.yellowriver.skiff.View.Activity.MyImportActivity;
+import com.yellowriver.skiff.View.Fragment.Home.HomeDataViewFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -59,10 +70,12 @@ import static com.yellowriver.skiff.R.drawable.ic_more_vert_black_24dp;
  * @author huang
  */
 public class SourceFragment extends Fragment {
+    String baseurl = "https://skiff-d3a.pages.dev/api/sources";
     private static final String HTTP = "http";
     private static final String TAG = "SourceFragment";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+
     @BindView(R.id.tl_search)
     SkinSlidingTabLayout mTabLayout;
     @BindView(R.id.view_pager)
@@ -91,12 +104,18 @@ public class SourceFragment extends Fragment {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         if (mRootView == null) {
-            mRootView = inflater.inflate(R.layout.fragment_source, container, false);
-            bind = ButterKnife.bind(this, mRootView);
+            mRootView = inflater.inflate(R.layout.fragment_source, null);
             //加载视图
+            bind = ButterKnife.bind(this, mRootView);
             mToolbar.setTitle(getString(R.string.sourcesSet));
             bindView();
+            bindData();
+        }
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
+        if (parent != null) {
+            parent.removeView(mRootView);
         }
         return mRootView;
     }
@@ -107,29 +126,71 @@ public class SourceFragment extends Fragment {
 
     }
 
-    LocalSourceFragment localSourceFragment;
-    RemoteSourceFragment sourceDataViewFragment;
-    ContentPagerAdapter contentAdapter;
 
+    FragmentAdapter contentAdapter;
+
+    private static Gson gson = new Gson();
+
+    @SuppressLint("ResourceType")
     private void bindView() {
+
+    }
+
+
+
+    private void bindData() {
 
 
         tabIndicators = new ArrayList<>();
-        tabIndicators.add("本地源");
-        tabIndicators.add("源市场");
-        localSourceFragment = LocalSourceFragment.getInstance();
-        sourceDataViewFragment = RemoteSourceFragment.getInstance();
-        tabFragments = new ArrayList<>();
-        tabFragments.add(localSourceFragment);
-        tabFragments.add(sourceDataViewFragment);
-        contentAdapter = new ContentPagerAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
-        mViewPager.setAdapter(contentAdapter);
-        localSourceFragment.setPageAdapter(contentAdapter);
-        sourceDataViewFragment.setPageAdapter(contentAdapter);
-        mTabLayout.setViewPager(mViewPager);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String json = NetUtils.getInstance().getRequest(baseurl + "/groupList.json", "1");
+
+                List< GroupEntity > sourceBean = null;
+                if (JsonUtils.isJSONValid(json)) {
+                    // Log.d(TAG, "getSourceAllGroup: 是json");
+                    Type type = new TypeToken<List<GroupEntity>>() {
+                    }.getType();
+                    sourceBean = gson.fromJson(json, type);
+                    if(sourceBean!=null) {
+                        for (int i = 0; i < sourceBean.size(); i++) {
+                            tabIndicators.add(sourceBean.get(i).getName());
+                        }
+                        getActivity().runOnUiThread(() -> initContent());
+                    }
+                }
+            }
+        }).start();
+
 
 
     }
+
+    private void initContent() {
+        if (tabFragments != null) {
+            tabFragments.clear();
+        }
+        tabFragments = new ArrayList<>();
+        for (String qzGroupName : tabIndicators) {
+            //第一步
+            tabFragments.add(RemoteSourceFragment.getInstance(qzGroupName));
+        }
+        try {
+            contentAdapter = new FragmentAdapter(getChildFragmentManager(), tabIndicators, tabFragments);
+
+        }catch (IllegalStateException e){
+
+        }
+        if (contentAdapter!=null) {
+            mViewPager.setAdapter(contentAdapter);
+            //mViewPager.setOffscreenPageLimit(tabFragments.size());
+            mTabLayout.setViewPager(mViewPager);
+
+        }
+    }
+
 
 
     private void loadSql(String newtitle, String newtype, HomeEntity homeEntity) {
@@ -180,7 +241,7 @@ public class SourceFragment extends Fragment {
         sourceadder.setSingleLine(false);
         //水平滚动设置为False
         sourceadder.setHorizontallyScrolling(false);
-        new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("剪贴板导入")
+        new AlertDialog.Builder(requireContext()).setTitle("剪贴板导入")
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
                     if (TextUtils.isEmpty(sourceadder.getText())) {
@@ -234,7 +295,7 @@ public class SourceFragment extends Fragment {
         sourceadder.setSingleLine(false);
         //水平滚动设置为False
         sourceadder.setHorizontallyScrolling(false);
-        new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("导入RSS源(测试功能)")
+        new AlertDialog.Builder(requireContext()).setTitle("导入RSS源(测试功能)")
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
                     ProgressDialog waitingDialog =
@@ -293,7 +354,7 @@ public class SourceFragment extends Fragment {
         sourceadder.setSingleLine(false);
         //水平滚动设置为False
         sourceadder.setHorizontallyScrolling(false);
-        new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("网络导入")
+        new AlertDialog.Builder(requireContext()).setTitle("网络导入")
                 .setView(view)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
                     if (TextUtils.isEmpty(sourceadder.getText())) {
@@ -314,14 +375,89 @@ public class SourceFragment extends Fragment {
                         waitingDialog.show();
                         String url = sourceadder.getText().toString();
                         new Thread(() -> {
-                            boolean isAdd = SourceDataSource.getInstance().addSource(url);
+                            boolean isAdd =false;
+                            String json = NetUtils.getInstance().getRequest(url,"");
+                            int addsum = 0;
+
+                                if (url.indexOf("list") != -1) {
+                                    Log.d(TAG, "showDialogAddHttp: 加");
+                                    Gson gson = new Gson();
+                                    String baseurl = "https://hege.gitee.io/api/sources";
+                                    List<SourcesEntity> sourceBean = null;
+                                    if (JsonUtils.isJSONValid(json)) {
+                                        Type type = new TypeToken<List<SourcesEntity>>() {
+                                        }.getType();
+                                        sourceBean = gson.fromJson(json, type);
+                                    }
+                                    int addSize = 0;
+                                    if (sourceBean != null) {
+                                        Log.d(TAG, "showDialogAddHttp: 加" + sourceBean.size());
+                                        for (SourcesEntity sourcesEntity : sourceBean) {
+                                            if (!SQLModel.getInstance().getXpathbyTitle(sourcesEntity.getName(), sourcesEntity.getType()).isEmpty()) {
+                                                //存在
+                                            } else {
+                                                String sourceLink = sourcesEntity.getLink();
+                                                Log.d(TAG, "showDialogAddHttp: " + baseurl + sourceLink);
+                                                if (sourceLink.startsWith("http")) {
+
+                                                } else {
+                                                    sourceLink = baseurl + sourceLink;
+                                                }
+                                                boolean add = SourceDataSource.getInstance().addSource(sourceLink);
+                                                if (add) {
+                                                    Log.d(TAG, "showDialogAddHttp: 添加成功" + sourceLink);
+                                                    addSize++;
+                                                } else {
+                                                    Log.d(TAG, "showDialogAddHttp: 添加失败 已存在" + sourceLink);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        isAdd = false;
+                                    }
+                                    if (addSize > 0) {
+                                        isAdd = true;
+                                    }
+                                } else {
+
+                                    if(json!=null) {
+                                        if (json.startsWith("[")) {
+
+                                            Gson gson = new Gson();
+                                            Type type = new TypeToken<List<HomeEntity>>() {
+                                            }.getType();
+                                            List<HomeEntity> homeEntityList = gson.fromJson(json, type);
+                                            if (homeEntityList != null && homeEntityList.size() > 0) {
+                                                //LogUtil.info("获取的json","json"+homeEntityList.size());
+                                                for (HomeEntity homeEntity : homeEntityList) {
+                                                    boolean a = SQLiteUtils.getInstance().addHome2(homeEntity);
+                                                    if (a) {
+                                                        isAdd = true;
+                                                        addsum++;
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            isAdd = SourceDataSource.getInstance().addSource(url);
+                                        }
+                                    }else{
+                                        isAdd = false;
+                                    }
+
+                            }
+                            boolean finalIsAdd = isAdd;
+                            int finalAddsum = addsum;
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     waitingDialog.cancel();
-                                    if (isAdd) {
+                                    if (finalIsAdd) {
                                         //重新加载源管理页面
                                         bindView();
+                                        if(finalAddsum != 0){
+                                            SnackbarUtil.ShortSnackbar(getView(), "成功导入"+finalAddsum+"个源！", SnackbarUtil.Confirm).show();
+
+                                        }
                                         SharedPreferencesUtils.dataChange(true, getContext());
 
                                     } else {
@@ -399,6 +535,7 @@ public class SourceFragment extends Fragment {
         LinearLayout netImport = view.findViewById(R.id.netImport);
         LinearLayout clipboardimport = view.findViewById(R.id.clipboardimport);
         LinearLayout rssimport = view.findViewById(R.id.rssimport);
+        LinearLayout myimport = view.findViewById(R.id.myimport);
         netImport.setOnClickListener(view1 -> {
             showDialogAddHttp();
             dialog.cancel();
@@ -409,6 +546,11 @@ public class SourceFragment extends Fragment {
         });
         rssimport.setOnClickListener(view13 -> {
             showDialogAddRss();
+            dialog.cancel();
+        });
+        myimport.setOnClickListener(view13 -> {
+            Intent intent = new Intent(getContext(), MyImportActivity.class);
+            getContext().startActivity(intent);
             dialog.cancel();
         });
         dialog.setCancelable(true);

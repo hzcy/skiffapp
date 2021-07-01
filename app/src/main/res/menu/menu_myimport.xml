@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/goto_url"
+        android:title="打开网站"
+        android:icon="@drawable/ic_search_black_24dp"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        />
+
+    <item
+        android:id="@+id/menu_touchinspect"
+        android:title="定位元素"
+        android:icon="@drawable/ic_gps_off_black_24dp"
+        app:showAsAction="always|collapseActionView"
+        />
+
+
+
+
+
+
+</menu>

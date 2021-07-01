@@ -118,6 +118,7 @@ public class WebViewActivity extends AppCompatActivity {
     public String CSS_STYLE = "<style>* {font-size:" + fontSize + "px;color:#" + fontColor + ";} </style>";
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,7 +274,7 @@ public class WebViewActivity extends AppCompatActivity {
 
                             @Override
                             protected ResourceRequest createResourceRequest(String url) {
-                                return DownloadImpl.getInstance()
+                                return DownloadImpl.getInstance(getApplicationContext())
                                         .with(getApplicationContext())
                                         .url(url)
                                         .quickProgress()

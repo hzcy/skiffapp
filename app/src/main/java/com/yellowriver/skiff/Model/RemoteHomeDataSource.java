@@ -43,7 +43,12 @@ public class RemoteHomeDataSource implements HomeDataInterface {
             @Override
             public void run() {
                 Vector<DataEntity> dataEntities = AnalysisUtils.getInstance().MainAnalysis(homeEntity,step,url,query,page);
-                Log.d("dddd", "run: "+dataEntities.size());
+               if(dataEntities!=null) {
+                   Log.d("dddd", "run: " + dataEntities.size());
+
+               }else{
+                   Log.d("dddd", "run: 数据为空 " );
+               }
 
                 data.postValue(dataEntities);
 
